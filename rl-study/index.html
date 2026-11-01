@@ -1,0 +1,5726 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>强化学习学习库</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<style>
+:root{
+  --bg:#ffffff; --fg:#1f2328; --muted:#59636e; --line:#d8dee4;
+  --accent:#0969da; --soft:#f6f8fa; --quote:#fff8e6; --quoteline:#e3b341;
+  --navw:320px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0d1117; --fg:#e6edf3; --muted:#8d96a0; --line:#30363d; --accent:#58a6ff;
+         --soft:#161b22; --quote:#221a05; --quoteline:#9e6a03; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.75 -apple-system,"Segoe UI","Noto Sans CJK SC","Source Han Sans SC","PingFang SC",sans-serif;}
+nav#toc{position:fixed;top:0;left:0;bottom:0;width:var(--navw);overflow-y:auto;
+  background:var(--soft);border-right:1px solid var(--line);padding:16px 12px 60px;}
+nav#toc .brand{font-weight:700;font-size:15px;margin:2px 6px 10px;}
+nav#toc .brand small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+nav#toc input{width:100%;padding:7px 9px;margin:0 0 12px;border:1px solid var(--line);
+  border-radius:6px;background:var(--bg);color:var(--fg);font-size:13px}
+nav#toc details{margin:0 0 2px}
+nav#toc summary{cursor:pointer;padding:5px 6px;border-radius:6px;font-size:14px;font-weight:600;color:var(--fg)}
+nav#toc summary:hover{background:rgba(127,127,127,.12)}
+nav#toc details.active>summary{color:var(--accent)}
+nav#toc ul{list-style:none;margin:2px 0 8px;padding:0 0 0 14px}
+nav#toc li a{display:block;padding:2px 6px;border-radius:5px;font-size:13px;
+  color:var(--muted);text-decoration:none;border-left:2px solid transparent}
+nav#toc li a:hover{background:rgba(127,127,127,.12);color:var(--fg)}
+nav#toc li a.h3{padding-left:16px;font-size:12.5px}
+nav#toc .empty{color:var(--muted);font-size:13px;padding:8px 6px}
+main{margin-left:var(--navw);padding:40px 56px 120px;max-width:1040px}
+main>h1.title{font-size:30px;margin:0 0 6px}
+main .sub{color:var(--muted);font-size:13.5px;margin-bottom:34px}
+section.doc{padding-top:8px}
+section.doc+section.doc{border-top:1px solid var(--line);margin-top:56px;padding-top:40px}
+h1,h2,h3,h4{line-height:1.35;scroll-margin-top:16px}
+h1{font-size:26px;border-bottom:2px solid var(--line);padding-bottom:8px;margin:8px 0 18px}
+h2{font-size:21px;margin:34px 0 12px;padding-top:4px}
+h3{font-size:17.5px;margin:26px 0 8px;color:var(--accent)}
+p{margin:10px 0}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+blockquote{margin:14px 0;padding:10px 16px;background:var(--quote);
+  border-left:4px solid var(--quoteline);border-radius:0 6px 6px 0}
+blockquote p{margin:6px 0}
+blockquote blockquote{background:transparent;border-left-color:var(--line)}
+code{font:13.5px/1.5 "JetBrains Mono",Consolas,"Noto Sans Mono CJK SC",monospace;
+  background:rgba(127,127,127,.14);padding:.15em .38em;border-radius:4px}
+pre{background:var(--soft);border:1px solid var(--line);border-radius:8px;
+  padding:12px 14px;overflow-x:auto;margin:14px 0}
+pre code{background:none;padding:0;font-size:13px;line-height:1.6}
+.tablewrap{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+tr:nth-child(even) td{background:rgba(127,127,127,.045)}
+hr{border:0;border-top:1px solid var(--line);margin:32px 0}
+ul,ol{padding-left:24px}
+li{margin:4px 0}
+mark{background:#ffe08a;color:#111}
+.katex-display{margin:14px 0;overflow-x:auto;overflow-y:hidden}
+.katex{font-size:1.04em}
+#top{position:fixed;right:22px;bottom:22px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;
+  font-size:16px;display:none;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+h2:target,h3:target,h1:target{background:rgba(255,224,138,.25)}
+@media print{
+  nav#toc,#top{display:none} main{margin:0;padding:0;max-width:none}
+  section.doc+section.doc{page-break-before:always}
+}
+@media (max-width:900px){
+  nav#toc{position:static;width:auto;bottom:auto;border-right:0;border-bottom:1px solid var(--line)}
+  main{margin-left:0;padding:20px}
+}
+</style></head>
+<body>
+<nav id="toc">
+  <div class="brand">强化学习学习库<small>16 篇 · 生成于 2026-11-01 21:37</small></div>
+  <input id="q" type="search" placeholder="搜索标题 / 筛选文档…">
+  <details data-doc="doc-00" data-text="从这里开始 "><summary>00 从这里开始</summary></details>
+<details data-doc="doc-01" data-text="教程总览：任务清单 "><summary>01 教程总览：任务清单</summary></details>
+<details data-doc="doc-02" data-text="第 1 阶段：仓库与倒立摆（10 个任务） "><summary>02 第 1 阶段：仓库与倒立摆（10 个任务）</summary></details>
+<details data-doc="doc-03" data-text="第 2 阶段：动作空间与新任务（6 个任务） "><summary>03 第 2 阶段：动作空间与新任务（6 个任务）</summary></details>
+<details data-doc="doc-04" data-text="第 3 阶段：mujoco 与系统辨识（5 个任务） "><summary>04 第 3 阶段：MuJoCo 与系统辨识（5 个任务）</summary></details>
+<details data-doc="doc-05" data-text="第 4 阶段：c 仿真与自主设计（4 个任务） "><summary>05 第 4 阶段：C 仿真与自主设计（4 个任务）</summary></details>
+<details data-doc="doc-05b" data-text="路线：从&quot;会做动作的模型&quot;到&quot;有自我模型、能自我改进的系统&quot; "><summary>05b 路线：从&quot;会做动作的模型&quot;到&quot;有自我模型、能自我改进的系统&quot;</summary></details>
+<details data-doc="doc-06" data-text="指标速查 "><summary>06 指标速查</summary></details>
+<details data-doc="doc-07" data-text="论文清单 "><summary>07 论文清单</summary></details>
+<details data-doc="doc-08" data-text="实验台账 "><summary>08 实验台账</summary></details>
+<details data-doc="doc-09" data-text="求职路线：宇树 / deepseek / 具身智能 "><summary>09 求职路线：宇树 / DeepSeek / 具身智能</summary></details>
+<details data-doc="doc-10" data-text="练习册 a：强化学习原理（我们一起写） "><summary>10 练习册 A：强化学习原理（我们一起写）</summary></details>
+<details data-doc="doc-11" data-text="练习册 b：现代控制与机器人原理（我们一起写） "><summary>11 练习册 B：现代控制与机器人原理（我们一起写）</summary></details>
+<details data-doc="doc-12" data-text="练习册 c：vla 与具身基础模型原理（我们一起写） "><summary>12 练习册 C：VLA 与具身基础模型原理（我们一起写）</summary></details>
+<details data-doc="doc-13" data-text="试卷：a 卷（原理）与 b 卷（综合） "><summary>13 试卷：A 卷（原理）与 B 卷（综合）</summary></details>
+<details data-doc="doc-14" data-text="试卷答案与评分标准 "><summary>14 试卷答案与评分标准</summary></details>
+</nav>
+<main>
+  <h1 class="title">强化学习学习库</h1>
+  <div class="sub">点击左侧大纲跳转；Ctrl+F 页内查找；Ctrl+P 打印。生成脚本：<code>scripts/md_book.py</code></div>
+  <section class="doc" id="doc-00">
+<h1 id="doc-00-_1">从这里开始</h1>
+<blockquote>
+<p>这一页只回答四件事：<strong>你现在在哪、这周干什么、文件在哪、规矩是什么。</strong></p>
+</blockquote>
+<h2 id="doc-00-_2">一、你现在在哪</h2>
+<ul>
+<li>已完成：Isaac Lab 装好、cartpole 能训、9 组实验有日志、导出策略能调用。</li>
+<li>已会：经典/现代控制（LQR/MPC/SMC/MRAC）、观测器、机械臂运动学、STM32+PCB、MuJoCo、PPO 入门。</li>
+<li>缺的：RL 理论推导、从零实现、大规模训练、sim2real 部署、人形/全身控制。</li>
+</ul>
+<h2 id="doc-00-_3">二、这周干什么</h2>
+<ol>
+<li>读 <a href="#doc-01">01-教程总览</a> 的任务清单（5 分钟），知道自己要走多少步。</li>
+<li>做 <a href="#doc-02">第 1 阶段</a> 的 <strong>T1.1、T1.2、T1.3</strong>（装扩展 → 零动作/随机动作 → 跑通训练）。</li>
+<li>每做完一个任务，按总览里的"交付格式"记录，发我。</li>
+<li>做完 T1.4（读懂数据流）再开始 <a href="#doc-10">10-练习册A</a> 第 1 章。</li>
+</ol>
+<h2 id="doc-00-_4">三、文件地图</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>干什么</th>
+<th>什么时候看</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#doc-01">01-教程-总览</a></td>
+<td>25 个任务的全表（编号/改哪里/验收/预计）</td>
+<td>先看这个</td>
+</tr>
+<tr>
+<td><a href="#doc-02">02-教程-第1阶段</a></td>
+<td>T1.1-T1.10：仓库 → 训练 → 改参数 → 导出</td>
+<td>现在</td>
+</tr>
+<tr>
+<td><a href="#doc-03">03-教程-第2阶段</a></td>
+<td>T2.1-T2.6：位置+PD、tracking、域随机化</td>
+<td>第 2-3 周</td>
+</tr>
+<tr>
+<td><a href="#doc-04">04-教程-第3阶段</a></td>
+<td>T3.1-T3.5：MJCF、sim2sim、系统辨识</td>
+<td>第 4-5 周</td>
+</tr>
+<tr>
+<td><a href="#doc-05">05-教程-第4阶段</a></td>
+<td>T4.1-T4.4：C 仿真、自主设计</td>
+<td>第 6-8 周</td>
+</tr>
+<tr>
+<td><a href="#doc-05b">05b-路线-世界模型与自我提升</a></td>
+<td>完成基础后的下一阶段：世界模型 → 自我提升 → 推动前沿</td>
+<td>第 3 个月起看</td>
+</tr>
+<tr>
+<td><a href="#doc-06">06-指标速查</a></td>
+<td>曲线含义、正常范围、异常排查</td>
+<td>看不懂训练时</td>
+</tr>
+<tr>
+<td><a href="#doc-07">07-论文清单</a></td>
+<td>分级书单 + 仓库 + 12 周计划</td>
+<td>卡住时查对应论文</td>
+</tr>
+<tr>
+<td><a href="#doc-08">08-实验台账</a></td>
+<td>指标定义 + 全部实验记录</td>
+<td>每次跑完实验</td>
+</tr>
+<tr>
+<td><a href="#doc-09">09-求职</a></td>
+<td>岗位映射、项目写法、面试题</td>
+<td>第 7 个月精读</td>
+</tr>
+<tr>
+<td><a href="#doc-10">10-练习册A</a> / <a href="#doc-11">11-B</a> / <a href="#doc-12">12-C</a></td>
+<td>原理 + 你填的空</td>
+<td>配合教程阶段</td>
+</tr>
+<tr>
+<td><a href="#doc-13">13-试卷</a> / <a href="#doc-14">14-答案</a></td>
+<td>闭卷自测</td>
+<td>每阶段末</td>
+</tr>
+<tr>
+<td><a href="../README.md">refs/</a></td>
+<td>本地参考书</td>
+<td>查书时</td>
+</tr>
+<tr>
+<td><code>archive/</code></td>
+<td>旧版材料</td>
+<td>只在查历史时</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-00-_5">四、三条规矩</h2>
+<ol>
+<li><strong>不跳步</strong>：练习册那一章的 <code>🖊️</code> 没写，别进下一章。写了才发现卡在哪。</li>
+<li><strong>先写再问</strong>：问题写成"我观察到 X，我的解释是 Y，帮我设计实验证伪 Y"。直接问"怎么做"我只会给你一堆选项。</li>
+<li><strong>一次只改一个变量</strong>：第二轮你已经有 5 组"改了俩变量"的实验，那些结论全部作废。</li>
+</ol>
+<h2 id="doc-00-_6">五、怎么打开</h2>
+<ul>
+<li>单篇：双击 <code>.md</code> → MarkText，<code>Ctrl+K</code> 开大纲。</li>
+<li>整本：双击 <code>index.html</code>（浏览器，左侧大纲，公式离线渲染）。</li>
+<li>想导出某一册：<code>python scripts/md_book.py --only 10 --out /tmp/a.html</code>。</li>
+</ul>
+</section>
+<section class="doc" id="doc-01">
+<h1 id="doc-01-_1">教程总览：任务清单</h1>
+<blockquote>
+<p>这是一套<strong>分任务的动手教程</strong>。每个任务都有：目的、前置、具体操作（文件+行号+命令）、预期输出、可能报错、验收标准、你的记录区。
+不要跳任务。任务的顺序是按"依赖关系"排的，不是按难度。</p>
+</blockquote>
+<h2 id="doc-01-25">四个阶段（共 25 个任务）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>文件</th>
+<th>目标</th>
+<th>任务数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="#doc-02">第 1 阶段：仓库与倒立摆</a></td>
+<td>把 Isaac Lab 的"注册→训练→导出"链路走通，并把倒立摆的每个参数改一遍</td>
+<td>10</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="#doc-03">第 2 阶段：动作空间与新任务</a></td>
+<td>力矩 → 位置+PD，自己造一个 tracking 任务</td>
+<td>6</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="#doc-04">第 3 阶段：MuJoCo 与系统辨识</a></td>
+<td>同策略换仿真，辨识质量/摩擦/延迟</td>
+<td>5</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="#doc-05">第 4 阶段：C 仿真与自主设计</a></td>
+<td>用 C 写仿真，自己设计模型并训练</td>
+<td>4</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>25 个任务做完之后去哪：<a href="#doc-05b">05b-路线-世界模型与自我提升</a>（大致路线，不是任务卡）。</p>
+</blockquote>
+<h2 id="doc-01-_2">任务清单（一张表看全）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>任务</th>
+<th>改哪里</th>
+<th>验收</th>
+<th>预计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1.1</td>
+<td>环境自检：装扩展、列任务</td>
+<td>无（命令）</td>
+<td><code>list_envs.py</code> 能列出两个 cartpole 任务</td>
+<td>15 min</td>
+</tr>
+<tr>
+<td>T1.2</td>
+<td>sanity check：零动作 / 随机动作</td>
+<td>无</td>
+<td>两脚本都能跑起来不报错</td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>T1.3</td>
+<td>跑通训练，认得每个产物</td>
+<td>无</td>
+<td>能说出 <code>model_0/50/99</code>、<code>params/</code>、<code>events</code> 各是什么</td>
+<td>20 min</td>
+</tr>
+<tr>
+<td>T1.4</td>
+<td>读环境代码：一条数据的旅程</td>
+<td><code>cartpole_env.py</code></td>
+<td>能画出 6 个函数的调用顺序</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>T1.5</td>
+<td>读配置：48 行里哪些能动</td>
+<td><code>cartpole_env_cfg.py</code></td>
+<td>能说出每行改了会怎样</td>
+<td>40 min</td>
+</tr>
+<tr>
+<td>T1.6</td>
+<td>第一次改参数：<code>action_scale</code></td>
+<td>cfg:39</td>
+<td>预测 vs 实测，差异能解释</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>T1.7</td>
+<td>改奖励 + 加分项日志</td>
+<td>env:116-135</td>
+<td>TensorBoard 出现 <code>Episode/Reward/*</code></td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>T1.8</td>
+<td>改观测：4 维 → 2 维</td>
+<td>cfg:22 + env:54</td>
+<td>车漂走的证据（<code>util</code> 掉了多少）</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>T1.9</td>
+<td>改复位与终止：±0.3π → ±1.0π</td>
+<td>cfg:47</td>
+<td>复现"长度卡在 132"并解释天花板</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>T1.10</td>
+<td>回放 + 导出 + 独立调用策略</td>
+<td><code>play.py</code></td>
+<td>3 行代码跑通 <code>policy.pt</code></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>T2.1</td>
+<td>动作空间：力矩 → 位置+PD</td>
+<td>env:52 + cfg:29</td>
+<td>位置版能训、且更稳</td>
+<td>90 min</td>
+</tr>
+<tr>
+<td>T2.2</td>
+<td>观测加一维任务量</td>
+<td>cfg:22 + env:54</td>
+<td>观测 5 维，训练不报错</td>
+<td>40 min</td>
+</tr>
+<tr>
+<td>T2.3</td>
+<td>造 tracking 任务（6 处改动）</td>
+<td>多个文件</td>
+<td>新 task id 能训、能评估到位率</td>
+<td>120 min</td>
+</tr>
+<tr>
+<td>T2.4</td>
+<td>势函数 shaping + 课程学习</td>
+<td>env:116</td>
+<td>目标项与平衡项不再打架</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>T2.5</td>
+<td>Manager-based 版对照</td>
+<td><code>Template-Cartpole-v0</code></td>
+<td>写出 Direct vs Manager 5 条差异</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>T2.6</td>
+<td>域随机化：质量/摩擦/延迟</td>
+<td>新 event/mass 配置</td>
+<td>同一策略在扰动下不崩</td>
+<td>90 min</td>
+</tr>
+<tr>
+<td>T3.1</td>
+<td>写 cartpole 的 MJCF</td>
+<td>新文件 <code>cartpole.xml</code></td>
+<td>MuJoCo 里能加载、能可视化</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>T3.2</td>
+<td>写 sim2sim 推理脚本</td>
+<td>新文件 <code>sim2sim.py</code></td>
+<td>60 Hz 闭环能跑 5 s</td>
+<td>120 min</td>
+</tr>
+<tr>
+<td>T3.3</td>
+<td>对齐观测/缩放/频率</td>
+<td><code>sim2sim.py</code></td>
+<td>偏差表：改前 vs 改后</td>
+<td>90 min</td>
+</tr>
+<tr>
+<td>T3.4</td>
+<td>系统辨识：质量/摩擦/延迟</td>
+<td><code>sysid.py</code></td>
+<td>拟合误差曲线 + 参数表</td>
+<td>2 天</td>
+</tr>
+<tr>
+<td>T3.5</td>
+<td>辨识后重训 + 复测</td>
+<td>训练 + eval</td>
+<td>sim2sim 偏差 &lt; 10%</td>
+<td>1 天</td>
+</tr>
+<tr>
+<td>T4.1</td>
+<td>C 写动力学 + RK4</td>
+<td><code>cartpole.c</code></td>
+<td>与 MuJoCo 开环轨迹偏差 &lt; 1%</td>
+<td>1 天</td>
+</tr>
+<tr>
+<td>T4.2</td>
+<td>C 写 1 kHz 控制循环</td>
+<td><code>cartpole.c</code></td>
+<td>输出 CSV，能和 Python 对账</td>
+<td>1 天</td>
+</tr>
+<tr>
+<td>T4.3</td>
+<td>C 里跑导出策略</td>
+<td><code>policy.c</code></td>
+<td>闭环 5 s 不摔</td>
+<td>1 天</td>
+</tr>
+<tr>
+<td>T4.4</td>
+<td>自主设计新机器人并训练</td>
+<td>新 task 目录</td>
+<td>从 URDF 到训练到 eval 全通</td>
+<td>持续</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-01-_3">开始之前：环境检查（只做一次）</h2>
+<pre><code class="language-bash">cd ~/Code/IsaacTest/cartpole
+source ~/miniconda3/etc/profile.d/conda.sh &amp;&amp; conda activate isaac
+python -c &quot;import isaaclab, gymnasium, torch; print('ok', torch.__version__, torch.cuda.is_available())&quot;
+</code></pre>
+<p>预期：打印 <code>ok 2.x.x True</code>（你的显卡可用）。如果 <code>isaaclab</code> 导入失败，先问题 T1.1。</p>
+<h2 id="doc-01-_4">每个任务的交付格式（复制粘贴）</h2>
+<pre><code>Tn.m
+- 我改的文件:行号：
+- 跑的命令：
+- 关键数字（改前 → 改后）：
+- 预期 vs 实际：
+- 报错原文（如果有）：
+- 卡住的位置（具体到函数名/行）：
+</code></pre>
+<h2 id="doc-01-_5">三条规矩</h2>
+<ol>
+<li><strong>先预测，再跑</strong>。每个任务都有"预测"栏，空着不算完成。</li>
+<li><strong>一次只改一个东西</strong>。同时改两个，结果不可归因（第二轮已踩过 5 次）。</li>
+<li><strong>报错别跳过</strong>。<code>可能报错</code> 里列的是常见坑，真报错了把原文贴给我。</li>
+</ol>
+</section>
+<section class="doc" id="doc-02">
+<h1 id="doc-02-1-10">第 1 阶段：仓库与倒立摆（10 个任务）</h1>
+<blockquote>
+<p>目标：把"注册 → 训练 → 回放 → 导出"这条链路走通，然后把倒立摆的<strong>每个能改的地方都改一遍</strong>，并知道改完会怎样。
+每个任务都按 <strong>目的 / 前置 / 操作 / 预期 / 可能报错 / 验收 / 🖊️ 记录</strong> 写。全部做完约 6-7 小时，可以分 3 天。</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t11">T1.1 环境自检：装扩展、列任务</h2>
+<p><strong>目的</strong>：确认这个仓库被 Python 认识，Gym 能查到任务名。</p>
+<p><strong>前置</strong>：无。</p>
+<p><strong>操作</strong></p>
+<pre><code class="language-bash">cd ~/Code/IsaacTest/cartpole
+source ~/miniconda3/etc/profile.d/conda.sh &amp;&amp; conda activate isaac
+
+# 1) 把本仓库作为可安装包注册进当前环境（只需一次，改 setup.py 后要重来）
+python -m pip install -e source/cartpole
+
+# 2) 确认包能导入
+python -c &quot;import cartpole, inspect; print(cartpole.__file__)&quot;
+
+# 3) 列出所有注册的任务
+python scripts/list_envs.py
+</code></pre>
+<p><strong>预期</strong></p>
+<p>第 3 步会打印一长串任务名，其中必须包含两行：</p>
+<pre><code class="language-text">Template-Cartpole-Direct-v0     ← 你现在要学的（Direct 版，单文件环境）
+Template-Cartpole-v0            ← Manager 版（第 2 阶段 T2.5 用）
+</code></pre>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ModuleNotFoundError: No module named 'cartpole'</code></td>
+<td>没执行 <code>pip install -e</code>，或不在 isaac 环境</td>
+<td>重跑第 1 步；确认 <code>conda activate isaac</code></td>
+</tr>
+<tr>
+<td>列表里没有 cartpole</td>
+<td><code>pip install -e</code> 装了但注册没生效</td>
+<td>检查 <code>source/cartpole/cartpole/tasks/direct/cartpole/__init__.py</code> 是否有 <code>gym.register</code></td>
+</tr>
+<tr>
+<td><code>ImportError: ... isaaclab</code></td>
+<td>环境不对</td>
+<td><code>conda activate isaac</code> 后重试</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：三条命令都成功；<code>cartpole.__file__</code> 指向 <code>~/Code/IsaacTest/cartpole/source/cartpole/...</code>。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>跑 <code>list_envs.py</code> 后 cartpole 相关的任务名有几个？分别是什么？
+&nbsp;
+&nbsp;
+<code>cartpole.__file__</code> 输出：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t12-sanity-check">T1.2 sanity check：零动作与随机动作</h2>
+<p><strong>目的</strong>：在训练之前，先确认"环境能跑、仿真在动、终止会触发"。这一步能省掉 50% 的查错时间。</p>
+<p><strong>前置</strong>：T1.1。</p>
+<p><strong>操作</strong></p>
+<pre><code class="language-bash"># 零动作：一直输出 0，杆子会立刻倒，正常
+python scripts/zero_agent.py --task=Template-Cartpole-Direct-v0 --num_envs=1
+
+# 随机动作：输出随机，杆子乱晃，正常
+python scripts/random_agent.py --task=Template-Cartpole-Direct-v0 --num_envs=1
+</code></pre>
+<p><strong>预期</strong></p>
+<ul>
+<li>会<strong>弹出 Isaac Sim 窗口</strong>，看到一个白色地面、一个小车、一根杆。</li>
+<li>零动作时杆子会在 1 秒内倒下，然后环境重置（杆子回正、又倒）。</li>
+<li>终端会周期性打印步数/奖励，没有报错。</li>
+</ul>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卡在 <code>Starting kit</code> / 无窗口</td>
+<td>无图形界面或驱动问题</td>
+<td>加 <code>--headless</code> 跑（不显示窗口，仍能验证逻辑）</td>
+</tr>
+<tr>
+<td><code>Failed to acquire interface</code></td>
+<td>上一次 Isaac 没退干净</td>
+<td><code>pkill -f isaac</code> 后重试</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：两个脚本都能跑 ≥10 秒不崩；你能说出"零动作为什么必倒"。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>零动作时，杆子大约几秒倒下？环境多久重置一次？
+&nbsp;
+&nbsp;
+随机动作时，杆子能撑多久？和零动作差多少？
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t13">T1.3 跑通一次训练，认得每个产物</h2>
+<p><strong>目的</strong>：知道训练会产出什么、每个文件是干什么的、下次怎么找到它们。</p>
+<p><strong>前置</strong>：T1.2。</p>
+<p><strong>操作</strong></p>
+<pre><code class="language-bash">python scripts/rsl_rl/train.py --task=Template-Cartpole-Direct-v0 \
+    --num_envs=64 --max_iterations=100 --headless
+</code></pre>
+<p><strong>预期</strong></p>
+<ul>
+<li>终端每 10 轮打印一行，类似：<code>Learning iteration 10/100 ... mean_reward: -1.23 mean_episode_length: 12.5</code></li>
+<li>100 轮约 60-90 秒跑完（64 env，FPS 约 900-1500）。</li>
+<li><code>logs/rsl_rl/cartpole_direct/</code> 下多一个时间戳目录，里面有：</li>
+</ul>
+<pre><code class="language-text">&lt;时间戳&gt;/
+  model_0.pt  model_50.pt  model_99.pt     ← 权重（save_interval=50，最后一轮也存）
+  params/env.yaml                           ← 这次用的全部环境参数
+  params/agent.yaml                          ← PPO 参数
+  events.out.tfevents.&lt;...&gt;                  ← TensorBoard 日志
+  git/                                       ← 训练时的 git 状态（如果有改动会记录）
+</code></pre>
+<p><strong>关键认知</strong></p>
+<ul>
+<li><code>model_99.pt</code> 是<strong>第 99 轮</strong>的权重，不是"第 99 个模型"。</li>
+<li><code>params/env.yaml</code> 是你以后查"这次到底改了什么"的唯一可信来源（比你自己的笔记可靠）。</li>
+<li><code>model_*.pt</code> 是 actor-critic 的网络权重，<strong>不能直接部署</strong>；要 <code>play.py</code> 导出成 <code>policy.onnx</code>（T1.10）。</li>
+</ul>
+<p><strong>验收</strong></p>
+<pre><code class="language-bash">python - &lt;&lt;'EOF'
+import yaml, glob
+run = sorted(glob.glob(&quot;logs/rsl_rl/cartpole_direct/*/&quot;))[-1]
+env = yaml.safe_load(open(run + &quot;params/env.yaml&quot;))
+for k in [&quot;decimation&quot;, &quot;episode_length_s&quot;, &quot;num_envs&quot;, &quot;action_scale&quot;,
+          &quot;rew_scale_alive&quot;, &quot;rew_scale_pole_pos&quot;, &quot;initial_pole_angle_range&quot;]:
+    print(k, &quot;=&quot;, env.get(k))
+print(&quot;scene.num_envs =&quot;, env[&quot;scene&quot;][&quot;num_envs&quot;])
+EOF
+</code></pre>
+<blockquote>
+<p>注意 <code>env.yaml</code> 里有 <code>num_envs</code> 字段可能为 None（实际数量在 <code>scene.num_envs</code>）。</p>
+<p>🖊️ <strong>记录</strong></p>
+<p>我这次 run 的目录名：
+&nbsp;
+打印出来的 <code>action_scale</code> / <code>rew_scale_alive</code> / <code>initial_pole_angle_range</code> 分别是：
+&nbsp;
+&nbsp;
+我的 100 轮跑了多少秒、FPS 大概多少：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t14">T1.4 读环境代码：一条数据的旅程</h2>
+<p><strong>目的</strong>：知道 <code>step()</code> 内部按什么顺序调用那几个函数。这是后面所有改动的地图。</p>
+<p><strong>前置</strong>：T1.3。</p>
+<p><strong>操作</strong>：打开 <code>source/cartpole/cartpole/tasks/direct/cartpole/cartpole_env.py</code>，对照下表读。<strong>不要通读，只看这些行</strong>：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>行号</th>
+<th>函数</th>
+<th>干什么</th>
+<th>关键细节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>24-31</td>
+<td><code>__init__</code></td>
+<td>找关节索引、缓存数据引用</td>
+<td><code>find_joints</code> 返回的 <code>_cart_dof_idx</code> / <code>_pole_dof_idx</code> 后面到处用</td>
+</tr>
+<tr>
+<td>33-46</td>
+<td><code>_setup_scene</code></td>
+<td>造机器人、地面、灯光，克隆环境</td>
+<td><code>--num_envs</code> 在这里生效（<code>clone_environments</code>）</td>
+</tr>
+<tr>
+<td>48-49</td>
+<td><code>_pre_physics_step</code></td>
+<td>把动作存起来</td>
+<td>每个控制周期调用一次</td>
+</tr>
+<tr>
+<td>51-52</td>
+<td><code>_apply_action</code></td>
+<td>动作 → 力矩</td>
+<td><strong>每个物理步都调用</strong>（decimation 次）</td>
+</tr>
+<tr>
+<td>54-65</td>
+<td><code>_get_observations</code></td>
+<td>拼 4 维观测 $[\theta,\omega,x,v]$</td>
+<td>顺序决定部署时的输入顺序</td>
+</tr>
+<tr>
+<td>67-80</td>
+<td><code>_get_rewards</code></td>
+<td>调 <code>compute_rewards(...)</code></td>
+<td>参数顺序要背下来</td>
+</tr>
+<tr>
+<td>82-89</td>
+<td><code>_get_dones</code></td>
+<td>判终止</td>
+<td><code>time_out</code> 和 <code>out_of_bounds</code> 是两件事</td>
+</tr>
+<tr>
+<td>91-113</td>
+<td><code>_reset_idx</code></td>
+<td>重置：采样初始角、写回仿真</td>
+<td>初始角乘了 <code>math.pi</code>（T1.9 的坑）</td>
+</tr>
+<tr>
+<td>116-135</td>
+<td><code>compute_rewards</code></td>
+<td>5 项奖励求和</td>
+<td>全是纯函数，可单独测</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>调用顺序</strong>（一次策略步）：</p>
+<pre><code class="language-text">step(actions)
+ ├─ _pre_physics_step(actions)          # 存动作
+ ├─ for i in range(decimation=2):       # 物理 2 步
+ │    ├─ _apply_action()                # 力矩写给执行器
+ │    └─ sim.step()                     # 物理推进 dt=1/120
+ ├─ _get_observations()                 # 新观测
+ ├─ _get_rewards()                      # 奖励
+ └─ _get_dones()                        # 终止判断（含 reset）
+</code></pre>
+<p><strong>所以</strong>：策略 60 Hz（$1/(2\times\frac{1}{120})$），物理 120 Hz。</p>
+<p><strong>操作（验证）</strong>：在 <code>_apply_action</code> 里临时加一行，跑 5 轮 Ctrl+C：</p>
+<pre><code class="language-python">print(&quot;torque&quot;, (self.actions * self.cfg.action_scale).min().item(),
+                (self.actions * self.cfg.action_scale).max().item())
+</code></pre>
+<p><strong>预期</strong>：训练刚开始力矩在 $\pm 200$ 附近（<code>action_scale=200</code>，动作 $\sim\pm1$）；执行器上限是 400 N（<code>~/IsaacLab/source/isaaclab_assets/isaaclab_assets/robots/cartpole.py</code> 里的 <code>effort_limit_sim</code>）。</p>
+<p><strong>可能报错</strong>：打印太多刷屏 → 加 <code>if self.common_step_counter % 100 == 0:</code> 限制频率。</p>
+<p><strong>验收</strong>：能不看笔记画出上面那个调用顺序；能说出"为什么改 <code>decimation</code> 等于改任务"。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我打印的力矩范围：
+&nbsp;
+执行器上限是多少（给出文件与行号）：
+&nbsp;
+打印加完删掉了吗：⬜ 已删
+我画的调用顺序（用箭头写）：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t15-48">T1.5 读配置：48 行里哪些能动</h2>
+<p><strong>目的</strong>：知道每个参数改了会影响什么，哪些不能乱动。</p>
+<p><strong>前置</strong>：T1.4。</p>
+<p><strong>操作</strong>：打开 <code>cartpole_env_cfg.py</code>（48 行）。逐行对照：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>行</th>
+<th>参数</th>
+<th>现值</th>
+<th>含义</th>
+<th>能改吗</th>
+<th>改了会怎样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td><code>decimation</code></td>
+<td>2</td>
+<td>一个控制周期含几个物理步</td>
+<td>⚠ 慎改</td>
+<td>改 4 → 控制 30 Hz，必须重训</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>episode_length_s</code></td>
+<td>5.0</td>
+<td>回合时长</td>
+<td>✅</td>
+<td>改 10 → 回合 600 步，上限翻倍</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>observation_space</code></td>
+<td>4</td>
+<td>观测维度</td>
+<td>✅</td>
+<td>必须与 <code>_get_observations</code> 输出一致</td>
+</tr>
+<tr>
+<td>23</td>
+<td><code>state_space</code></td>
+<td>0</td>
+<td>特权状态维度（不用）</td>
+<td>❌</td>
+<td>保持 0</td>
+</tr>
+<tr>
+<td>26</td>
+<td><code>sim.dt</code></td>
+<td>1/120</td>
+<td>物理步长</td>
+<td>⚠ 慎改</td>
+<td>影响稳定性与速度</td>
+</tr>
+<tr>
+<td>32</td>
+<td><code>num_envs</code></td>
+<td>4096</td>
+<td>克隆数</td>
+<td>✅</td>
+<td>会被命令行 <code>--num_envs</code> 覆盖</td>
+</tr>
+<tr>
+<td>39</td>
+<td><code>action_scale</code></td>
+<td>200.0</td>
+<td>归一化动作 → 牛顿</td>
+<td>✅</td>
+<td><strong>T1.6 专门做</strong></td>
+</tr>
+<tr>
+<td>41</td>
+<td><code>rew_scale_alive</code></td>
+<td>5.0</td>
+<td>每步存活奖励</td>
+<td>✅</td>
+<td><strong>T1.7 专门做</strong></td>
+</tr>
+<tr>
+<td>42</td>
+<td><code>rew_scale_terminated</code></td>
+<td>-10.0</td>
+<td>终止惩罚</td>
+<td>✅</td>
+<td>越大越怕摔</td>
+</tr>
+<tr>
+<td>43</td>
+<td><code>rew_scale_pole_pos</code></td>
+<td>-1.0</td>
+<td>杆角平方惩罚</td>
+<td>✅</td>
+<td>负号不能丢</td>
+</tr>
+<tr>
+<td>44</td>
+<td><code>rew_scale_cart_vel</code></td>
+<td>-0.001</td>
+<td>车速惩罚</td>
+<td>✅</td>
+<td>量纲是 m/s</td>
+</tr>
+<tr>
+<td>45</td>
+<td><code>rew_scale_pole_vel</code></td>
+<td>-0.005</td>
+<td>杆角速度惩罚</td>
+<td>✅</td>
+<td>量纲是 rad/s</td>
+</tr>
+<tr>
+<td>47</td>
+<td><code>initial_pole_angle_range</code></td>
+<td>[-0.3, 0.3]</td>
+<td>初始角范围（<strong>单位是 π 的倍数</strong>）</td>
+<td>✅</td>
+<td><strong>T1.9 专门做</strong></td>
+</tr>
+<tr>
+<td>48</td>
+<td><code>max_cart_pos</code></td>
+<td>3.0</td>
+<td>出界阈值</td>
+<td>✅</td>
+<td>越小越难</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：不看表，能说出 <code>action_scale</code> 和 <code>rew_scale_pole_pos</code> 的单位分别是什么。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我认为哪 3 个参数"绝对不能随便改"，为什么：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t16-action_scale">T1.6 第一次改参数：<code>action_scale</code></h2>
+<p><strong>目的</strong>：练习"先预测、再验证"的科研习惯；搞清这个参数到底是什么。</p>
+<p><strong>前置</strong>：T1.5。</p>
+<p><strong>操作</strong></p>
+<ol>
+<li>打开 <code>cartpole_env_cfg.py</code> 第 39 行，<code>action_scale = 200.0</code> 改成 <code>50.0</code>。</li>
+<li>跑：</li>
+</ol>
+<pre><code class="language-bash">python scripts/rsl_rl/train.py --task=Template-Cartpole-Direct-v0 \
+    --num_envs=64 --max_iterations=300 --headless
+</code></pre>
+<ol start="3">
+<li>用 <code>python scripts/compare_runs.py --md</code> 对比这次和 T1.3 那次。</li>
+</ol>
+<p><strong>预期（参考你第二轮的真实数据）</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th><code>action_scale</code></th>
+<th><code>len95</code>（学会活下来）</th>
+<th><code>std.2</code>（动作变确定）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>75</td>
+<td>124</td>
+</tr>
+<tr>
+<td>200</td>
+<td>65</td>
+<td>157</td>
+</tr>
+</tbody>
+</table></div>
+<p>所以 <code>50</code> 的预期是：<strong>活下来更慢</strong>（控制权限小），但<strong>动作可能更快收敛</strong>（噪声小）。<strong>先写下你的预测，再跑。</strong></p>
+<p><strong>可能报错/异常</strong></p>
+<ul>
+<li><code>len95</code> 一直不出现 → 控制权限太小，推不动，试试 80 或 100。</li>
+<li>杆子抖得厉害 → 动作噪声相对变小但控制力不足，属于正常。</li>
+</ul>
+<p><strong>原理</strong>：<code>action_scale</code> 是 $\text{力矩} = a \times \text{action\_scale}$ 的换算系数，不是范围也不是上限。初始探索噪声 $\sigma=1.0$（单位是动作），所以噪声力矩就是 $\pm\text{action\_scale}$ 牛。</p>
+<p><strong>验收</strong>：预测与实测的差异能解释；能回答"为什么改它同时改变了控制权限和探索噪声"。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我的预测（跑之前写）：<code>len95</code> 会 ____，<code>std.2</code> 会 ____
+实测：<code>len95</code> = ____，<code>std.2</code> = ____
+差异解释：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t17">T1.7 改奖励，并把分项打出来</h2>
+<p><strong>目的</strong>：学会给奖励加日志，为后面的奖励实验做准备。</p>
+<p><strong>前置</strong>：T1.6。</p>
+<p><strong>操作</strong>：打开 <code>cartpole_env.py</code>，看 <code>_get_rewards</code>（67-80 行）现在怎么调 <code>compute_rewards(...)</code>。然后改成先算分项、再求和：</p>
+<pre><code class="language-python">def _get_rewards(self) -&gt; torch.Tensor:
+    pole_pos = self.joint_pos[:, self._pole_dof_idx[0]]
+    pole_vel = self.joint_vel[:, self._pole_dof_idx[0]]
+    cart_pos = self.joint_pos[:, self._cart_dof_idx[0]]
+    cart_vel = self.joint_vel[:, self._cart_dof_idx[0]]
+
+    rew_alive = self.cfg.rew_scale_alive * (1.0 - self.reset_terminated.float())
+    rew_term = self.cfg.rew_scale_terminated * self.reset_terminated.float()
+    rew_pole = self.cfg.rew_scale_pole_pos * pole_pos.square()
+    rew_cv = self.cfg.rew_scale_cart_vel * cart_vel.abs()
+    rew_pv = self.cfg.rew_scale_pole_vel * pole_vel.abs()
+
+    self.extras[&quot;log&quot;] = {
+        &quot;Reward/alive&quot;: rew_alive.mean().item(),
+        &quot;Reward/terminated&quot;: rew_term.mean().item(),
+        &quot;Reward/pole_pos&quot;: rew_pole.mean().item(),
+        &quot;Reward/cart_vel&quot;: rew_cv.mean().item(),
+        &quot;Reward/pole_vel&quot;: rew_pv.mean().item(),
+    }
+    return rew_alive + rew_term + rew_pole + rew_cv + rew_pv
+</code></pre>
+<p><strong>注意</strong>：这等于把 <code>compute_rewards</code> 的逻辑抄进 <code>_get_rewards</code>。更干净的做法是让 <code>compute_rewards</code> 返回一个 dict——但那要改 <code>@torch.jit.script</code> 的签名，先不折腾。<strong>这里有个坑</strong>：<code>compute_rewards</code> 被 <code>@torch.jit.script</code> 装饰，你不能在它内部塞 Python dict，所以只能在外层拆。</p>
+<p><strong>跑</strong>：300 轮，然后</p>
+<pre><code class="language-bash">tensorboard --logdir logs/rsl_rl --port 6006
+</code></pre>
+<p><strong>预期</strong>：TensorBoard 出现 <code>Episode/Reward/alive</code>、<code>.../pole_pos</code> 等 5 条曲线。<code>alive</code> 应该接近 <code>rew_scale_alive</code>（5.0），<code>pole_pos</code> 是负的小数（-0.001 ~ -0.05）。</p>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyError: 'log'</code> 或 TB 里没有</td>
+<td><code>self.extras</code> 没初始化；Direct 环境里 <code>extras</code> 在 <code>step()</code> 返回，<code>_get_rewards</code> 里写没问题</td>
+</tr>
+<tr>
+<td>曲线数值全是 0</td>
+<td>用了 <code>.item()</code> 但 tensor 在 GPU 上不是问题；更可能是 <code>reset_terminated</code> 全 False 导致 alive≈5 看着像常数——正常</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>实验设计（T1.7 之后做）</strong>：<code>alive ∈ {1,5}</code> × <code>惩罚 ×{1,5}</code>，4 组 × 3 种子。这是你第一次做 2×2 因子实验。</p>
+<p><strong>验收</strong>：TB 里 5 条曲线都在；能说出 <code>alive</code> 为什么是一条几乎水平的线。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我改完第一次跑报的错（原文）：
+&nbsp;
+TB 里 5 条曲线的形状（各一句话）：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t18-4-2">T1.8 改观测：4 维 → 2 维</h2>
+<p><strong>目的</strong>：亲眼看到"观测缺项"的后果，理解"可观"这个词。</p>
+<p><strong>前置</strong>：T1.7。</p>
+<p><strong>操作</strong></p>
+<ol>
+<li><code>cartpole_env_cfg.py</code> 第 22 行：<code>observation_space = 4</code> → <code>2</code>。</li>
+<li><code>cartpole_env.py</code> 的 <code>_get_observations</code>，只保留前两维：</li>
+</ol>
+<pre><code class="language-python">obs = torch.cat((
+    self.joint_pos[:, self._pole_dof_idx[0]].unsqueeze(dim=1),
+    self.joint_vel[:, self._pole_dof_idx[0]].unsqueeze(dim=1),
+), dim=-1)
+</code></pre>
+<ol start="3">
+<li>跑 300 轮。</li>
+</ol>
+<p><strong>预期</strong>：能站住（<code>mean_episode_length</code> 可能到 299），但<strong>车会一直往一个方向漂</strong>，最后撞到 <code>max_cart_pos=3.0</code> 出界，<code>util</code> 会明显低于 0.99。</p>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mat1 and mat2 shapes cannot be multiplied (64x4 and 2x32)</code></td>
+<td>只改了 <code>_get_observations</code>，忘了改 <code>observation_space</code></td>
+<td>两处必须同时改</td>
+</tr>
+<tr>
+<td>训练能跑但 <code>episode_length</code> 不涨</td>
+<td>少了 <code>x</code> 就真的观不到位置，属预期</td>
+<td>记录现象即可</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>原理</strong>：策略的输入少了 $x$，它无法判断"车在哪"，于是无法主动回中。这是<strong>不可观</strong>最直观的例子。你项目里"足端接触不可测"是同一类问题（T2.2 会用加维度解决它）。</p>
+<p><strong>验收</strong>：给出"车漂到多远、多久撞墙"的数字，并能解释为什么加回 $x$ 就能解决。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>平均回合长度 / <code>util</code>：____ / ____
+车漂到多远处出界（观察或从日志推）：
+&nbsp;
+和 4 维版对比，差在哪：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t19-03-10">T1.9 改复位与终止：±0.3π → ±1.0π</h2>
+<p><strong>目的</strong>：复现"回合长度卡在 132"这个坑，并理解"改初始分布 = 改任务"。</p>
+<p><strong>前置</strong>：T1.8。</p>
+<p><strong>操作</strong></p>
+<ol>
+<li><code>cartpole_env_cfg.py</code> 第 47 行：<code>initial_pole_angle_range = [-0.3, 0.3]</code> → <code>[-1.0, 1.0]</code>。</li>
+<li>跑 300 轮。</li>
+</ol>
+<p><strong>预期（你第二轮的真实数字）</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平均回合长度</td>
+<td><strong>132.6</strong>（不是 299）</td>
+</tr>
+<tr>
+<td><code>util</code></td>
+<td><strong>0.417</strong></td>
+</tr>
+<tr>
+<td><code>vf loss</code></td>
+<td><strong>12.2</strong>（正常是 0.001-0.04）</td>
+</tr>
+<tr>
+<td><code>len95</code></td>
+<td>永远不出现</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>为什么会这样</strong>（一定要能自己推）：</p>
+<ul>
+<li>代码里初始角 = <code>uniform(range) * math.pi</code>，所以 <code>[-1,1]</code> 是 $\pm\pi$（±180°）。</li>
+<li>终止条件是 $|\theta| &gt; \pi/2$（<code>cartpole_env.py:88</code>）。</li>
+<li>于是约一半环境<strong>第一步就终止</strong>。理论上限 $\frac{1}{2}\times 299 + \frac{1}{2}\times 1 \approx 150$，实测 132 就在天花板下面。</li>
+<li><code>vf loss</code> 大是因为回报方差极大（一半回合只有 1 步）。</li>
+</ul>
+<p><strong>验收</strong>：把这 4 个数字复现出来（允许有小幅随机差异）；能算出"如果 range 是 <code>[-0.6,0.6]</code>，天花板是多少"。</p>
+<p><strong>加分</strong>：把 range 改成 <code>[-0.49, 0.49]</code> 再跑，看 <code>len95</code> 是否出现——出现就证明是终止条件、不是难度。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我复现的回合长度 / util / vf：
+&nbsp;
+我算的 <code>[-0.6,0.6]</code> 天花板：____（写出计算过程）
+&nbsp;
+<code>[-0.49,0.49]</code> 的结果：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-t110">T1.10 回放、导出、独立调用策略</h2>
+<p><strong>目的</strong>：走完"训练 → 部署文件"的最后一步，并用 3 行代码证明你懂了接口。</p>
+<p><strong>前置</strong>：T1.3 有一个 checkpoint。</p>
+<p><strong>操作</strong></p>
+<pre><code class="language-bash"># 1) 回放 + 自动导出（play.py 会写 exported/policy.pt 和 policy.onnx）
+python scripts/rsl_rl/play.py --task=Template-Cartpole-Direct-v0 \
+    --checkpoint=logs/rsl_rl/cartpole_direct/&lt;你选的时间戳&gt;/model_99.pt --headless
+</code></pre>
+<p><strong>预期</strong>：<code>&lt;run&gt;/exported/</code> 下出现：</p>
+<pre><code class="language-text">policy.pt     ← TorchScript，torch 直接能加载
+policy.onnx   ← ONNX，图里只有 Gemm + Elu（没有归一化层）
+</code></pre>
+<pre><code class="language-python"># 2) 三行调用
+import torch
+p = torch.jit.load(&quot;logs/rsl_rl/cartpole_direct/&lt;run&gt;/exported/policy.pt&quot;).eval()
+print(p(torch.tensor([[0.1, 0.0, 0.0, 0.0]])))   # θ=0.1, 其余 0
+</code></pre>
+<p><strong>预期输出</strong>：一个形如 <code>tensor([[-0.2775]])</code> 的 1×1 动作。输入顺序是 $[\theta,\omega,x,v]$。</p>
+<p><strong>进阶</strong>：跑 <code>python scripts/policy_probe.py --policy &lt;你的 policy.pt&gt;</code>，它会扫一维输入、拟合线性控制律，输出类似：</p>
+<pre><code class="language-text">action ≈ +0.100 -2.58*pole_angle -0.59*pole_vel +0.14*cart_pos +0.58*cart_vel
+</code></pre>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FileNotFoundError</code></td>
+<td>checkpoint 路径写错，注意是 <code>&lt;run&gt;/model_99.pt</code>，不是 <code>exported/</code></td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError: onnxruntime</code></td>
+<td>本机没装。用 <code>policy.pt</code>（TorchScript）就够了，ONNX 留到部署那步</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：能说出输入 4 维的顺序、输出 1 维的物理单位（乘 <code>action_scale</code> 才是牛顿）、以及"为什么图里没有归一化层"（<code>empirical_normalization=False</code>）。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我用的 checkpoint 路径：
+&nbsp;
+<code>[[0.1,0,0,0]]</code> 的输出动作：____；乘 action_scale 后的力：____ N
+<code>policy_probe.py</code> 拟合出的控制律：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-02-1">阶段 1 完成检查表</h2>
+<p>全部打勾才进第 2 阶段：</p>
+<ul>
+<li>[ ] T1.1 能列出两个 cartpole 任务</li>
+<li>[ ] T1.2 zero/random agent 都跑过</li>
+<li>[ ] T1.3 能说出 <code>params/env.yaml</code> 里三个字段的值</li>
+<li>[ ] T1.4 能画出 step 内部的调用顺序</li>
+<li>[ ] T1.5 能说出 3 个"不能随便改"的参数</li>
+<li>[ ] T1.6 做完预测-验证，并能解释差异</li>
+<li>[ ] T1.7 TB 里有 5 条 <code>Episode/Reward/*</code></li>
+<li>[ ] T1.8 有"车漂走"的数字证据</li>
+<li>[ ] T1.9 复现了 132 / 0.417 / 12.2</li>
+<li>[ ] T1.10 三行代码调通了策略</li>
+</ul>
+<p><strong>常见卡点</strong>：如果 T1.7 的日志出不来，先确认 <code>self.extras</code> 在 <code>step()</code> 里被返回（看 <code>direct_rl_env.py</code> 的 <code>step</code> 函数最后一行）。</p>
+</section>
+<section class="doc" id="doc-03">
+<h1 id="doc-03-2-6">第 2 阶段：动作空间与新任务（6 个任务）</h1>
+<blockquote>
+<p>目标：把"力矩接口"换成工业界的"位置 + PD"，然后自己造一个 tracking 任务，再学会"随机化"。
+前置：第 1 阶段全部完成（尤其 T1.7 的分项日志、T1.10 的导出）。</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-t21-pd">T2.1 动作空间改造：力矩 → 位置 + PD（关键任务）</h2>
+<p><strong>目的</strong>：这是"玩具"和"真机能用"的分界线。宇树、智元、任何做真机的，底层都是位置/速度目标 + PD，不是裸力矩。</p>
+<p><strong>前置</strong>：T1.6、T1.10。</p>
+<p><strong>原理先说清</strong>（30 秒版）：</p>
+<p>$$
+\tau = K_p\left(q^{\text{des}} - q\right) - K_d\dot q
+$$</p>
+<p>策略输出的是 $q^{\text{des}}$（"我想让关节去哪"），PD 把它变成力矩。好处：</p>
+<ol>
+<li><strong>稳定</strong>：PD 提供阻尼，高频振荡被底层吃掉；</li>
+<li><strong>有界</strong>：动作幅值有界（±0.5 m），探索不会把机器人踹飞；</li>
+<li><strong>可迁移</strong>：sim2real 时，PD 增益是电机的真实参数，策略不用重学底层动态。</li>
+</ol>
+<p><strong>操作（三处改动）</strong></p>
+<p><strong>改动 1</strong>：给执行器加刚度。打开 <code>cartpole_env_cfg.py</code>，把第 29 行改成：</p>
+<pre><code class="language-python">from isaaclab.actuators import ImplicitActuatorCfg
+
+robot_cfg: ArticulationCfg = CARTPOLE_CFG.replace(
+    prim_path=&quot;/World/envs/env_.*/Robot&quot;,
+    actuators={
+        &quot;cart_actuator&quot;: ImplicitActuatorCfg(
+            joint_names_expr=[&quot;slider_to_cart&quot;],
+            effort_limit_sim=400.0,
+            stiffness=400.0,     # 原来是 0（纯力矩）
+            damping=40.0,        # 原来是 10
+        ),
+        &quot;pole_actuator&quot;: ImplicitActuatorCfg(
+            joint_names_expr=[&quot;cart_to_pole&quot;],
+            effort_limit_sim=400.0,
+            stiffness=0.0,       # 杆是被动的，保持 0
+            damping=0.0,
+        ),
+    },
+)
+</code></pre>
+<blockquote>
+<p>为什么用 <code>CARTPOLE_CFG.replace(...)</code> 而不是改 Isaac Lab 安装目录？因为安装目录一升级就没了，而且别人的机器上没有你的改动。</p>
+</blockquote>
+<p><strong>改动 2</strong>：<code>cartpole_env.py</code> 第 52 行</p>
+<pre><code class="language-python"># 改前
+self.robot.set_joint_effort_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)
+# 改后
+self.robot.set_joint_position_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)
+</code></pre>
+<p><strong>改动 3</strong>：<code>action_scale</code> 现在是<strong>位置幅值</strong>，单位米。第 39 行改成 <code>0.5</code>。</p>
+<p><strong>跑</strong></p>
+<pre><code class="language-bash">python scripts/rsl_rl/train.py --task=Template-Cartpole-Direct-v0 \
+    --num_envs=64 --max_iterations=300 --headless
+</code></pre>
+<p><strong>预期</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>版本</th>
+<th><code>len95</code></th>
+<th><code>std.2</code></th>
+<th>抖动（<code>jit100</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>力矩版（T1.6，a=200）</td>
+<td>65</td>
+<td>157</td>
+<td>0.15</td>
+</tr>
+<tr>
+<td>位置+PD 版（预计）</td>
+<td>更早或相当</td>
+<td>更早</td>
+<td>更小</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AttributeError: ImplicitActuatorCfg</code></td>
+<td>没 import</td>
+<td>加 <code>from isaaclab.actuators import ImplicitActuatorCfg</code></td>
+</tr>
+<tr>
+<td>杆子完全不动 / 小车不响应</td>
+<td><code>stiffness=0</code> 没改掉</td>
+<td>确认改的是 <code>cart_actuator</code></td>
+</tr>
+<tr>
+<td>动作太大直接撞墙</td>
+<td><code>action_scale=0.5</code> 对这台车太大</td>
+<td>试 0.2</td>
+</tr>
+<tr>
+<td><code>RuntimeError: ... position target is not supported</code></td>
+<td>用了 effort 执行器却发位置</td>
+<td>检查改动 1 是否生效（打印 <code>self.robot.actuators</code>）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>调参规律</strong>（记下来，以后换机器人用得上）：</p>
+<ul>
+<li><code>K_p</code> 越大越"硬"，跟踪快但容易抖；<code>K_p</code> 太小推不动。</li>
+<li><code>K_d</code> 一般取 $2\sqrt{K_p\cdot m}$ 量级（临界阻尼），太小会振，太大迟钝。</li>
+<li>先让<strong>PD 单独</strong>能把车推到目标位置并稳住（不接策略），再接策略。</li>
+</ul>
+<p><strong>验收</strong>：位置版能训到 299 步；能解释"为什么位置接口比力矩接口更容易 sim2real"。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我的 PD 增益（$K_p$、$K_d$）和 <code>action_scale</code>：____ / ____ / ____
+改前（力矩）<code>len95</code> = ____，改后（位置）<code>len95</code> = ____
+哪个抖得更厉害？我用 ____ 指标判断：
+&nbsp;
+我把 <code>stiffness</code> 设成 0 试了吗？结果：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-t22">T2.2 观测加一维：先练"改维度"</h2>
+<p><strong>目的</strong>：在造新任务之前，先把"加一维观测"这件事做对（这是 T2.3 的前置技能）。</p>
+<p><strong>前置</strong>：T2.1。</p>
+<p><strong>操作</strong>：把"上一步动作"加进观测，做成 5 维。</p>
+<ol>
+<li><code>cartpole_env_cfg.py:22</code>：<code>observation_space = 5</code>。</li>
+<li><code>cartpole_env.py</code> 的 <code>__init__</code> 末尾加一行缓存：</li>
+</ol>
+<pre><code class="language-python">self.last_actions = torch.zeros(self.num_envs, 1, device=self.device)
+</code></pre>
+<ol start="3">
+<li><code>_apply_action</code> 里更新它：</li>
+</ol>
+<pre><code class="language-python">self.last_actions = self.actions[:, :1].clamp(-1, 1)   # 存归一化动作，别存力矩
+</code></pre>
+<ol start="4">
+<li><code>_get_observations</code> 里拼第 5 维：</li>
+</ol>
+<pre><code class="language-python">obs = torch.cat((theta, omega, x, v, self.last_actions), dim=-1)
+</code></pre>
+<p><strong>跑</strong>：300 轮。</p>
+<p><strong>预期</strong>：能训，<code>len95</code> 与 4 维版差别不大（±10 轮）。<strong>这本身是个结论</strong>：把上一步动作给策略，在这个任务里帮助很小——因为它不需要记忆。</p>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mat1 and mat2 shapes cannot be multiplied (64x5 and 4x32)</code></td>
+<td>只改了 env 没改 cfg（或反过来）</td>
+</tr>
+<tr>
+<td>第一次 obs 维度不对</td>
+<td><code>last_actions</code> 没在 <code>__init__</code> 里初始化</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：5 维能训；能说出"什么情况下加历史观测才有用"（部分可观测：接触、延迟、遮挡）。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>4 维 vs 5 维的 <code>len95</code>：____ vs ____
+结论（加历史有没有用）：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-t23-tracking">T2.3 造一个新任务：把车开到指定位置（tracking）</h2>
+<p><strong>目的</strong>：走一遍"改任务定义"的完整流程。这是你以后造任何任务（走路、抓取）的模板。</p>
+<p><strong>前置</strong>：T2.2。</p>
+<p><strong>任务定义</strong>：每回合随机目标 $x^*\in[-2,2]$，5 秒内把小车开到 $|x-x^*|&lt;0.1$，同时杆子不能倒。</p>
+<p><strong>六处改动（按顺序做，每改一处都能跑）</strong></p>
+<p><strong>改 1 · 配置</strong>（<code>cartpole_env_cfg.py</code>）</p>
+<pre><code class="language-python">observation_space = 5
+target_range = [-2.0, 2.0]          # 新增
+rew_scale_target = -1.0             # 新增：追踪惩罚
+</code></pre>
+<p><strong>改 2 · 目标状态</strong>（<code>cartpole_env.py</code> 的 <code>__init__</code>）</p>
+<pre><code class="language-python">self.target_pos = torch.zeros(self.num_envs, device=self.device)
+</code></pre>
+<p><strong>改 3 · 复位时采样</strong>（<code>_reset_idx</code>，注意只对被重置的 env）</p>
+<pre><code class="language-python">n = len(env_ids)
+self.target_pos[env_ids] = sample_uniform(
+    self.cfg.target_range[0], self.cfg.target_range[1], (n, 1), self.device
+).squeeze(-1)
+</code></pre>
+<p>⚠ 写成 <code>self.target_pos = sample_uniform(..., (self.num_envs, 1))</code> 会把<strong>所有</strong> env 的目标重采样，等于每步换目标，学不到东西。</p>
+<p><strong>改 4 · 观测</strong>（<code>_get_observations</code>）</p>
+<pre><code class="language-python">idx = self._cart_dof_idx[0]
+obs = torch.cat((
+    self.joint_pos[:, self._pole_dof_idx[0]].unsqueeze(1),
+    self.joint_vel[:, self._pole_dof_idx[0]].unsqueeze(1),
+    self.joint_pos[:, idx].unsqueeze(1),
+    self.joint_vel[:, idx].unsqueeze(1),
+    (self.target_pos - self.joint_pos[:, idx]).unsqueeze(1),   # target - x
+), dim=-1)
+</code></pre>
+<p><strong>改 5 · 奖励</strong>（<code>_get_rewards</code>）</p>
+<pre><code class="language-python">err = (self.target_pos - self.joint_pos[:, idx])
+rew_target = self.cfg.rew_scale_target * torch.clamp(err.square(), max=1.0)
+</code></pre>
+<p>用 <code>clamp(max=1)</code> 把远处惩罚截到 1，否则远离目标时惩罚过大，策略会"不敢动"。</p>
+<p><strong>改 6 · 注册新任务</strong>（<code>__init__.py</code>）</p>
+<pre><code class="language-python">gym.register(
+    id=&quot;Template-Cartpole-Track-Direct-v0&quot;,
+    entry_point=f&quot;{__name__}.cartpole_env:CartpoleEnv&quot;,
+    disable_env_checker=True,
+    kwargs={
+        &quot;env_cfg_entry_point&quot;: f&quot;{__name__}.cartpole_env_cfg:CartpoleEnvCfg&quot;,
+        &quot;rsl_rl_cfg_entry_point&quot;: f&quot;{agents.__name__}.rsl_rl_ppo_cfg:PPORunnerCfg&quot;,
+    },
+)
+</code></pre>
+<p><strong>跑</strong></p>
+<pre><code class="language-bash">python scripts/list_envs.py | grep -i track          # 确认注册成功
+python scripts/rsl_rl/train.py --task=Template-Cartpole-Track-Direct-v0 \
+    --num_envs=64 --max_iterations=800 --headless
+</code></pre>
+<p><strong>评估到位率</strong>（自己写个小脚本，别用训练 reward）：</p>
+<pre><code class="language-python"># eval_grid.py 骨架
+targets = [-2, -1, 0, 1, 2]
+for t in targets:
+    # 用 gym.make 建 env，把 target 固定成 t，跑满 5 s
+    # 记录 |x - t| &lt; 0.1 的步数占比
+</code></pre>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyError: 'target_range'</code></td>
+<td>cfg 加了字段但没被 configclass 识别（要在 <code>CartpoleEnvCfg</code> 里声明为类属性）</td>
+</tr>
+<tr>
+<td>训练能跑但到位率 0</td>
+<td>目标只在 reset 时设了一次，但被改 3 的"全量重采样"覆盖</td>
+</tr>
+<tr>
+<td>车疯狂来回冲</td>
+<td><code>rew_scale_target</code> 太大，或没 clamp</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：新 task id 能训、能导出、能给出 5 个目标各自的到位率。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>六处改动完成情况（文件:行号）：
+&nbsp;
+到位率（5 个目标）：
+&nbsp;
+我遇到的第一个 bug 和怎么修的：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-t24-shaping">T2.4 势函数 shaping 与课程学习</h2>
+<p><strong>目的</strong>：解决"到目标"和"保住杆"打架的问题；学会课程学习。</p>
+<p><strong>前置</strong>：T2.3。</p>
+<p><strong>现象</strong>：直接加 $-x^2$ 或 $-|x-x^*|$，策略会为了靠近目标而牺牲平衡，杆子更容易倒。</p>
+<p><strong>原理</strong>：直接加惩罚会<strong>改变最优策略</strong>；加势函数之差不会：</p>
+<p>$$
+F(s,a,s') = \gamma\Phi(s') - \Phi(s),\qquad
+\Phi(s) = -\tfrac12 k\,(x - x^*)^2
+$$</p>
+<p>代入得</p>
+<p>$$
+F = \tfrac12 k\left[(x-x^*)^2 - \gamma (x'-x^*)^2\right]
+$$</p>
+<p>（$x'$ 是下一时刻位置）。望远镜求和后，每条轨迹只差常数 $-\Phi(s_0)$，最优策略不变。</p>
+<p><strong>操作</strong>：把 T2.3 改 5 的 <code>rew_target</code> 换成 $F$，系数 $k$ 从 0.5 试起。</p>
+<p><strong>课程学习</strong>：先用 <code>target_range = [-0.5, 0.5]</code> 训到 <code>len95</code> 出现，再扩到 <code>[-2, 2]</code> 继续训。对比"一次性 ±2"。</p>
+<p><strong>验收</strong>：能说出"势函数为什么安全"的推导思路（望远镜求和）；课程学习与一次到位在到位率上的差别。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>直接惩罚 vs 势函数的到位率：____ vs ____
+课程学习 vs 一次到位：____ vs ____
+我对"势函数为什么安全"的理解：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-t25-manager-based">T2.5 Manager-based 版对照</h2>
+<p><strong>目的</strong>：Isaac Lab 有两套 API，你要知道什么时候用哪套。</p>
+<p><strong>前置</strong>：T2.4。</p>
+<p><strong>操作</strong></p>
+<pre><code class="language-bash">python scripts/rsl_rl/train.py --task=Template-Cartpole-v0 --num_envs=64 --max_iterations=100 --headless
+</code></pre>
+<p>然后打开 <code>source/cartpole/cartpole/tasks/manager_based/cartpole/cartpole_env_cfg.py</code>，看它是怎么组织奖励、观测、终止的。</p>
+<p><strong>对比要点</strong>（自己填表，别抄）：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Direct（你一直在用）</th>
+<th>Manager</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>奖励写在哪</td>
+<td><code>compute_rewards</code> 一个函数</td>
+<td><code>RewardsCfg</code> 里一堆 <code>RewTerm</code></td>
+</tr>
+<tr>
+<td>观测写在哪</td>
+<td><code>_get_observations</code></td>
+<td><code>ObservationsCfg</code></td>
+</tr>
+<tr>
+<td>终止写在哪</td>
+<td><code>_get_dones</code></td>
+<td><code>TerminationsCfg</code></td>
+</tr>
+<tr>
+<td>加一项奖励要改几处</td>
+<td>1 处</td>
+<td>1 处（但写在配置里，不改逻辑）</td>
+</tr>
+<tr>
+<td>适合什么规模</td>
+<td>小任务、学习</td>
+<td>多机器人、多任务、复用</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：能说出"什么时候该用 Manager"（答案：任务复杂到奖励/观测需要复用和组合时）。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我看到的 5 条差异：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-t26">T2.6 域随机化：让策略别太娇气</h2>
+<p><strong>目的</strong>：让策略对"仿真与真机的差异"有抵抗力。这是 sim2real 的核心手段。</p>
+<p><strong>前置</strong>：T2.5。</p>
+<p><strong>三级难度，按顺序做</strong>：</p>
+<p><strong>Level 1（简单，先做这个）· 观测噪声</strong></p>
+<p>在 <code>_get_observations</code> 里加：</p>
+<pre><code class="language-python">obs = obs + self.cfg.obs_noise_std * torch.randn_like(obs)   # 例如 0.01
+</code></pre>
+<p><strong>Level 2 · 动作延迟</strong></p>
+<p>在 <code>_apply_action</code> 里用"上一步的动作"：</p>
+<pre><code class="language-python">self.delayed_actions = torch.cat((self.delayed_actions[:, 1:], self.actions[:, :1]), dim=-1)
+self.robot.set_joint_position_target(self.delayed_actions[:, 0:1] * self.cfg.action_scale, ...)
+</code></pre>
+<p>延迟 1-3 个控制周期，相当于真机的通信+计算延迟。</p>
+<p><strong>Level 3 · 质量与摩擦</strong></p>
+<p>在 <code>_reset_idx</code> 里随机化质量（需要 PhysX view，属于进阶）：</p>
+<pre><code class="language-python">masses = self.robot.root_physx_view.get_masses().clone()
+masses[:, 0] *= torch.empty(n, 1, device=self.device).uniform_(0.8, 1.2)   # ±20%
+self.robot.root_physx_view.set_masses(masses.to(self.device), env_ids)
+</code></pre>
+<p><strong>验收</strong>：同一策略在中度随机化下仍能撑 299 步；能说出"随机化范围为什么不能拍脑袋"（要来自真机测量，T3.4）。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我做到 Level ____；随机化了哪几个量、范围多少：
+&nbsp;
+随机化前后 <code>len95</code> / <code>std.2</code>：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-03-2">阶段 2 完成检查表</h2>
+<ul>
+<li>[ ] T2.1 位置+PD 版能训，且能解释三条好处</li>
+<li>[ ] T2.2 会正确改观测维度（两处同时改）</li>
+<li>[ ] T2.3 tracking 任务能训、能给到位率</li>
+<li>[ ] T2.4 能推"势函数为什么安全"，并做了课程学习对比</li>
+<li>[ ] T2.5 能说出 Direct 与 Manager 的 5 条差异</li>
+<li>[ ] T2.6 至少做到 Level 2 随机化</li>
+</ul>
+</section>
+<section class="doc" id="doc-04">
+<h1 id="doc-04-3-mujoco-5">第 3 阶段：MuJoCo 与系统辨识（5 个任务）</h1>
+<blockquote>
+<p>目标：把 Isaac 训出来的策略放到 MuJoCo 里跑通（sim2sim），然后用实测数据把仿真参数辨识出来。
+前置：第 2 阶段完成，手里有一个能用的 <code>policy.pt</code>（位置+PD 版最好）。</p>
+</blockquote>
+<hr />
+<h2 id="doc-04-t31-cartpole-mjcf">T3.1 写 cartpole 的 MJCF</h2>
+<p><strong>目的</strong>：搞清"一个机器人模型最少需要哪些东西"：质量、惯量、关节、限位、执行器。</p>
+<p><strong>前置</strong>：T2.1（知道 PD 参数）。</p>
+<p><strong>操作</strong>：新建 <code>~/Code/IsaacTest/cartpole/mujoco/cartpole.xml</code>：</p>
+<pre><code class="language-xml">&lt;mujoco model=&quot;cartpole&quot;&gt;
+  &lt;option timestep=&quot;0.002&quot; gravity=&quot;0 0 -9.81&quot;/&gt;
+
+  &lt;worldbody&gt;
+    &lt;body name=&quot;cart&quot; pos=&quot;0 0 0&quot;&gt;
+      &lt;joint name=&quot;slider&quot; type=&quot;slide&quot; axis=&quot;1 0 0&quot; range=&quot;-3 3&quot; limited=&quot;true&quot; damping=&quot;10&quot;/&gt;
+      &lt;geom name=&quot;cart&quot; type=&quot;box&quot; size=&quot;0.1 0.05 0.05&quot; mass=&quot;1.0&quot;/&gt;
+      &lt;body name=&quot;pole&quot; pos=&quot;0 0 0&quot;&gt;
+        &lt;joint name=&quot;hinge&quot; type=&quot;hinge&quot; axis=&quot;0 1 0&quot; damping=&quot;0&quot;/&gt;
+        &lt;geom name=&quot;pole&quot; type=&quot;capsule&quot; fromto=&quot;0 0 0 0 0 1&quot; size=&quot;0.02&quot; mass=&quot;0.1&quot;/&gt;
+      &lt;/body&gt;
+    &lt;/body&gt;
+  &lt;/worldbody&gt;
+
+  &lt;actuator&gt;
+    &lt;motor name=&quot;force&quot; joint=&quot;slider&quot; gear=&quot;1&quot; ctrlrange=&quot;-400 400&quot;/&gt;
+  &lt;/actuator&gt;
+&lt;/mujoco&gt;
+</code></pre>
+<p><strong>每个字段为什么存在</strong>：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>作用</th>
+<th>不对会怎样</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timestep="0.002"</code></td>
+<td>物理步长</td>
+<td>太大不稳定，太小慢</td>
+</tr>
+<tr>
+<td><code>slide</code> 关节 + <code>range</code></td>
+<td>小车只能左右走</td>
+<td>没有 range 就没有限位，会飞出场景</td>
+</tr>
+<tr>
+<td><code>hinge</code> 关节</td>
+<td>杆子绕 y 轴转</td>
+<td>轴写错 → 杆子绕错方向</td>
+</tr>
+<tr>
+<td><code>mass</code></td>
+<td>质量</td>
+<td>影响动力学，<strong>T3.4 要辨识它</strong></td>
+</tr>
+<tr>
+<td><code>damping</code></td>
+<td>阻尼</td>
+<td>影响"松手后多久停"，也是辨识对象</td>
+</tr>
+<tr>
+<td><code>motor</code> + <code>ctrlrange</code></td>
+<td>执行器与饱和</td>
+<td>与 Isaac 的 <code>effort_limit_sim=400</code> 对应</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验证</strong></p>
+<pre><code class="language-bash">python -m mujoco.viewer --mjcf=mujoco/cartpole.xml
+</code></pre>
+<p>（没装 viewer 就用 <code>python -c "import mujoco; m=mujoco.MjModel.from_xml_path('mujoco/cartpole.xml'); print(m.nq, m.nv, m.nu)"</code>，应输出 <code>2 2 1</code>。）</p>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>XML Error: ... unknown element</code></td>
+<td>标签拼错，比如 <code>worldbody</code> 写成 <code>worldBody</code></td>
+</tr>
+<tr>
+<td><code>nq=3</code></td>
+<td>用了 <code>freejoint</code> 或 quaternion 关节，说明你写成了浮动基座</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：模型能加载，<code>nq=2, nv=2, nu=1</code>；能说出每个 <code>mass</code> / <code>damping</code> 是干什么的。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我的 MJCF 参数（质量/长度/阻尼）：
+&nbsp;
+<code>nq, nv, nu</code> 输出：____ / ____ / ____</p>
+</blockquote>
+<hr />
+<h2 id="doc-04-t32-sim2sim">T3.2 写 sim2sim 推理脚本</h2>
+<p><strong>目的</strong>：让 Isaac 训出来的策略，在 MuJoCo 里闭环跑起来。</p>
+<p><strong>前置</strong>：T3.1 + 一个导出的 <code>policy.pt</code>。</p>
+<p><strong>操作</strong>：新建 <code>mujoco/sim2sim.py</code>：</p>
+<pre><code class="language-python">&quot;&quot;&quot;把 Isaac Lab 导出的策略放进 MuJoCo 跑闭环。&quot;&quot;&quot;
+import numpy as np
+import mujoco
+import torch
+
+MJCF = &quot;mujoco/cartpole.xml&quot;
+POLICY = &quot;logs/rsl_rl/cartpole_direct/&lt;run&gt;/exported/policy.pt&quot;
+
+ACTION_SCALE = 0.5      # 训练时用的 action_scale（位置版，单位米）
+KP, KD = 400.0, 40.0    # 训练时的 PD 增益
+CTRL_DT = 1.0 / 60.0    # 训练时的控制周期
+EPISODE_STEPS = 300     # 5 秒
+
+model = mujoco.MjModel.from_xml_path(MJCF)
+data = mujoco.MjData(model)
+n_sub = max(1, int(round(CTRL_DT / model.opt.timestep)))
+
+policy = torch.jit.load(POLICY).eval()
+
+# 初始条件：杆偏 0.1 rad（和 Isaac 的 reset 对齐）
+data.qpos[0] = 0.0
+data.qpos[1] = 0.1
+mujoco.mj_forward(model, data)
+
+for step in range(EPISODE_STEPS):
+    # ---- 观测：顺序必须和 Isaac 一致：[θ, ω, x, v] ----
+    obs = np.array([data.qpos[1], data.qvel[1], data.qpos[0], data.qvel[0]],
+                   dtype=np.float32)
+
+    with torch.no_grad():
+        a = float(policy(torch.from_numpy(obs).reshape(1, -1)).item())
+
+    # ---- 动作 → 位置目标 → PD → 力 ----
+    q_des = a * ACTION_SCALE
+    for _ in range(n_sub):
+        F = KP * (q_des - data.qpos[0]) - KD * data.qvel[0]
+        data.ctrl[0] = np.clip(F, -400, 400)
+        mujoco.mj_step(model, data)
+
+    if step % 30 == 0:
+        print(f&quot;t={step*CTRL_DT:4.1f}s  x={data.qpos[0]:+.3f}  &quot;
+              f&quot;theta={data.qpos[1]:+.3f}  F={data.ctrl[0]:+7.1f}&quot;)
+
+    # 终止：与 Isaac 一致
+    if abs(data.qpos[1]) &gt; np.pi / 2 or abs(data.qpos[0]) &gt; 3.0:
+        print(f&quot;terminated at step {step}: |theta|={abs(data.qpos[1]):.2f}, &quot;
+              f&quot;|x|={abs(data.qpos[0]):.2f}&quot;)
+        break
+</code></pre>
+<p><strong>预期</strong>：杆子保持直立，<code>theta</code> 在 ±0.05 内波动，<code>x</code> 缓慢漂移（因为策略只管平衡，不管位置）。</p>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>杆子立刻倒</td>
+<td>初始角符号反了 / 观测顺序错</td>
+<td>打印前 5 步的 <code>obs</code>，和 Isaac 里同一时刻的对比</td>
+</tr>
+<tr>
+<td>一开始就 terminated</td>
+<td><code>qpos[1]</code> 超了 π/2</td>
+<td>检查你的初始角设置</td>
+</tr>
+<tr>
+<td>力一直在 ±400 打满</td>
+<td>PD 增益或 <code>action_scale</code> 和训练时不一致</td>
+<td>回看 T2.1 的三个数</td>
+</tr>
+<tr>
+<td><code>policy(...)</code> 报 shape 错</td>
+<td>策略要 <code>float32</code> 且 shape <code>(1,4)</code></td>
+<td>照抄上面</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：能闭环跑满 5 秒，并能打印 <code>theta</code> 的时间序列。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我的动作接口是（力矩 / 位置+PD）：____
+<code>ACTION_SCALE / KP / KD / CTRL_DT</code> 四个数：____ / ____ / ____ / ____
+5 秒后 <code>theta</code> 的最大值：____；<code>x</code> 漂到：____</p>
+</blockquote>
+<hr />
+<h2 id="doc-04-t33">T3.3 对齐三件事：观测、缩放、频率</h2>
+<p><strong>目的</strong>：sim2sim 失败，90% 是这三件事没对齐。这一任务就是排错清单。</p>
+<p><strong>前置</strong>：T3.2 能跑。</p>
+<p><strong>检查清单</strong>（一条一条验证，别跳）</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>项</th>
+<th>怎么验证</th>
+<th>常见错法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>观测顺序</td>
+<td>Isaac 里打印一次 obs，MuJoCo 里打印一次，同一初始状态应几乎一样</td>
+<td>把 $[x,v,\theta,\omega]$ 当成 $[\theta,\omega,x,v]$</td>
+</tr>
+<tr>
+<td>单位</td>
+<td>角度是 rad 还是 deg；位置是 m 还是 cm</td>
+<td>用 deg 喂给训练时用 rad 的策略</td>
+</tr>
+<tr>
+<td>动作缩放</td>
+<td>位置版要乘 <code>action_scale</code>（米），力矩版乘（牛）</td>
+<td>忘了乘，或乘了两次</td>
+</tr>
+<tr>
+<td>控制频率</td>
+<td>Isaac 是 60 Hz；MuJoCo 用 <code>n_sub</code> 子步凑</td>
+<td>直接 1 kHz 调策略（等于让策略"高频抖"）</td>
+</tr>
+<tr>
+<td>执行器饱和</td>
+<td><code>ctrlrange</code> 与 <code>effort_limit_sim</code> 一致</td>
+<td>MuJoCo 用 ±1（没设 ctrlrange）</td>
+</tr>
+<tr>
+<td>阻尼/摩擦</td>
+<td>两边 <code>damping</code> 一致</td>
+<td>Isaac 的 USD 有阻尼而 MJCF 忘了写</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>做法</strong>：每对齐一项，记录一次偏差。</p>
+<p><strong>偏差怎么量</strong>：同一初始状态（$\theta=0.1$，其余 0）、同一控制律（先不用策略，用固定 PD），跑 5 s，比较 $\theta(t)$ 的最大绝对差：</p>
+<p>$$
+e = \max_t \left|\theta^{\text{Isaac}}(t) - \theta^{\text{MuJoCo}}(t)\right|
+$$</p>
+<p><strong>验收</strong>：给出"对齐前 / 对齐后"的偏差表；能说出每一行对应哪个错误。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>观测顺序</th>
+<th>缩放</th>
+<th>频率</th>
+<th>偏差 $e$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一版（随便写的）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>对齐后</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>我踩的三个坑：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-04-t34">T3.4 系统辨识：把仿真参数对上实测</h2>
+<p><strong>目的</strong>：让仿真的"质量、摩擦、延迟"接近真实硬件。<strong>这是 sim2real 的核心工作</strong>，也是面试里能讲 20 分钟的内容。</p>
+<p><strong>前置</strong>：T3.3。</p>
+<p><strong>第一步 · 列出待辨识参数</strong>（含初值与范围）</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>符号</th>
+<th>初值</th>
+<th>物理范围</th>
+<th>怎么测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小车质量</td>
+<td>$M$</td>
+<td>1.0 kg</td>
+<td>0.2-5</td>
+<td>电子秤</td>
+</tr>
+<tr>
+<td>杆质量</td>
+<td>$m$</td>
+<td>0.1 kg</td>
+<td>0.01-1</td>
+<td>电子秤</td>
+</tr>
+<tr>
+<td>杆长（质心距离）</td>
+<td>$l$</td>
+<td>0.5 m</td>
+<td>0.1-1</td>
+<td>卷尺</td>
+</tr>
+<tr>
+<td>小车阻尼</td>
+<td>$b$</td>
+<td>10 N·s/m</td>
+<td>1-100</td>
+<td>匀速拖动</td>
+</tr>
+<tr>
+<td>关节摩擦</td>
+<td>$f_c$</td>
+<td>0.05 N·m</td>
+<td>0-0.5</td>
+<td>慢速拖动</td>
+</tr>
+<tr>
+<td>控制延迟</td>
+<td>$\tau_d$</td>
+<td>0 ms</td>
+<td>0-40</td>
+<td>阶跃响应</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>第二步 · 设计激励实验</strong>（每个参数都需要"能激发它"的动作）</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>实验</th>
+<th>怎么做</th>
+<th>主要辨识</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自由摆</td>
+<td>松手让杆从 30° 自由摆动</td>
+<td>$l$、杆阻尼</td>
+</tr>
+<tr>
+<td>匀速拖动</td>
+<td>用恒定低速推小车</td>
+<td>$b$</td>
+</tr>
+<tr>
+<td>力阶跃</td>
+<td>给 50 N 方波</td>
+<td>$M$、$\tau_d$</td>
+</tr>
+<tr>
+<td>正弦扫频</td>
+<td>0.1-5 Hz 扫频</td>
+<td>频域响应、延迟</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>第三步 · 最小二乘拟合</strong></p>
+<pre><code class="language-python">&quot;&quot;&quot;sysid.py：用实测响应拟合仿真参数。&quot;&quot;&quot;
+import numpy as np
+from scipy.optimize import least_squares
+
+def simulate(params, u, T, dt=0.001):
+    M, m, l, b = params
+    x, v, th, w = 0.0, 0.0, np.deg2rad(30), 0.0
+    hist = []
+    for k in range(int(T / dt)):
+        F = u(k * dt)
+        s, c = np.sin(th), np.cos(th)
+        den = l * (M + m * s * s)
+        thdd = ((M + m) * 9.81 * s - F * c - m * l * w * w * s * c) / den
+        xdd = (F + m * l * (w * w * s - thdd * c)) / (M + m) - b * v / (M + m)
+        v += xdd * dt; x += v * dt
+        w += thdd * dt; th += w * dt
+        hist.append((x, th))
+    return np.array(hist)
+
+def residual(p):
+    pred = simulate(p, u=lambda t: 0.0, T=2.0)      # 自由摆
+    return (pred[:, 1] - measured_theta).ravel()
+
+res = least_squares(residual, x0=[1.0, 0.1, 0.5, 10.0],
+                    bounds=([0.2, 0.01, 0.1, 1.0], [5.0, 1.0, 1.0, 100.0]))
+print(&quot;拟合参数:&quot;, res.x, &quot;残差:&quot;, res.cost)
+</code></pre>
+<p><strong>注意事项</strong>（辨识最容易错的地方）：</p>
+<ol>
+<li><strong>一次只拟合一个实验</strong>，别把自由摆和阶跃混在一起；</li>
+<li><strong>参数不可辨识</strong>：如果两个参数在方程里总是成对出现，你会拟合出无数组解——需要换激励；</li>
+<li><strong>延迟要单独处理</strong>：$\tau_d$ 不是连续参数，用网格搜索 0-40 ms；</li>
+<li><strong>先看拟合曲线，再看参数</strong>：曲线对不上，参数再"合理"也是错的。</li>
+</ol>
+<p><strong>验收</strong>：给出"参数表 + 拟合曲线 + 残差"，并说明哪个参数最不确定、为什么。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我测到的原始数据（文件名/时长/采样率）：
+&nbsp;
+拟合出的参数：
+&nbsp;
+拟合误差最大的实验：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-04-t35">T3.5 辨识之后：重训 + 复测</h2>
+<p><strong>目的</strong>：证明"辨识过的仿真"能让策略迁移得更好。</p>
+<p><strong>前置</strong>：T3.4。</p>
+<p><strong>操作</strong></p>
+<ol>
+<li>把辨识出的参数写回 MJCF；</li>
+<li>在 Isaac 里用<strong>匹配后的参数</strong>重训一版（如果 Isaac 的 USD 参数可改）；</li>
+<li>用 T3.2 的脚本复测，记录偏差 $e$；</li>
+<li>对比"辨识前训练 → sim2sim"和"辨识后训练 → sim2sim"。</li>
+</ol>
+<p><strong>预期</strong>：偏差 $e$ 下降；如果没降，说明辨识的参数不是影响迁移的主要因素（这时要怀疑延迟或观测，而不是质量）。</p>
+<p><strong>验收</strong>：给出两组（辨识前/后）的偏差与成功率对比表。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>sim2sim 偏差 $e$</th>
+<th>5 s 成功率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>辨识前</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>辨识后</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>结论：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-04-3">阶段 3 完成检查表</h2>
+<ul>
+<li>[ ] T3.1 MJCF 能加载，<code>nq/nv/nu = 2/2/1</code></li>
+<li>[ ] T3.2 策略能在 MuJoCo 闭环 5 s</li>
+<li>[ ] T3.3 有对齐前后的偏差表</li>
+<li>[ ] T3.4 有参数表 + 拟合曲线 + 残差</li>
+<li>[ ] T3.5 有辨识前后对比</li>
+</ul>
+</section>
+<section class="doc" id="doc-05">
+<h1 id="doc-05-4-c-4">第 4 阶段：C 仿真与自主设计（4 个任务）</h1>
+<blockquote>
+<p>目标：脱离 Python，用 C 写"动力学 + 积分器 + 控制循环"，验证你对物理的理解；最后走一遍"自己设计机器人并训练"。
+前置：第 3 阶段完成（有辨识过的参数，知道 PD 增益）。</p>
+</blockquote>
+<hr />
+<h2 id="doc-05-t41-c-rk4">T4.1 C 写动力学 + RK4</h2>
+<p><strong>目的</strong>：把倒立摆的方程自己写一遍。写对了，你才真的懂"离散化"和"控制周期"。</p>
+<p><strong>前置</strong>：T3.4（参数已辨识）。</p>
+<p><strong>推导（照这个写，别抄错符号）</strong></p>
+<p>设小车质量 $M$、杆质量 $m$、杆质心到关节距离 $l$、小车阻尼 $b$、控制力 $F$，杆角 $\theta$ 从<strong>竖直向上</strong>量起。拉格朗日方程给出：</p>
+<p>$$
+(M+m)\ddot x + m l\ddot\theta\cos\theta - m l\dot\theta^2\sin\theta = F - b\dot x
+$$</p>
+<p>$$
+m l\ddot x\cos\theta + m l^2\ddot\theta - m g l\sin\theta = 0
+$$</p>
+<p>解出加速度（这就是你要写的两行）：</p>
+<p>$$
+\ddot\theta = \frac{(M+m)g\sin\theta - F\cos\theta - m l\dot\theta^2\sin\theta\cos\theta}{l\,(M + m\sin^2\theta)}
+$$</p>
+<p>$$
+\ddot x = \frac{F - b\dot x + m l\left(\dot\theta^2\sin\theta - \ddot\theta\cos\theta\right)}{M+m}
+$$</p>
+<p><strong>操作</strong>：新建 <code>c/cartpole.c</code>：</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+
+typedef struct { double x, v, th, w; } state_t;
+
+static const double G = 9.81, M = 1.0, m = 0.1, l = 0.5, b = 10.0;
+
+static void deriv(const state_t *s, double F, state_t *d)
+{
+    double st = sin(s-&gt;th), ct = cos(s-&gt;th);
+    double den = l * (M + m * st * st);
+    double thdd = ((M + m) * G * st - F * ct - m * l * s-&gt;w * s-&gt;w * st * ct) / den;
+    double xdd = (F - b * s-&gt;v + m * l * (s-&gt;w * s-&gt;w * st - thdd * ct)) / (M + m);
+
+    d-&gt;x = s-&gt;v;
+    d-&gt;th = s-&gt;w;
+    d-&gt;v = xdd;
+    d-&gt;w = thdd;
+}
+
+/* 四阶龙格库塔：一步 dt */
+static void rk4(state_t *s, double F, double dt)
+{
+    state_t k1, k2, k3, k4, tmp;
+
+    deriv(s, F, &amp;k1);
+
+    tmp = (state_t){s-&gt;x + 0.5*dt*k1.x, s-&gt;v + 0.5*dt*k1.v,
+                    s-&gt;th + 0.5*dt*k1.th, s-&gt;w + 0.5*dt*k1.w};
+    deriv(&amp;tmp, F, &amp;k2);
+
+    tmp = (state_t){s-&gt;x + 0.5*dt*k2.x, s-&gt;v + 0.5*dt*k2.v,
+                    s-&gt;th + 0.5*dt*k2.th, s-&gt;w + 0.5*dt*k2.w};
+    deriv(&amp;tmp, F, &amp;k3);
+
+    tmp = (state_t){s-&gt;x + dt*k3.x, s-&gt;v + dt*k3.v,
+                    s-&gt;th + dt*k3.th, s-&gt;w + dt*k3.w};
+    deriv(&amp;tmp, F, &amp;k4);
+
+    s-&gt;x  += dt/6.0 * (k1.x  + 2*k2.x  + 2*k3.x  + k4.x);
+    s-&gt;v  += dt/6.0 * (k1.v  + 2*k2.v  + 2*k3.v  + k4.v);
+    s-&gt;th += dt/6.0 * (k1.th + 2*k2.th + 2*k3.th + k4.th);
+    s-&gt;w  += dt/6.0 * (k1.w  + 2*k2.w  + 2*k3.w  + k4.w);
+}
+
+int main(void)
+{
+    state_t s = {0.0, 0.0, 0.5236, 0.0};   /* 30° 自由摆 */
+    double dt = 1e-3, T = 5.0;
+
+    printf(&quot;t,theta,x\n&quot;);
+    for (int k = 0; k &lt; (int)(T / dt); k++) {
+        rk4(&amp;s, 0.0, dt);                   /* 不控制，只看自由摆 */
+        if (k % 10 == 0) printf(&quot;%.3f,%.6f,%.6f\n&quot;, k * dt, s.th, s.x);
+    }
+    return 0;
+}
+</code></pre>
+<p><strong>验证（两种方法，任选）</strong></p>
+<ol>
+<li><strong>能量法</strong>：无阻尼自由摆，机械能应守恒。每步算
+   $$
+   E = \tfrac12 m l^2\dot\theta^2 + m g l(\cos\theta - 1)
+   $$
+   输出 $E(t)$，波动应 $&lt;1\%$。RK4 在 $dt=1$ ms 下完全能做到。</li>
+<li><strong>对照法</strong>：同初值跑 MuJoCo，导出 CSV，逐点比较。</li>
+</ol>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>能量一路涨</td>
+<td>符号错（$g\sin\theta$ 写成负）或 RK4 系数写错</td>
+</tr>
+<tr>
+<td>杆子不摆（θ 不变）</td>
+<td><code>den</code> 里 <code>m*st*st</code> 让分母固定，但 <code>thdd</code> 分子里 <code>F*ct</code> 与 <code>G</code> 项都没进来——检查是否漏了 <code>M+m</code></td>
+</tr>
+<tr>
+<td>数值爆炸</td>
+<td><code>dt</code> 太大，或 <code>den</code> 在 $\theta=0$ 时算错</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收</strong>：能量波动 &lt; 1%，或与 MuJoCo 轨迹偏差 &lt; 1%。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我的 <code>thdd</code> 那一行代码：
+&nbsp;
+能量法最大波动：____%；或用 MuJoCo 对照的最大偏差：____
+我写错过的符号：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-05-t42-1-khz">T4.2 1 kHz 控制循环 + 数据落盘</h2>
+<p><strong>目的</strong>：写一个"真机式"的控制循环：读状态 → 算控制 → 写输出 → 落 CSV。</p>
+<p><strong>前置</strong>：T4.1。</p>
+<p><strong>操作</strong>：在 <code>main</code> 里换成闭环：</p>
+<pre><code class="language-c">#define CTRL_HZ 1000
+#define CTRL_DT (1.0 / CTRL_HZ)
+#define KP 400.0
+#define KD 40.0
+
+int main(void)
+{
+    state_t s = {0.0, 0.0, 0.1, 0.0};
+    double q_des = 0.0;                 /* 想回中 */
+    FILE *f = fopen(&quot;c/run.csv&quot;, &quot;w&quot;);
+    fprintf(f, &quot;t,x,v,theta,omega,F\n&quot;);
+
+    for (int k = 0; k &lt; 5 * CTRL_HZ; k++) {
+        double F = KP * (q_des - s.x) - KD * s.v;
+        if (F &gt;  400) F =  400;
+        if (F &lt; -400) F = -400;
+
+        rk4(&amp;s, F, CTRL_DT);
+        fprintf(f, &quot;%.4f,%.6f,%.6f,%.6f,%.6f,%.3f\n&quot;, k * CTRL_DT, s.x, s.v, s.th, s.w, F);
+    }
+    fclose(f);
+    return 0;
+}
+</code></pre>
+<p><strong>编译</strong></p>
+<pre><code class="language-bash">gcc -O2 -o c/cartpole c/cartpole.c -lm &amp;&amp; ./c/cartpole &amp;&amp; head -3 c/run.csv
+</code></pre>
+<p><strong>验收</strong>：能画/能看出"车被拉回 0 附近、杆子晃几下后倒"（因为没有杆的反馈，只有车的 PD——这正好说明<strong>为什么需要策略管杆</strong>）。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我的 CSV 前 3 行：
+&nbsp;
+车多久回到 0 附近？杆子多久倒？
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-05-t43-c">T4.3 在 C 里跑导出的策略</h2>
+<p><strong>目的</strong>：彻底搞懂"策略就是一个 4→32→32→1 的矩阵乘法"。做完这个，你再也不会觉得神经网络神秘。</p>
+<p><strong>前置</strong>：T4.2 + 一个 <code>model_*.pt</code>。</p>
+<p><strong>第一步 · 把权重导成 C 数组</strong></p>
+<pre><code class="language-python"># c/export_weights.py
+import torch, numpy as np
+
+ckpt = torch.load(&quot;logs/rsl_rl/cartpole_direct/&lt;run&gt;/model_99.pt&quot;, map_location=&quot;cpu&quot;)
+sd = ckpt[&quot;model_state_dict&quot;]
+actor = {k: v for k, v in sd.items() if &quot;actor&quot; in k}
+for k in sorted(actor): print(k, tuple(actor[k].shape))
+</code></pre>
+<p>你会看到类似：</p>
+<pre><code class="language-text">actor.0.weight (32, 4)   actor.0.bias (32,)
+actor.2.weight (32, 32)  actor.2.bias (32,)
+actor.4.weight (1, 32)   actor.4.bias (1,)
+</code></pre>
+<p>然后写进 <code>c/policy_weights.h</code>：</p>
+<pre><code class="language-python">with open(&quot;c/policy_weights.h&quot;, &quot;w&quot;) as f:
+    f.write(&quot;/* 自动生成，勿手改 */\n&quot;)
+    for name, key in [(&quot;W1&quot;,&quot;actor.0.weight&quot;), (&quot;B1&quot;,&quot;actor.0.bias&quot;),
+                      (&quot;W2&quot;,&quot;actor.2.weight&quot;), (&quot;B2&quot;,&quot;actor.2.bias&quot;),
+                      (&quot;W3&quot;,&quot;actor.4.weight&quot;), (&quot;B3&quot;,&quot;actor.4.bias&quot;)]:
+        arr = actor[key].numpy().astype(np.float32)
+        flat = arr.reshape(-1)
+        f.write(f&quot;static const float {name}[{flat.size}] = {{&quot;
+                + &quot;,&quot;.join(f&quot;{x:.7f}f&quot; for x in flat) + &quot;};\n&quot;)
+        f.write(f&quot;static const int {name}_DIM0 = {arr.shape[0]}, {name}_DIM1 = {arr.shape[1] if arr.ndim&gt;1 else 1};\n&quot;)
+</code></pre>
+<p><strong>第二步 · C 里前向传播</strong>（ELU：$x&gt;0$ 时 $x$，否则 $e^x-1$）</p>
+<pre><code class="language-c">static float elu(float x) { return x &gt; 0 ? x : expf(x) - 1.0f; }
+
+static float policy_forward(const float obs[4])
+{
+    float h1[32], h2[32], out = B3[0];
+    for (int i = 0; i &lt; 32; i++) {
+        float acc = B1[i];
+        for (int j = 0; j &lt; 4; j++) acc += W1[i * 4 + j] * obs[j];
+        h1[i] = elu(acc);
+    }
+    for (int i = 0; i &lt; 32; i++) {
+        float acc = B2[i];
+        for (int j = 0; j &lt; 32; j++) acc += W2[i * 32 + j] * h1[j];
+        h2[i] = elu(acc);
+    }
+    for (int j = 0; j &lt; 32; j++) out += W3[j] * h2[j];
+    return out;
+}
+</code></pre>
+<p><strong>第三步 · 闭环</strong></p>
+<pre><code class="language-c">float obs[4] = { (float)s.th, (float)s.w, (float)s.x, (float)s.v };
+float a = policy_forward(obs);
+double q_des = a * ACTION_SCALE;          /* 与训练一致，例如 0.5 */
+double F = KP * (q_des - s.x) - KD * s.v;
+</code></pre>
+<p><strong>验收</strong>：C 里的策略输出与 Python 里同一 <code>obs</code> 的输出差 &lt; 1e-5；闭环 5 s 杆不倒。</p>
+<p><strong>可能报错</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输出完全不对</td>
+<td>权重按 <code>[out][in]</code> 还是 <code>[in][out]</code> 搞反（PyTorch 是 <code>[out, in]</code>，上面代码按此写）</td>
+</tr>
+<tr>
+<td>每一步都发散</td>
+<td>观测顺序错（必须是 $[\theta,\omega,x,v]$）</td>
+</tr>
+<tr>
+<td>数值略有差</td>
+<td>float32 与 double 混用，属正常（&lt;1e-5 可接受）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我导出的权重维度：____
+C 与 Python 同一 obs 的输出：____ vs ____（差 ____）
+闭环能撑几秒：
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-05-t44">T4.4 自主设计模型并训练（最后一关）</h2>
+<p><strong>目的</strong>：走一遍"新机器人从零到能训"的完整流程。做完这个，你就能接任何新平台。</p>
+<p><strong>前置</strong>：前 3 个阶段全部完成。</p>
+<p><strong>Checklist（按顺序，每步都要有产出）</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>事项</th>
+<th>产出</th>
+<th>常见坑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3D 模型 → URDF/MJCF</td>
+<td>能加载的文件</td>
+<td>单位（mm vs m）、关节轴方向</td>
+</tr>
+<tr>
+<td>2</td>
+<td>质量、惯量、限位</td>
+<td>参数表</td>
+<td>惯量用 CAD 值或摆锤法测</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Isaac Lab 能加载</td>
+<td>打印关节数/观测维度</td>
+<td>prim path、关节名匹配</td>
+</tr>
+<tr>
+<td>4</td>
+<td>定义观测</td>
+<td>维度 + 单位 + 顺序表</td>
+<td>忘了任务量（目标、相位）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>定义动作</td>
+<td>位置 + PD 增益</td>
+<td>PD 太大抖、太小推不动</td>
+</tr>
+<tr>
+<td>6</td>
+<td>定义奖励</td>
+<td>3-5 项，带量纲</td>
+<td>惩罚量纲混用（rad² vs m/s）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>先训"能站住"</td>
+<td><code>len95</code> 出现</td>
+<td>一上来就训走路</td>
+</tr>
+<tr>
+<td>8</td>
+<td>eval 网格</td>
+<td>成功率表</td>
+<td>用训练 reward 当评估</td>
+</tr>
+<tr>
+<td>9</td>
+<td>至少 3 种子</td>
+<td>中位数 + 极差</td>
+<td>单种子下结论</td>
+</tr>
+<tr>
+<td>10</td>
+<td>sim2sim</td>
+<td>偏差 $e$</td>
+<td>观测顺序、频率</td>
+</tr>
+<tr>
+<td>11</td>
+<td>系统辨识</td>
+<td>参数表 + 拟合曲线</td>
+<td>一次拟合多个实验</td>
+</tr>
+<tr>
+<td>12</td>
+<td>真机（如果有）</td>
+<td>低速、限幅、急停</td>
+<td>没做安全层就上电</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>新平台的三个必查项</strong>（血泪教训）：</p>
+<ol>
+<li><strong>关节方向</strong>：正方向和你以为的可能相反，先用 <code>zero_agent</code> 看关节往哪动；</li>
+<li><strong>限位</strong>：仿真里不限位 → 策略学到"关节无限转"，真机上直接撞机械限位；</li>
+<li><strong>传感器符号</strong>：IMU 的俯仰角正负，和你的坐标系一不一致。</li>
+</ol>
+<p><strong>验收</strong>：能在一个<strong>新的</strong>机器人（哪怕是你自己拼的两连杆）上完成 1-12 步，并写一份 5 页报告：任务、观测、动作、奖励、训练曲线、eval、sim2sim 偏差、失败案例。</p>
+<blockquote>
+<p>🖊️ <strong>记录</strong></p>
+<p>我设计的新平台：
+&nbsp;
+哪一步卡最久：
+&nbsp;
+三个必查项我分别怎么验的：
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<hr />
+<h2 id="doc-05-_1">全部完成之后</h2>
+<p>到这里你手里应该有：</p>
+<ol>
+<li>一个能训、能导出、能独立推理的 cartpole 工程；</li>
+<li>一个 tracking 任务（自己改的）；</li>
+<li>一个 MuJoCo sim2sim 脚本 + 偏差表；</li>
+<li>一套系统辨识流程 + 参数表；</li>
+<li>一份 C 实现（动力学 + 策略推理）；</li>
+<li>一个自己设计的新平台 + 训练报告。</li>
+</ol>
+<p><strong>这 6 样东西，就是你面试时要讲的全部内容。</strong> 怎么把它们写成简历和故事，见 <a href="#doc-09">09-求职</a>。</p>
+</section>
+<section class="doc" id="doc-05b">
+<h1 id="doc-05b-_1">路线：从"会做动作的模型"到"有自我模型、能自我改进的系统"</h1>
+<blockquote>
+<p>这份是<strong>大致路线</strong>，不是任务卡。仓库基础（第 1-4 阶段）做完再逐台阶细化。
+前置：<a href="#doc-01">01-教程总览</a> 的 25 个任务。</p>
+</blockquote>
+<hr />
+<h2 id="doc-05b-0">0. 先把四个词分开（否则会一直觉得"差了点"）</h2>
+<p>你现在的困惑，本质是四个概念被混在一起了。先拆开：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>词</th>
+<th>它问的问题</th>
+<th>它是什么</th>
+<th>现在到哪了</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AGI</strong></td>
+<td>能不能跨任务、跨本体、自己定目标？</td>
+<td><strong>目标</strong>（通用性 + 自主性）</td>
+<td>远未达到</td>
+</tr>
+<tr>
+<td><strong>RSI</strong></td>
+<td>能不能改进"自己改进的能力"？</td>
+<td><strong>机制</strong>（AGI 的一条路，不是目标）</td>
+<td>没做到，只有雏形</td>
+</tr>
+<tr>
+<td><strong>世界模型</strong></td>
+<td>能不能预测"我做了 A 会怎样"？</td>
+<td><strong>组件</strong>（预测器）</td>
+<td>单卡能做，机器人上刚起步</td>
+</tr>
+<tr>
+<td><strong>自我认知</strong></td>
+<td>能不能表征"我是谁、我能做什么、我不知道什么"？</td>
+<td><strong>组件</strong>（自模型 + 元认知）</td>
+<td>实验室阶段，没有工程范式</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关系</strong>：</p>
+<pre><code>AGI = 通用性 × 自主性
+      ├─ 通用性 ← 语言/多模态（组合性）+ 跨本体迁移
+      └─ 自主性 ← 世界模型（预测）+ 自我模型（反省）+ 自我改进（进化）
+                                  ↑                    ↑
+                            你缺的那块           RSI 是它的极端版
+</code></pre>
+<p>所以：</p>
+<ol>
+<li><strong>世界模型不是 RSI 的另一条路线</strong>，它是"自主性"里的一块<strong>组件</strong>。</li>
+<li><strong>RSI 不是目标</strong>，它是"自我改进"这条机制走到极端的样子。</li>
+<li>你感觉"差了点"，差的是<strong>自我模型 + 元认知</strong>——世界模型让 agent 会预测外部，自我模型让它会预测自己。</li>
+</ol>
+<blockquote>
+<p>一句话：<strong>世界模型让它会"做梦"，自我模型让它会"照镜子"，自我改进让它会"长个"。</strong></p>
+</blockquote>
+<hr />
+<h2 id="doc-05b-1">1. 你的直觉是对的：它们全是"训练出来的模型"</h2>
+<p>一个 agent 内部其实有 6 个模型，你现在只训了第 1 个：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>模型</th>
+<th>输入 → 输出</th>
+<th>回答什么问题</th>
+<th>你有吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>策略</strong> $\pi(a\mid s)$</td>
+<td>状态 → 动作</td>
+<td>现在该做什么</td>
+<td>✅ PPO 训过</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>价值</strong> $V(s)$ / $Q(s,a)$</td>
+<td>状态 → 回报</td>
+<td>这个局面有多好</td>
+<td>✅ 在 PPO 里</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>世界模型</strong> $p(s'\mid s,a)$</td>
+<td>状态+动作 → 下一状态</td>
+<td>我这么做会怎样</td>
+<td>❌ 缺</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>奖励模型</strong> $r_\psi(s,a)$</td>
+<td>状态+动作 → 分数</td>
+<td>什么算好（学出来的）</td>
+<td>❌ 缺</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>自我模型</strong> $f_\theta(\text{我})$</td>
+<td>自身观测+历史 → 我的能力/参数/边界</td>
+<td>我是谁、我能做什么</td>
+<td>❌ 缺</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>元模型</strong>（学会学习）</td>
+<td>任务分布 → 初始参数/超参</td>
+<td>我该怎么学得更快</td>
+<td>❌ 缺</td>
+</tr>
+</tbody>
+</table></div>
+<p>你现在做的"Isaac Lab + PPO"，只是在训第 1、2 个。<strong>这就是"感觉差了点"的技术原因</strong>：能用，但不会想、不会反省、不会自己变强。</p>
+<hr />
+<h2 id="doc-05b-2-vla">2. "能和人交互还有动作" 是什么：VLA，但它只是接口层</h2>
+<p>你看到的那种"听得懂话、会动"的模型，是 <strong>VLA</strong>（Vision-Language-Action）：</p>
+<p>$$
+a_t \sim \pi_\theta\left(a_t \mid o_{\le t},\ \ell\right)
+$$</p>
+<p>它 = 视觉编码器 + 语言模型 + 动作头（离散 token / 回归 / 扩散 / 流匹配）。</p>
+<p><strong>但它只解决"会说 + 会做"，不解决"会想 + 会反省"</strong>。三层能力要分开看：</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>层</th>
+<th>能力</th>
+<th>代表</th>
+<th>缺什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>接口层</td>
+<td>听得懂、做得对</td>
+<td>RT-2、OpenVLA、π0、GR00T N1</td>
+<td>不会预测后果</td>
+</tr>
+<tr>
+<td>预测层</td>
+<td>知道"这么做会怎样"</td>
+<td>Dreamer、TD-MPC、V-JEPA 2、Cosmos</td>
+<td>不会反省自己</td>
+</tr>
+<tr>
+<td>反省层</td>
+<td>知道自己不知道、能改自己</td>
+<td>自模型、元认知、自我改进</td>
+<td>没有成熟范式</td>
+</tr>
+</tbody>
+</table></div>
+<p>所以"和人交互 + 有动作"确实是一个<strong>训练好的模型</strong>，但它是<strong>接口</strong>，不是智能的全部。</p>
+<hr />
+<h2 id="doc-05b-3-30">3. 要不要深入学大模型？要，但只学 30%</h2>
+<p><strong>必须学（占 30%）</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>内容</th>
+<th>学到什么程度</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transformer</td>
+<td>能手写一层 attention + 前向</td>
+<td>所有 VLA 的地基</td>
+</tr>
+<tr>
+<td>预训练/后训练流程</td>
+<td>能说清 SFT → 偏好对齐 → 可验证奖励 RL 各在干什么</td>
+<td>你以后要微调、要懂 loss</td>
+</tr>
+<tr>
+<td>多模态对齐</td>
+<td>能把图像/语言/动作拼成一个序列</td>
+<td>VLA 的核心工程</td>
+</tr>
+<tr>
+<td>推理成本</td>
+<td>知道一个 7B 模型在 Jetson 上跑几 Hz</td>
+<td>部署必问</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>够用就行（不用深挖）</strong></p>
+<ul>
+<li>预训练数据配比、并行策略、MoE 路由；</li>
+<li>分布式训练的通信优化。</li>
+</ul>
+<p><strong>别碰</strong></p>
+<ul>
+<li>从零预训练一个 7B（没算力，也没必要）；</li>
+<li>追每一个新 LLM 榜单。</li>
+</ul>
+<blockquote>
+<p>结论：<strong>你不需要成为"训大模型的人"，你需要成为"能把大模型接到机器人上、并判断它靠不靠谱的人"。</strong> 后者更缺。</p>
+</blockquote>
+<hr />
+<h2 id="doc-05b-4">4. 五层能力栈（"差的那点"具体在哪）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>层</th>
+<th>核心问题</th>
+<th>可测量的代理指标</th>
+<th>单卡能做吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L0 感知-动作</td>
+<td>能不能完成动作</td>
+<td>成功率、残差、力矩 RMS</td>
+<td>✅ 你现在就在这</td>
+</tr>
+<tr>
+<td>L1 世界模型</td>
+<td>能不能预测后果</td>
+<td>多步预测误差、规划收益</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>L2 自我模型</td>
+<td>知不知道自己是谁/能做啥</td>
+<td>自模型预测误差、参数辨识误差</td>
+<td>✅ 仿真里</td>
+</tr>
+<tr>
+<td>L3 元认知</td>
+<td>知不知道自己不知道</td>
+<td>校准误差 ECE、OOD 检测 AUC、求助率</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>L4 自我改进</td>
+<td>能不能自己变强</td>
+<td>闭环 3 轮的指标斜率</td>
+<td>🔶 要真机/高保真仿真</td>
+</tr>
+<tr>
+<td>L5 通用性</td>
+<td>能不能跨任务/跨本体</td>
+<td>零样本迁移成功率</td>
+<td>🔶 要多本体数据</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关键认知</strong>：L2、L3 不是玄学，它们有明确的数学形式。</p>
+<p><strong>L2 自我模型</strong>：给定自己的动作历史 $a_{1:t}$ 和观测 $o_{1:t}$，预测自身的物理参数或能力：</p>
+<p>$$
+\hat\phi = f_\theta\left(o_{1:t}, a_{1:t}\right),\qquad
+\mathcal{L}_{\text{self}} = \left\|\hat\phi - \phi_{\text{true}}\right\|^2
+$$</p>
+<p>$\phi$ 可以是质量、连杆长度、关节限位、最大力矩、甚至"我能不能完成这个动作"。</p>
+<p><strong>L3 元认知（校准）</strong>：模型给出的置信度要和真实正确率对齐。期望校准误差：</p>
+<p>$$
+\mathrm{ECE} = \sum_{b=1}^{B}\frac{|S_b|}{n}\left|\,\mathrm{acc}(S_b) - \mathrm{conf}(S_b)\,\right|
+$$</p>
+<p>一个"有自我认知"的系统，至少要做到：<strong>说"我有 70% 把握"时，真的对 70%</strong>。</p>
+<p><strong>L4 自我改进</strong>：闭环</p>
+<p>$$
+\text{评估} \to \text{找难例} \to \text{采数据} \to \text{重训} \to \text{评估}
+$$</p>
+<p>RSI 是这条闭环自己加速自己的极端版本。</p>
+<hr />
+<h2 id="doc-05b-5-5-4-8">5. 路线：5 个台阶（每台阶 4-8 周）</h2>
+<h3 id="doc-05b-s1">S1 · 世界模型（会预测）</h3>
+<ul>
+<li><strong>问题</strong>：我这么做会怎样？</li>
+<li><strong>做法</strong>：DreamerV3 复现 → TD-MPC 式潜空间规划 → 小规模视频世界模型</li>
+<li><strong>验收</strong>：样本效率优于 PPO 50%；潜空间 MPC 接近真模型 MPC；10 帧视频预测误差曲线</li>
+<li><strong>代表</strong>：<a href="https://arxiv.org/abs/2301.04104">DreamerV3 (2301.04104)</a>、TD-MPC2、<a href="https://ai.meta.com/blog/v-jepa-2-world-model-benchmarks/">V-JEPA 2</a>、<a href="https://www.nvidia.com/en-us/ai/cosmos/">Cosmos</a></li>
+</ul>
+<h3 id="doc-05b-s2">S2 · 自我模型（会照镜子）</h3>
+<ul>
+<li><strong>问题</strong>：我是什么形态？我的极限在哪？</li>
+<li><strong>做法</strong>：在仿真里随机化自己的形态/参数（质量、连杆长度、关节限位、电机强度），让网络从 $(o,a)$ 历史回归这些参数；再做"能力边界"预测（这个动作我能不能做成）</li>
+<li><strong>验收</strong>：自模型参数误差 &lt; 10%；换形态后 100 步内自适应</li>
+<li><strong>代表</strong>：Lipson 组的"机器人自建模"（self-modeling machines）、RMA（环境因子估计——本质就是自模型的特例）</li>
+</ul>
+<h3 id="doc-05b-s3">S3 · 元认知（知道自己不知道）</h3>
+<ul>
+<li><strong>问题</strong>：我什么时候该求助/该停？</li>
+<li><strong>做法</strong>：给策略加不确定性估计（集成、MC dropout、分位数），做校准；设计"高不确定就减速/求助"的策略；画"求助率-成功率"曲线</li>
+<li><strong>验收</strong>：ECE &lt; 0.05；OOD 检测 AUC &gt; 0.9；求助后成功率提升</li>
+<li><strong>代表</strong>：校准（temperature scaling）、OOD 检测、主动学习</li>
+</ul>
+<h3 id="doc-05b-s4">S4 · 自我改进闭环（会进化）</h3>
+<ul>
+<li><strong>问题</strong>：能不能自己变强？</li>
+<li><strong>做法</strong>：用 S1 的世界模型找"预测会失败"的状态 → 优先采样 → 训练 → 用 S3 的置信度决定要不要回灌 → 跑 3 轮</li>
+<li><strong>验收</strong>：同一评测集成功率单调上升；有一份"闭环哪步最脆弱"的分析</li>
+<li><strong>代表</strong>：<a href="https://arxiv.org/abs/1712.01815">AlphaZero (1712.01815)</a>、<a href="https://arxiv.org/abs/2203.14465">STaR (2203.14465)</a>、<a href="https://arxiv.org/abs/2501.12948">RLVR (2501.12948)</a></li>
+</ul>
+<h3 id="doc-05b-s5">S5 · 通用性（跨任务、跨本体、听人话）</h3>
+<ul>
+<li><strong>问题</strong>：换个机器人、换个任务还灵吗？</li>
+<li><strong>做法</strong>：同一策略在 2-3 个本体上训（cartpole → 四足 → 简单臂）；加语言条件；测零样本迁移</li>
+<li><strong>验收</strong>：跨本体迁移后成功率 &gt; 60%（不微调）；语言指令换了还能执行</li>
+<li><strong>代表</strong>：<a href="https://ar5iv.labs.arxiv.org/html/2410.06158">GR-2 (2410.06158)</a>、π0、GR00T N1</li>
+</ul>
+<blockquote>
+<p>顺序不要换：没有 S1 的"预测"，S2 的自模型只是在拟合噪声；没有 S3 的"校准"，S4 的闭环会自己骗自己。</p>
+</blockquote>
+<hr />
+<h2 id="doc-05b-6">6. "自我认知"到底能不能工程化</h2>
+<p>要诚实：<strong>"主观体验"不能工程化，但"自我模型 + 元认知"可以</strong>。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>你想要的</th>
+<th>可工程化的部分</th>
+<th>可测指标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>知道自己在做什么</td>
+<td>动作意图的表征</td>
+<td>意图预测准确率</td>
+</tr>
+<tr>
+<td>知道自己是什么</td>
+<td>身体图式/参数自模型</td>
+<td>参数误差、形态适应速度</td>
+</tr>
+<tr>
+<td>知道自己不知道</td>
+<td>校准、OOD、弃权</td>
+<td>ECE、AUC、求助率</td>
+</tr>
+<tr>
+<td>知道自己能不能</td>
+<td>能力边界预测</td>
+<td>成功率预测的 $R^2$</td>
+</tr>
+<tr>
+<td>会不会反思</td>
+<td>失败归因（是感知错？模型错？执行错？）</td>
+<td>归因准确率</td>
+</tr>
+<tr>
+<td>有没有"我"</td>
+<td><strong>不可工程化</strong>（意识硬问题）</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>建议</strong>：把"自我认知"翻译成上面 5 个可测问题。这就是你的研究方向，也是面试时能和别人拉开差距的地方——大多数候选人只会说"我训了个 VLA"。</p>
+<hr />
+<h2 id="doc-05b-7-12-18">7. 时间线（12-18 个月，与主教程并行）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>月</th>
+<th>主线（教程）</th>
+<th>这条线</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1-2</td>
+<td>第 1-2 阶段（仓库 → 位置+PD → tracking）</td>
+<td>读 DreamerV3，跑官方例子</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>第 3 阶段（MuJoCo + 系统辨识）</td>
+<td><strong>S1</strong>：DreamerV3 复现 + 样本效率</td>
+</tr>
+<tr>
+<td>5-6</td>
+<td>第 4 阶段（C 仿真 + 自主设计）</td>
+<td><strong>S1 后半</strong>：潜空间 MPC + 小视频 WM</td>
+</tr>
+<tr>
+<td>7-8</td>
+<td>换平台（四足/人形）</td>
+<td><strong>S2</strong>：自模型（形态/参数随机化下自适应）</td>
+</tr>
+<tr>
+<td>9-10</td>
+<td>真机闭环</td>
+<td><strong>S3</strong>：校准 + 求助策略</td>
+</tr>
+<tr>
+<td>11-12</td>
+<td>求职产出</td>
+<td><strong>S4</strong>：闭环 3 轮</td>
+</tr>
+<tr>
+<td>13-18</td>
+<td>工作/深造</td>
+<td><strong>S5</strong>：跨本体 + 语言条件，写报告</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="doc-05b-8">8. 风险与诚实评估</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>风险</th>
+<th>现实</th>
+<th>应对</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>这条路比"训 PPO"难 10 倍</td>
+<td>S2-S4 都没有标准答案</td>
+<td>每个台阶都要"可测指标"，否则会飘</td>
+</tr>
+<tr>
+<td>单卡只能做 S1、S2、S3</td>
+<td>视频 WM / 跨本体要算力</td>
+<td>先在仿真里做，别碰大模型预训练</td>
+</tr>
+<tr>
+<td>就业面窄</td>
+<td>"自我模型"几乎只在研究院</td>
+<td>主投世界模型/具身基础模型岗，自我模型当"加分叙事"</td>
+</tr>
+<tr>
+<td>容易被"自我认知"带偏</td>
+<td>意识、感受无法工程化</td>
+<td>只做可测的那 5 个问题</td>
+</tr>
+<tr>
+<td>评估是最大瓶颈</td>
+<td>没有公认 benchmark</td>
+<td>自己定评测集，3 种子，公开协议</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="doc-05b-9">9. 一句话</h2>
+<p><strong>先把"能训、能部署、能辨识"练成肌肉记忆（第 1-4 阶段），再加"会预测"（世界模型）、"会照镜子"（自模型）、"知道自己不知道"（元认知），最后把三者接成闭环（自我改进）。</strong></p>
+<p><strong>AGI 是目标，RSI 是这条闭环的极端版，世界模型和自我模型是两块拼图。</strong> 你现在缺的不是"更深的强化学习"，而是把这两块拼图装上。</p>
+<blockquote>
+<p>详细任务卡（S1.x-S3.x）等第 1-4 阶段完成再写。现在写细了，你也不会照着做——先去把 T1.1 跑完。</p>
+</blockquote>
+</section>
+<section class="doc" id="doc-06">
+<h1 id="doc-06-_1">指标速查</h1>
+<blockquote>
+<p>看不懂某条曲线时翻这里。每条指标：<strong>是什么 → 你的正常范围 → 异常怎么办</strong>。
+数据全部来自你自己的 9 个 run（见 <a href="#doc-08">04-实验台账</a>）。</p>
+</blockquote>
+<h2 id="doc-06-_2">一、六条主指标</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>是什么</th>
+<th>你的正常范围</th>
+<th>异常时先查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Train/mean_reward</code></td>
+<td>最近完成回合的平均回报</td>
+<td>取决于 <code>alive</code>：1→约 297，2→约 594，5→约 1492</td>
+<td>先算 <code>util = reward/(299×alive)</code>，别跨配置比绝对值</td>
+</tr>
+<tr>
+<td><code>Train/mean_episode_length</code></td>
+<td>平均回合长度（上限 299）</td>
+<td>收尾 299</td>
+<td>卡在 130-150 → 初始状态有一半"第一步就死"（终止条件问题，不是策略问题）</td>
+</tr>
+<tr>
+<td><code>Policy/mean_noise_std</code></td>
+<td>动作分布的标准差</td>
+<td>起步 1.0，收尾 0.02-0.05</td>
+<td>一直 1.0 → 奖励没区分度；掉太快 → 卡在次优</td>
+</tr>
+<tr>
+<td><code>Loss/value_function</code></td>
+<td>critic 的 MSE</td>
+<td>0.001-0.04（跟奖励尺度走）</td>
+<td>大于 1 → 目标值太大或奖励尺度太野</td>
+</tr>
+<tr>
+<td><code>Loss/surrogate</code></td>
+<td>策略损失，带着 $-\hat A$</td>
+<td>约 $-0.01$ ~ $+0.01$</td>
+<td><strong>越小不代表越好</strong>，看有没有剧烈震荡</td>
+</tr>
+<tr>
+<td><code>Loss/learning_rate</code></td>
+<td>KL 刹车后的学习率</td>
+<td>在 $10^{-5}$ 与 $10^{-2}$ 之间跳</td>
+<td>不要读成"衰减"，它反映"这批数据多出人意料"</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-06-_3">二、三个容易误读的地方</h2>
+<p><strong>1. <code>Loss/entropy</code> 是负的很正常。</strong>
+高斯策略的微分熵（$\sigma$ 是标准差）：</p>
+<p>$$
+H = \tfrac12\ln\left(2\pi e\,\sigma^2\right)
+$$</p>
+<p>$\sigma &lt; 0.242$ 之后必然为负。你日志里 $\sigma\approx0.035$ 时 $H\approx-1.92$，和 TensorBoard 的 $-1.939$ 对得上。<strong>判断探索强弱看 <code>std</code>，别看熵的正负。</strong></p>
+<p><strong>2. <code>Loss/learning_rate</code> 不是衰减曲线。</strong>
+<code>desired_kl = 0.01</code>，实测 KL 超过 $2\times$ 目标就除以 1.5，低于一半就乘 1.5。所以它在地板 $10^{-5}$ 和天花板 $10^{-2}$ 之间来回弹。</p>
+<p><strong>3. <code>Episode/Reward/*</code> 分项默认没有。</strong>
+你这个 Direct 环境只回传标量奖励。要看得自己往 <code>self.extras["log"]</code> 里写（<a href="#doc-01">01-教程</a> 第 4 步有改法）。</p>
+<h2 id="doc-06-_4">三、三个诊断流程</h2>
+<p><strong>A. reward 不涨</strong></p>
+<ol>
+<li><code>util</code> 有没有到 0.99？到了就别看 reward 了，去看 eval。</li>
+<li>回合长度涨不涨？不涨 → 查终止条件（初始分布是否越界）。</li>
+<li><code>std</code> 有没有动？不动 → 查奖励有没有区分度。</li>
+</ol>
+<p><strong>B. <code>std</code> 不降</strong></p>
+<ol>
+<li><code>util</code> 是不是已经 1.0（"活下来"就满分）→ 任务太容易，加难度。</li>
+<li><code>entropy_coef</code> 是不是偏大？0.005 时熵项约 0.007，和 surrogate 同量级。</li>
+<li>是不是 policy 项梯度被 clip 吃掉了 → 看 <code>surrogate</code> 是否长期贴 0。</li>
+</ol>
+<p><strong>C. 训练指标好、eval 差</strong></p>
+<ol>
+<li>eval 用的是确定性动作吗（关噪声）？</li>
+<li>eval 的初始条件是否超出训练分布？</li>
+<li>是不是拿了 <code>model_499</code>（末期过拟合到"只站着"）而不是 eval 最好的 checkpoint？</li>
+</ol>
+<h2 id="doc-06-_5">四、命令</h2>
+<pre><code class="language-bash"># 所有 run 压成一张表
+python scripts/compare_runs.py --md
+
+# TensorBoard
+tensorboard --logdir logs/rsl_rl --port 6006
+
+# 看某轮的导出策略学到了什么（不用 Isaac）
+python scripts/policy_probe.py --policy logs/rsl_rl/cartpole_direct/&lt;run&gt;/exported/policy.pt
+
+# 打印某轮的全部 scalar 标签
+python - &lt;&lt;'EOF'
+from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+ea = EventAccumulator(&quot;logs/rsl_rl/cartpole_direct/&lt;run&gt;&quot;); ea.Reload()
+print(ea.Tags()[&quot;scalars&quot;])
+EOF
+</code></pre>
+</section>
+<section class="doc" id="doc-07">
+<h1 id="doc-07-_1">论文清单</h1>
+<blockquote>
+<p>用法：<strong>别按顺序读</strong>。先挑能立刻用在你项目上的，理论类等卡住再读。
+分级：<strong>A</strong> 能白板推 ｜ <strong>B</strong> 能复述方法与缺陷 ｜ <strong>C</strong> 知道适用场景 ｜ <strong>D</strong> 选读。
+链接为 arXiv 摘要页（<a href="../README.md">refs/</a> 里有离线教材）。</p>
+</blockquote>
+<h2 id="doc-07-a">A 级 · 强化学习内核</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>论文</th>
+<th>一句话</th>
+<th>读它的理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton &amp; Barto 教材</a></td>
+<td>RL 唯一的权威教材</td>
+<td>第 3 章配练习册 A 第 1 章，第 13 章配第 2-4 章</td>
+</tr>
+<tr>
+<td>A2</td>
+<td><a href="https://arxiv.org/abs/1312.5602">DQN (1312.5602)</a></td>
+<td>经验回放 + 目标网络</td>
+<td>理解"为什么 RL 要稳定性技巧"</td>
+</tr>
+<tr>
+<td>A3</td>
+<td><a href="https://arxiv.org/abs/1506.02438">GAE (1506.02438)</a></td>
+<td>$\hat A$ 的偏差-方差旋钮</td>
+<td>你天天用的 <code>lam=0.95</code></td>
+</tr>
+<tr>
+<td>A4</td>
+<td><a href="https://arxiv.org/abs/1502.05477">TRPO (1502.05477)</a></td>
+<td>信赖域</td>
+<td>PPO 的前身</td>
+</tr>
+<tr>
+<td>A5</td>
+<td><a href="https://arxiv.org/abs/1707.06347">PPO (1707.06347)</a></td>
+<td>clip 版信赖域</td>
+<td>你的主力算法，要能推</td>
+</tr>
+<tr>
+<td>A6</td>
+<td><a href="https://arxiv.org/abs/1801.01290">SAC (1801.01290)</a></td>
+<td>最大熵 off-policy</td>
+<td>连续控制第一主力</td>
+</tr>
+<tr>
+<td>A7</td>
+<td><a href="https://arxiv.org/abs/1802.09477">TD3 (1802.09477)</a></td>
+<td>双 Q + 延迟更新</td>
+<td>和 SAC 对比着看</td>
+</tr>
+<tr>
+<td>A8</td>
+<td><a href="https://arxiv.org/abs/1705.10528">CPO (1705.10528)</a></td>
+<td>约束 MDP</td>
+<td>安全 RL 的入口</td>
+</tr>
+<tr>
+<td>A9</td>
+<td><a href="https://arxiv.org/abs/1912.01603">Dreamer (1912.01603)</a> / <a href="https://arxiv.org/abs/2301.04104">V3 (2301.04104)</a></td>
+<td>世界模型</td>
+<td>模型基路线</td>
+</tr>
+<tr>
+<td>A10</td>
+<td><a href="https://arxiv.org/abs/2106.01345">Decision Transformer (2106.01345)</a></td>
+<td>RL 当序列建模</td>
+<td>通往 VLA 的桥</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-07-b">B 级 · 机器人学习</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>论文</th>
+<th>一句话</th>
+<th>读它的理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td><a href="https://arxiv.org/abs/2109.11978">Learning to Walk in Minutes (2109.11978)</a></td>
+<td>4096 env 训四足</td>
+<td>复现目标，学期 A 就做</td>
+</tr>
+<tr>
+<td>B2</td>
+<td><a href="https://arxiv.org/abs/2108.10470">Isaac Gym (2108.10470)</a></td>
+<td>GPU 仿真 + 训练同卡</td>
+<td>懂吞吐瓶颈</td>
+</tr>
+<tr>
+<td>B3</td>
+<td><a href="https://arxiv.org/abs/2107.04034">RMA (2107.04034)</a></td>
+<td>教师-学生 + 在线自适应</td>
+<td>域随机化的进阶</td>
+</tr>
+<tr>
+<td>B4</td>
+<td><a href="https://arxiv.org/abs/2212.03238">Walk These Ways (2212.03238)</a></td>
+<td>用奖励换行为多样性</td>
+<td>步态参数化</td>
+</tr>
+<tr>
+<td>B5</td>
+<td><a href="https://arxiv.org/abs/1804.02717">DeepMimic (1804.02717)</a></td>
+<td>动作模仿 + RL</td>
+<td>参考轨迹奖励</td>
+</tr>
+<tr>
+<td>B6</td>
+<td><a href="https://arxiv.org/abs/2104.02180">AMP (2104.02180)</a></td>
+<td>判别器代替风格奖励</td>
+<td>对抗式奖励的稳定性</td>
+</tr>
+<tr>
+<td>B7</td>
+<td><a href="https://arxiv.org/abs/2502.08844">MuJoCo Playground (2502.08844)</a></td>
+<td>MuJoCo 上的并行训练栈</td>
+<td>你有 MuJoCo 底子，迁移成本低</td>
+</tr>
+<tr>
+<td>B8</td>
+<td><a href="https://arxiv.org/abs/1808.00177">OpenAI 灵巧手 (1808.00177)</a></td>
+<td>域随机化教科书</td>
+<td>设计随机化参数表</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-07-c-vla">C 级 · VLA 与具身基础模型</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>论文</th>
+<th>一句话</th>
+<th>你要能回答</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td><a href="https://arxiv.org/abs/2307.15818">RT-2 (2307.15818)</a></td>
+<td>VLM 输出动作 token</td>
+<td>离散 vs 连续的取舍</td>
+</tr>
+<tr>
+<td>C2</td>
+<td><a href="https://arxiv.org/abs/2406.09246">OpenVLA (2406.09246)</a></td>
+<td>开源 7B VLA</td>
+<td>数据从哪来、怎么标</td>
+</tr>
+<tr>
+<td>C3</td>
+<td><a href="https://arxiv.org/abs/2410.24164">π0 (2410.24164)</a></td>
+<td>flow matching 出动作</td>
+<td>为什么比 diffusion 快</td>
+</tr>
+<tr>
+<td>C4</td>
+<td><a href="https://arxiv.org/abs/2503.14734">GR00T N1 (2503.14734)</a></td>
+<td>双系统人形模型</td>
+<td>快慢怎么分工</td>
+</tr>
+<tr>
+<td>C5</td>
+<td><a href="https://arxiv.org/abs/2303.04137">Diffusion Policy (2303.04137)</a></td>
+<td>扩散策略</td>
+<td>多峰动作为什么重要</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-07-d">D 级 · 自我学习</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>论文</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1</td>
+<td><a href="https://arxiv.org/abs/1712.01815">AlphaZero (1712.01815)</a></td>
+<td>自博弈 + 搜索</td>
+</tr>
+<tr>
+<td>D2</td>
+<td><a href="https://arxiv.org/abs/2203.14465">STaR (2203.14465)</a></td>
+<td>用自己的正确推理当数据</td>
+</tr>
+<tr>
+<td>D3</td>
+<td><a href="https://arxiv.org/abs/2402.03300">DeepSeekMath / GRPO (2402.03300)</a></td>
+<td>去掉 critic 的 PPO</td>
+</tr>
+<tr>
+<td>D4</td>
+<td><a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1 (2501.12948)</a></td>
+<td>可验证奖励激发推理</td>
+</tr>
+<tr>
+<td>D5</td>
+<td><a href="https://arxiv.org/abs/2505.03335">Absolute Zero (2505.03335)</a></td>
+<td>零数据自我出题</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-07-12-1-2">12 周精读计划（每周 1 精 + 2 泛）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>周</th>
+<th>精读</th>
+<th>泛读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>A1（第 3、13 章）</td>
+<td>A2、A3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>A4</td>
+<td>A5 二刷</td>
+</tr>
+<tr>
+<td>3</td>
+<td>A5 + 读 <code>rsl_rl/ppo.py</code></td>
+<td>A6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>A6</td>
+<td>A7</td>
+</tr>
+<tr>
+<td>5</td>
+<td>A9</td>
+<td>A9-V3</td>
+</tr>
+<tr>
+<td>6</td>
+<td>A10</td>
+<td>C5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>B1</td>
+<td>B2、B7</td>
+</tr>
+<tr>
+<td>8</td>
+<td>B3</td>
+<td>B4</td>
+</tr>
+<tr>
+<td>9</td>
+<td>B5 + B6</td>
+<td>B8</td>
+</tr>
+<tr>
+<td>10</td>
+<td>C4</td>
+<td>C1、C2</td>
+</tr>
+<tr>
+<td>11</td>
+<td>D3 + D4</td>
+<td>D1</td>
+</tr>
+<tr>
+<td>12</td>
+<td>D5</td>
+<td>C3</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-07-_2">代码仓库（按用途）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>仓库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>腿式 RL 祖师爷</td>
+<td><a href="https://github.com/leggedrobotics/legged_gym">legged_gym</a> ｜ <a href="https://github.com/leggedrobotics/rsl_rl">rsl_rl</a></td>
+</tr>
+<tr>
+<td>仿真</td>
+<td><a href="https://github.com/isaac-sim/IsaacLab">IsaacLab</a> ｜ <a href="https://github.com/google-deepmind/mujoco">mujoco</a> ｜ <a href="https://github.com/google-deepmind/mujoco_playground">mujoco_playground</a></td>
+</tr>
+<tr>
+<td>宇树官方（面试必跑）</td>
+<td><a href="https://github.com/unitreerobotics/unitree_rl_gym">unitree_rl_gym</a> ｜ <a href="https://github.com/unitreerobotics/unitree_rl_lab">unitree_rl_lab</a> ｜ <a href="https://github.com/unitreerobotics/unitree_mujoco">unitree_mujoco</a> ｜ <a href="https://github.com/unitreerobotics/unitree_sdk2">unitree_sdk2</a></td>
+</tr>
+<tr>
+<td>算法参考</td>
+<td><a href="https://github.com/vwxyzjn/cleanrl">cleanrl</a>（单文件）｜ <a href="https://github.com/openai/spinningup">spinningup</a> ｜ <a href="https://github.com/DLR-RM/stable-baselines3">SB3</a></td>
+</tr>
+<tr>
+<td>偷懒入门</td>
+<td><a href="https://github.com/huggingface/lerobot">lerobot</a>（采数据 + 模仿一条龙）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-07-_3">三条读论文的规矩</h2>
+<ol>
+<li><strong>三遍法</strong>：5 分钟看摘要图 → 40 分钟看方法 → 半天复现关键式。别一上来逐字读。</li>
+<li><strong>一篇一个产出</strong>：至少写"方法一句话 + 两条缺陷"。</li>
+<li><strong>读完就删书签</strong>：存着不读的论文等于没读。</li>
+</ol>
+</section>
+<section class="doc" id="doc-08">
+<h1 id="doc-08-_1">实验台账</h1>
+<blockquote>
+<p>🧭 <a href="#doc-00">从这里开始</a> ｜ 指标含义：<a href="#doc-06">02-指标速查</a></p>
+<p>【教师】规矩：<strong>每个 run 都要有记录；没有记录 = 没做</strong>。配置那一列不许手填，从 <code>params/env.yaml</code> 抄；指标那一列不许手填，用 <code>python scripts/compare_runs.py --md</code> 生成。</p>
+<p>每次跑完实验的第一件事：</p>
+<p><code>bash
+python scripts/compare_runs.py --md | tee /tmp/latest.md</code></p>
+<p>然后把新行贴到下面的表里，只填「结论」列（这一列是唯一允许人工判断的地方）。</p>
+</blockquote>
+<hr />
+<h2 id="doc-08-_2">一、指标定义（先看这个再看表）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>列</th>
+<th>定义</th>
+<th>回答什么问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iters</code></td>
+<td>训练迭代数（1 轮 = <code>16 步 × 64 env</code> = 1024 步）</td>
+<td>训练量</td>
+</tr>
+<tr>
+<td><code>len95</code></td>
+<td>平均回合长度<strong>首次持续 ≥ 284</strong>（上限 299）的迭代</td>
+<td>多久学会活下来</td>
+</tr>
+<tr>
+<td><code>std.2</code></td>
+<td><code>mean_noise_std</code> <strong>首次持续 ≤ 0.2</strong> 的迭代</td>
+<td>多久动作变确定</td>
+</tr>
+<tr>
+<td><code>std.1</code></td>
+<td>同上，≤ 0.1</td>
+<td>是否过度收敛</td>
+</tr>
+<tr>
+<td><code>reward</code></td>
+<td>末轮 <code>Train/mean_reward</code></td>
+<td><strong>不可跨配置比</strong></td>
+</tr>
+<tr>
+<td><code>util</code></td>
+<td><code>reward / (299 × alive)</code></td>
+<td>离奖励上限还差多少</td>
+</tr>
+<tr>
+<td><code>jit100</code></td>
+<td>末 100 轮 reward 的标准差</td>
+<td>"抖动"的量化</td>
+</tr>
+<tr>
+<td><code>vf</code></td>
+<td>末轮 <code>Loss/value_function</code></td>
+<td>critic 拟合难度（跟尺度走）</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="doc-08-9-run">二、已完成（第二轮，9 个有效 run）</h2>
+<blockquote>
+<p>数据由 <code>scripts/compare_runs.py</code> 从 <code>logs/rsl_rl/cartpole_direct/*/</code> 直接解析。两个残缺 run（<code>13-09:08</code> 2 轮、<code>13-44:21</code> 14 轮，均为 <code>num_envs=4096</code> 时中断）不计入。</p>
+</blockquote>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>run</th>
+<th>iters</th>
+<th>a</th>
+<th>alive</th>
+<th>term</th>
+<th>pole_f</th>
+<th>cart_v</th>
+<th>init</th>
+<th>len95</th>
+<th>std.2</th>
+<th>std.1</th>
+<th>reward</th>
+<th>util</th>
+<th>jit100</th>
+<th>vf</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10-31_17:23</td>
+<td>500</td>
+<td>100</td>
+<td>1</td>
+<td>−2</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±0.25π</td>
+<td>75</td>
+<td>124</td>
+<td>151</td>
+<td>296.8</td>
+<td>0.993</td>
+<td>0.25</td>
+<td>0.0027</td>
+<td>baseline</td>
+</tr>
+<tr>
+<td>11-01_14:22</td>
+<td>500</td>
+<td>200</td>
+<td>1</td>
+<td>−2</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±0.25π</td>
+<td>65</td>
+<td>157</td>
+<td>181</td>
+<td>296.8</td>
+<td>0.993</td>
+<td>0.15</td>
+<td>0.0034</td>
+<td>a 100→200 的干净对照：更快活、更慢定</td>
+</tr>
+<tr>
+<td>11-01_14:31</td>
+<td>500</td>
+<td>200</td>
+<td>1</td>
+<td>−2</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±0.1π</td>
+<td>74</td>
+<td>127</td>
+<td>147</td>
+<td>298.6</td>
+<td>0.998</td>
+<td>0.02</td>
+<td>0.0008</td>
+<td>太容易 → 学得慢（前期无事可学）</td>
+</tr>
+<tr>
+<td>11-01_14:38</td>
+<td>500</td>
+<td>200</td>
+<td>1</td>
+<td>−2</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±1.0π</td>
+<td>—</td>
+<td>135</td>
+<td>214</td>
+<td>124.6</td>
+<td>0.417</td>
+<td>15.57</td>
+<td>12.21</td>
+<td>⚠ 一半初始状态第一步就死，天花板 150</td>
+</tr>
+<tr>
+<td>11-01_14:45</td>
+<td>500</td>
+<td>200</td>
+<td>2</td>
+<td>−2</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±0.3π</td>
+<td>74</td>
+<td>182</td>
+<td>198</td>
+<td>594.2</td>
+<td>0.994</td>
+<td>0.24</td>
+<td>0.0014</td>
+<td>与 init 混杂，不可归因</td>
+</tr>
+<tr>
+<td>11-01_14:51</td>
+<td>500</td>
+<td>100</td>
+<td>2</td>
+<td>−1</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±0.3π</td>
+<td>76</td>
+<td>184</td>
+<td>209</td>
+<td>593.8</td>
+<td>0.993</td>
+<td>0.24</td>
+<td>0.0017</td>
+<td>改了 3 个变量，不可归因</td>
+</tr>
+<tr>
+<td>11-01_15:27</td>
+<td>500</td>
+<td>200</td>
+<td>5</td>
+<td>−1</td>
+<td>−1</td>
+<td>−0.010</td>
+<td>±0.3π</td>
+<td>83</td>
+<td>227</td>
+<td>251</td>
+<td>1491.7</td>
+<td>0.998</td>
+<td>0.18</td>
+<td>0.0370</td>
+<td>与 14:45 混杂</td>
+</tr>
+<tr>
+<td>11-01_16:00</td>
+<td>500</td>
+<td>200</td>
+<td>5</td>
+<td>−1</td>
+<td>−5</td>
+<td>−0.010</td>
+<td>±0.3π</td>
+<td>131</td>
+<td>302</td>
+<td>327</td>
+<td>1484.7</td>
+<td>0.993</td>
+<td>0.72</td>
+<td>0.0424</td>
+<td>pole 惩罚 ×5 的干净对照：更慢但更硬</td>
+</tr>
+<tr>
+<td>11-01_17:00</td>
+<td>500</td>
+<td>200</td>
+<td>5</td>
+<td>−10</td>
+<td>−1</td>
+<td>−0.001</td>
+<td>±0.3π</td>
+<td><strong>63</strong></td>
+<td>330</td>
+<td>379</td>
+<td>1492.9</td>
+<td><strong>0.999</strong></td>
+<td>0.46</td>
+<td>0.0165</td>
+<td>目前最好：最快活、残差最小</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>干净的对照只有 4 组</strong>：<code>10-31→14:22</code>（a）、<code>14:22→14:31</code>（init）、<code>14:22→14:38</code>（init）、<code>15:27→16:00</code>（pole_f）。其余全部至少改了两个变量。</p>
+<hr />
+<h2 id="doc-08-_3">三、待做（第三阶段，见 <a href="#doc-01">第三阶段教案</a>）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>变量（只改这一个）</th>
+<th>种子</th>
+<th>预期</th>
+<th>实际</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E3-1a</td>
+<td><code>alive=1</code>, 惩罚 ×1</td>
+<td>3</td>
+<td>—</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-1b</td>
+<td><code>alive=1</code>, 惩罚 ×5</td>
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-1c</td>
+<td><code>alive=5</code>, 惩罚 ×1</td>
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-1d</td>
+<td><code>alive=5</code>, 惩罚 ×5</td>
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-2</td>
+<td><code>pole_pos</code> −1 vs −5（补种子）</td>
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-3</td>
+<td>加 <code>−a²</code> 动作惩罚</td>
+<td>3</td>
+<td>力矩 RMS ↓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-4</td>
+<td>势函数"回中"项</td>
+<td>3</td>
+<td>漂移 ↓，最优策略不变</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-5</td>
+<td>obs 只留 <code>[θ,ω]</code></td>
+<td>3</td>
+<td>车漂走，<code>util</code> ↓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-6</td>
+<td>PD 基线 3 组增益</td>
+<td>—</td>
+<td>找到 PD 天花板</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-7</td>
+<td><code>model_250</code> vs <code>model_499</code> eval</td>
+<td>—</td>
+<td>末期可能退化</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-8</td>
+<td>±2 m 一次性 vs 课程学习</td>
+<td>3</td>
+<td>课程更好</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-9</td>
+<td>tracking 有无 <code>alive</code></td>
+<td>2</td>
+<td>出现异常行为</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E3-10</td>
+<td>部署 60 Hz vs 30 Hz</td>
+<td>—</td>
+<td>30 Hz 必崩</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="doc-08-_4">四、单条记录模板（复制粘贴用）</h2>
+<pre><code class="language-markdown">### E3-x · 一句话标题
+
+- **日期**：
+- **假设**（先写！）：
+- **只改了**：`文件:行` 从 `旧值` → `新值`
+- **没改**：（列出你确认没动的：init / 终止条件 / alive / action_scale / 网络 / PPO 超参）
+- **命令**：`python scripts/rsl_rl/train.py --task=Template-Cartpole-Direct-v0 --num_envs=64 --max_iterations=500 --seed=0`
+- **run 目录**：`logs/rsl_rl/cartpole_direct/&lt;时间戳&gt;`
+- **指标**（compare_runs 生成）：
+- **评估**（eval 网格）：成功率 __%，残差角 __°，力矩 RMS __ N
+- **结论（带强度）**：观察到 / 证据支持 / 否证
+- **意外发现**：
+</code></pre>
+<h2 id="doc-08-_5">五、结论强度约定</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>强度</th>
+<th>条件</th>
+<th>允许的措辞</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>观察</td>
+<td>1 个 run</td>
+<td>"我观察到……"</td>
+</tr>
+<tr>
+<td>可能</td>
+<td>≥3 种子，方向一致</td>
+<td>"有迹象表明……"</td>
+</tr>
+<tr>
+<td>证据支持</td>
+<td>≥3 种子 + eval 网格一致 + 只有 1 个变量</td>
+<td>"在 X 条件下，A 比 B 更好"</td>
+</tr>
+<tr>
+<td>否证</td>
+<td>预期与实测方向相反</td>
+<td>"我原来的假说错了，新假说是……"</td>
+</tr>
+</tbody>
+</table></div>
+<p>⚠ 「否证」是四种里最值钱的，别怕写。</p>
+</section>
+<section class="doc" id="doc-09">
+<h1 id="doc-09-deepseek">求职路线：宇树 / DeepSeek / 具身智能</h1>
+<blockquote>
+<p>🧭 <a href="#doc-00">从这里开始</a> ｜ 论文：<a href="#doc-07">03-论文清单</a></p>
+</blockquote>
+<p><strong>先说结论</strong>：按你现在的背景，<strong>最匹配的不是"通用 RL 岗"，而是"RL + 真机部署"的具身算法岗</strong>。你会推 MPC/SMC、会调 STM32、会画 PCB、还摸过串联腿实物——这类人在招聘池里很少。把这三点讲成一个故事，你就不是"转行的人"，而是"能落地的人"。</p>
+<hr />
+<h2 id="doc-09-1-2026">1. 岗位地图（2026 年现状）</h2>
+<h3 id="doc-09-unitree">宇树科技（Unitree）</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>岗位方向</th>
+<th>干什么</th>
+<th>与你匹配度</th>
+<th>主要考点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>强化学习算法（运动控制）</td>
+<td>四足/人形 locomotion 的 RL 训练与 sim2real</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>PPO/SAC、域随机化、奖励设计、Isaac Lab/Gym</td>
+</tr>
+<tr>
+<td>运动控制算法</td>
+<td>WBC、MPC、步态规划</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>QP、接触力分配、MPC 实时性</td>
+</tr>
+<tr>
+<td>嵌入式/驱动</td>
+<td>电机控制、CAN、实时系统</td>
+<td>⭐⭐⭐⭐</td>
+<td>FOC、STM32、时序</td>
+</tr>
+<tr>
+<td>感知/状态估计</td>
+<td>IMU、腿部里程计、地形</td>
+<td>⭐⭐⭐</td>
+<td>卡尔曼、ESKF</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>宇树的技术栈几乎就是为你这种背景准备的：<strong>RL 训练（Isaac）+ 真机部署（嵌入式）+ 控制理论（MPC/WBC）</strong>。他们的开源仓库（<code>unitree_rl_gym</code>、<code>unitree_rl_lab</code>、<code>unitree_mujoco</code>、<code>unitree_sdk2</code>）<strong>一定要提前跑过</strong>，面试官会直接问"你跑过我们的仓库吗"。</p>
+</blockquote>
+<h3 id="doc-09-deepseek_1">DeepSeek（深度求索）</h3>
+<ul>
+<li>公开信息显示其近期招聘<strong>重心在 Agent / 应用方向</strong>（媒体转述为一次放出 17 个岗位，<a href="https://kx.umi6.com/article/34126.html">参考</a>、<a href="https://www.gate.com/ja/news/detail/deepseek-opens-17-recruitment-positions-core-direction-shifts-toward-agent-19760430">参考</a>）。</li>
+<li><strong>未见公开的"机器人/具身算法"岗位</strong>。它的 RL 岗本质是 <strong>LLM 的 RL</strong>（RLHF/GRPO/RLVR、Agent 训练），不是运动控制。</li>
+<li>所以：<strong>想去 DeepSeek，路径是"RL 理论 + LLM RL"，不是"机器人"</strong>。你的控制背景在这里是加分项（系统/优化直觉），但不是主线。</li>
+<li>⚠ 以上为公开二手信息，<strong>以官方渠道为准</strong>（官网 <a href="https://www.deepseek.com/">https://www.deepseek.com/</a>、官方公众号、BOSS 直聘/猎聘上的企业主页）。</li>
+</ul>
+<blockquote>
+<p>建议：<strong>主线投具身（宇树/智元/银河通用/星海图/加速进化/优必选/小米机器人），副线投 DeepSeek 类 LLM RL 岗</strong>。两条线的准备内容有 70% 重叠（RL 理论 + 工程 + 论文），但项目叙事不同。</p>
+</blockquote>
+<hr />
+<h2 id="doc-09-2-jd">2. 能力映射：JD 要求 → 你现在 → 怎么补</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>JD 常见要求</th>
+<th>你现状</th>
+<th>差距</th>
+<th>补法（学期）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>精通 PPO/SAC，理解 on/off-policy</td>
+<td>PPO 会用不会推</td>
+<td>中</td>
+<td>A（1-6 周）</td>
+</tr>
+<tr>
+<td>四足/人形 locomotion 训练经验</td>
+<td>只有 cartpole + 串联腿实物</td>
+<td><strong>大</strong></td>
+<td>A 末 + B</td>
+</tr>
+<tr>
+<td>域随机化 / sim2real 方法论</td>
+<td>概念模糊</td>
+<td>大</td>
+<td>B（13-20 周）</td>
+</tr>
+<tr>
+<td>Isaac Lab / Isaac Gym</td>
+<td>入门（cartpole）</td>
+<td>中</td>
+<td>A（8-9 周）</td>
+</tr>
+<tr>
+<td>MuJoCo</td>
+<td><strong>会</strong>（倒立摆 + 串联腿验证）</td>
+<td>小</td>
+<td>直接用</td>
+</tr>
+<tr>
+<td>控制理论（MPC/WBC/LQR）</td>
+<td><strong>强</strong></td>
+<td>无</td>
+<td>不用补</td>
+</tr>
+<tr>
+<td>状态估计（KF/ESKF）</td>
+<td><strong>强</strong></td>
+<td>小（补 ESKF 在腿式上的用法）</td>
+<td>穿插</td>
+</tr>
+<tr>
+<td>C++ / 实时系统</td>
+<td>C（STM32），C++ 弱</td>
+<td>中</td>
+<td>B（21-24 周）</td>
+</tr>
+<tr>
+<td>ROS2</td>
+<td>无</td>
+<td>中</td>
+<td>B（23-24 周）</td>
+</tr>
+<tr>
+<td>部署（ONNX/TensorRT/Jetson）</td>
+<td>无</td>
+<td>中</td>
+<td>B（21-22 周）</td>
+</tr>
+<tr>
+<td>论文阅读与复现</td>
+<td>弱（刚开始）</td>
+<td>中</td>
+<td>贯穿（08 的 12 周计划）</td>
+</tr>
+<tr>
+<td>顶会论文 / 竞赛</td>
+<td>无</td>
+<td>大（校招硬伤，社招可绕）</td>
+<td>C（做出可展示项目替代）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论</strong>：你的差距集中在"<strong>大规模训练 + sim2real + 工程部署</strong>"，而不是"控制"或"数学"。所以 00 的路线把 60% 时间放在学期 A/B。</p>
+<hr />
+<h2 id="doc-09-3">3. 简历：三个项目怎么写成"不可替代"</h2>
+<blockquote>
+<p>简历不是经历清单，是<strong>证据链</strong>。每条都要有：做了什么 → 量化结果 → 你的角色。</p>
+</blockquote>
+<h3 id="doc-09-1">项目 1（王牌）：串联腿实物 + 学习策略闭环</h3>
+<pre><code>项目：串联腿机器人「学习控制 + 实物部署」
+- 底层：STM32 电控（自研驱动板，DCDC 降压），CAN 通信，1 kHz 控制循环
+- 模型：MuJoCo 建模仿真，与实物参数对齐（质量/惯量/摩擦辨识）
+- 策略：Isaac Lab / MuJoCo 训练 PPO locomotion，域随机化（质量 ±20%、延迟 0-20 ms）
+- 部署：ONNX 导出，观测对齐（顺序/单位/延迟），实机站立/抬腿 X 秒不摔
+- 结果：仿真成功率 X%，实物 Y 秒；定位 3 个 sim2real gap（延迟/摩擦/电机饱和）
+</code></pre>
+<p><strong>为什么值钱</strong>：90% 的候选人到"仿真跑通"就停了。你到"电机转起来"。</p>
+<h3 id="doc-09-2">项目 2：控制理论 + 学习型控制（你的差异化）</h3>
+<pre><code>项目：MPC / SMC / MRAC 与 RL 的对照研究
+- 实现 LQR / MPC（CasADi）/ SMC / MRAC 四条基线
+- 用 RL 学残差项补偿模型误差，对比纯 MPC 与 MPC+RL
+- 结论：在 X 扰动下，RL 残差降低跟踪误差 Y%；但训练不稳定，需 Z
+</code></pre>
+<p><strong>为什么值钱</strong>：能说清"RL 什么时候比经典控制好"，这是资深岗的思维。</p>
+<h3 id="doc-09-3-rl">项目 3：标准 RL 工程能力</h3>
+<pre><code>项目：四足 locomotion 复现（Isaac Lab）
+- 复现 Learning to Walk in Minutes，4096 env，训练 20 min 达到 vx 跟踪误差 &lt; 0.1 m/s
+- 3 种子 × 2 因素消融（域随机化 / 动作空间），给出中位数与极差
+- 开源仓库：训练/评估/导出/复现脚本 + README
+</code></pre>
+<h3 id="doc-09-_1">简历三条铁律</h3>
+<ol>
+<li><strong>每个数字都要能解释来源</strong>（面试官会追问）。</li>
+<li><strong>写"我做的"，不写"团队做的"</strong>（组长经历可以单独一行）。</li>
+<li><strong>不写"熟悉/了解"</strong>，写"实现过/部署过/复现过"。</li>
+</ol>
+<hr />
+<h2 id="doc-09-4">4. 面试题库（按考点分类，先自己答一遍再查）</h2>
+<h3 id="doc-09-41-rl">4.1 RL 理论（必考）</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>问题</th>
+<th>考点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>为什么 PPO 要 clip？它和 TRPO 的区别？</td>
+<td>信赖域、重要性采样比</td>
+</tr>
+<tr>
+<td>2</td>
+<td>GAE 的 λ 控制什么？λ=0 和 λ=1 分别是什么？</td>
+<td>偏差-方差</td>
+</tr>
+<tr>
+<td>3</td>
+<td>on-policy 为什么不能重复用数据？</td>
+<td>分布偏移</td>
+</tr>
+<tr>
+<td>4</td>
+<td>连续控制为什么不用 DQN？</td>
+<td>argmax 不可行、动作空间连续</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SAC 的最大熵项起什么作用？</td>
+<td>探索、鲁棒性</td>
+</tr>
+<tr>
+<td>6</td>
+<td>优势函数为什么要归一化？会丢掉什么信息？</td>
+<td>尺度不变性（你第二轮踩过）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>奖励尺度会影响学习速度吗？为什么？</td>
+<td>归一化、critic 目标、KL</td>
+</tr>
+<tr>
+<td>8</td>
+<td>什么是 reward shaping？怎么保证不改变最优策略？</td>
+<td>势函数</td>
+</tr>
+<tr>
+<td>9</td>
+<td>训练不收敛，你怎么排查？</td>
+<td>系统性：数据/奖励/优化/环境</td>
+</tr>
+<tr>
+<td>10</td>
+<td>多 seed 为什么必要？你怎么报告结果？</td>
+<td>统计素养</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="doc-09-42">4.2 控制（你的强项，要答得比别人深）</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>问题</th>
+<th>考点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>腿式机器人为什么要"关节位置 + PD"而不是直接给力矩？</td>
+<td>动作空间、低层稳定性</td>
+</tr>
+<tr>
+<td>2</td>
+<td>MPC 和 RL 各自适合什么？能结合吗？</td>
+<td>学习型 MPC、残差学习</td>
+</tr>
+<tr>
+<td>3</td>
+<td>WBC 的 QP 怎么写？约束有哪些？</td>
+<td>任务优先级、摩擦锥、力矩限</td>
+</tr>
+<tr>
+<td>4</td>
+<td>观测里有延迟，策略会怎样？怎么补？</td>
+<td>历史观测、域随机化延迟</td>
+</tr>
+<tr>
+<td>5</td>
+<td>接触检测你怎么做？（你有逻辑回归经验）</td>
+<td>分类器、阈值、延迟</td>
+</tr>
+<tr>
+<td>6</td>
+<td>状态估计在腿式上的难点？</td>
+<td>足端打滑、IMU 漂移</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="doc-09-43">4.3 工程 / 部署</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>问题</th>
+<th>考点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>4096 env 训练时，瓶颈在仿真还是学习？怎么测？</td>
+<td><code>Perf/collection_time</code> vs <code>learning_time</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>策略部署到真机，你的延迟预算怎么算？</td>
+<td>传感器→推理→CAN→电机</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ONNX 和 TorchScript 选哪个？为什么？</td>
+<td>部署生态、算子支持</td>
+</tr>
+<tr>
+<td>4</td>
+<td>训练用 60 Hz 控制，真机 200 Hz，怎么办？</td>
+<td>重训 or 插值/降频</td>
+</tr>
+<tr>
+<td>5</td>
+<td>怎么保证策略不会把机器人摔坏？</td>
+<td>力矩限幅、安全层、低速调试</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="doc-09-44">4.4 项目追问（最容易被问倒）</h3>
+<ul>
+<li>"你这个奖励函数为什么这么设计？去掉会怎样？"</li>
+<li>"你的域随机化范围怎么定的？"</li>
+<li>"失败案例是什么？"</li>
+<li>"如果给你 4 周，你会怎么改？"</li>
+</ul>
+<blockquote>
+<p><strong>准备方法</strong>：每个项目准备 3 个"翻车故事"（越具体越好）。面试官更信"踩过坑的人"。</p>
+</blockquote>
+<hr />
+<h2 id="doc-09-5-t0">5. 时间表（以投递日 T=0 倒推）</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-9 月</td>
+<td>定方向；跑通宇树四个仓库（<code>unitree_rl_gym</code> / <code>unitree_rl_lab</code> / <code>unitree_mujoco</code> / <code>unitree_sdk2</code>）；开始 08 的 12 周论文计划</td>
+</tr>
+<tr>
+<td>T-9 ~ T-6</td>
+<td><strong>学期 A</strong>：PPO/SAC 从零实现；四足平地行走；第一个 GitHub 仓库</td>
+</tr>
+<tr>
+<td>T-6 ~ T-3</td>
+<td><strong>学期 B</strong>：教师-学生、域随机化消融、sim2sim、<strong>实物闭环 demo</strong>（录视频）</td>
+</tr>
+<tr>
+<td>T-4</td>
+<td>技术博客第一篇（就用你第二轮那 9 个实验的复盘）</td>
+</tr>
+<tr>
+<td>T-3 ~ T-1</td>
+<td><strong>学期 C</strong>：人形 walker、VLA 跑通、15 页英文报告、简历定稿</td>
+</tr>
+<tr>
+<td>T-2</td>
+<td>内推优先投递（其次官网 / BOSS 直聘企业主页）</td>
+</tr>
+<tr>
+<td>T-1</td>
+<td>模拟面试 ≥3 次；补弱项（C++/ROS2）</td>
+</tr>
+<tr>
+<td>T-0</td>
+<td>面试</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>与你 00 里 9 个月路线的对应关系：学期 A = 第 1-12 周，学期 B = 第 13-24 周，学期 C = 第 25-36 周。投递放在学期 C 中段，边投边补。</p>
+</blockquote>
+<hr />
+<h2 id="doc-09-6">6. 渠道（比刷题更重要）</h2>
+<ol>
+<li><strong>内推</strong>：GitHub 上给宇树/智元的仓库提过 PR 或 issue，是最硬的敲门砖。</li>
+<li><strong>开源</strong>：把你的串联腿项目开源，README 写清楚（视频 + 复现步骤）。招聘方真的会点开。</li>
+<li><strong>技术博客</strong>：把第二轮那 9 个实验写成一篇《我如何用日志推翻自己的三个直觉》——<strong>这种文章比十篇"RL 入门"有价值</strong>。</li>
+<li><strong>竞赛</strong>：RoboMaster（你有背景）、Isaac 相关的 sim2real 挑战赛。</li>
+<li><strong>社群</strong>：宇树开发者群、ROS/具身智能社群，岗位常先在小圈子流出。</li>
+</ol>
+<hr />
+<h2 id="doc-09-7">7. 一个诚实的提醒</h2>
+<ul>
+<li>你的<strong>控制 + 硬件</strong>是优势，但<strong>"没有大规模 RL 项目"是硬伤</strong>。所以学期 A/B 的两个项目（四足 + 实物部署）必须做完，否则简历只有"课程实验"。</li>
+<li><strong>DeepSeek 那条线</strong>要认清：它的 RL 是 LLM RL（GRPO/RLVR），和机器人差别很大。如果你真想去，学期 C 的 GRPO 实验要认真做，并且读透 <a href="#doc-07">08</a> 的 D 级 5 篇。</li>
+<li><strong>不要同时准备两条线</strong>。先把具身主线做出一个能讲的项目，再补 LLM RL。两者共用 RL 理论，切换成本不高。</li>
+</ul>
+<blockquote>
+<p>你现在最该做的一件事：<strong>去把 <code>unitree_rl_lab</code> 跑起来</strong>。跑通那天，你就已经比 80% 的候选人更接近这个岗位了。</p>
+</blockquote>
+</section>
+<section class="doc" id="doc-10">
+<h1 id="doc-10-a">练习册 A：强化学习原理（我们一起写）</h1>
+<blockquote>
+<p>🧭 返回 <a href="#doc-00">学习总纲</a> ｜ 配套：<a href="#doc-11">B 控制</a>、<a href="#doc-12">C VLA</a>、<a href="#doc-13">试卷</a></p>
+</blockquote>
+<p><strong>这本册子怎么用（重要）</strong></p>
+<ol>
+<li>每章都是同一个节奏：<strong>我说人话 → 推给你看 → 我示范一道 → 你填空 → 你写代码 → 交回给我</strong>。</li>
+<li>所有 <code>🖊️</code> 开头的块是<strong>你的地方</strong>，直接在里面写，别另开文件。</li>
+<li>每章末尾有【交回给我】。<strong>你把这个 md 原样发我</strong>，我只读 <code>🖊️</code> 块和【交回给我】，然后据此决定下一章怎么讲（讲深、讲浅、换例子）。</li>
+<li>公式用 LaTeX 写（MarkText 和 <code>index.html</code> 都能渲染）。<strong>看不懂公式就先看"说人话"那段，别硬啃符号。</strong></li>
+</ol>
+<hr />
+<h2 id="doc-10-1">第 1 章 · 值函数：为什么"未来"能用一个数概括</h2>
+<p><strong>这一节只干一件事</strong>：说清楚"价值"是什么，以及为什么它满足一个自己等于自己的方程。</p>
+<h3 id="doc-10-11">1.1 先说人话</h3>
+<p>下棋时你说"这个局面好"，其实是在说"从这儿走下去我大概能赢多少分"。<strong>价值 = 从这儿出发，未来所有奖励的（折扣）总和，取平均。</strong></p>
+<p>为什么要折扣？因为越远的奖励越不确定，而且我们希望早点拿到。折现率 $\gamma$ 就是"未来的钱值多少今天的钱"。</p>
+<p>为什么要平均？因为策略定下来后未来仍然是随机的，只能谈期望。</p>
+<h3 id="doc-10-12">1.2 推给你看</h3>
+<p>一条轨迹的总回报：</p>
+<p>$$
+G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \cdots
+$$</p>
+<p>关键一步——拆成"这一步 + 剩下的"：</p>
+<p>$$
+G_t = r_{t+1} + \gamma G_{t+1}
+$$</p>
+<p>两边对"从现在开始随机走"取期望（$\gamma$ 是常数，可以提出来）：</p>
+<p>$$
+\boxed{\,V^\pi(s) = \sum_a \pi(a\mid s)\sum_{s'} P(s'\mid s,a)\left[R(s,a,s') + \gamma V^\pi(s')\right]\,}
+$$</p>
+<p><strong>逐项读一遍</strong>：外层对动作求和（策略在选动作），内层对下一个状态求和（环境在掷骰子），方括号是"这一步的奖励 + 折扣后的未来价值"。</p>
+<blockquote>
+<p>这行就是<strong>贝尔曼期望方程</strong>。它的意义：<strong>无穷长的期望被压缩成一个方程</strong>。值迭代、TD、Q-learning 都在解它。</p>
+</blockquote>
+<p>最优版本把"按策略平均"换成"挑最好的动作"：</p>
+<p>$$
+V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\left[R + \gamma V^*(s')\right]
+$$</p>
+<p>这个 $\max$ 就是"非线性"的来源。有它不能直接求逆解；没它（只评估固定策略）就是一个线性方程组：</p>
+<p>$$
+(I - \gamma P^\pi)\,V^\pi = R^\pi
+$$</p>
+<h3 id="doc-10-13">1.3【例题】我带你走一遍</h3>
+<p>两状态 $\{A, B\}$，两个动作：</p>
+<ul>
+<li><code>stay</code>：得 $+1$，留在原地；</li>
+<li><code>switch</code>：得 $0$，跳到另一个状态。</li>
+</ul>
+<p>$\gamma = 0.9$。求 $V^*(A)$、$V^*(B)$。</p>
+<p><strong>解法</strong>：先写最优方程（奖励只和动作有关）：</p>
+<p>$$
+V^*(A) = \max\{1 + 0.9 V^*(A),\ 0 + 0.9 V^*(B)\}
+$$</p>
+<p>两边结构完全对称，先猜 $V^*(A) = V^*(B) = V$。代 <code>stay</code> 分支：</p>
+<p>$$
+V = 1 + 0.9 V \;\Rightarrow\; V = 10
+$$</p>
+<p>再用 $V = 10$ 检查 <code>switch</code> 分支：$0 + 0.9 \times 10 = 9 &lt; 10$，所以 <code>stay</code> 确实更好。</p>
+<p><strong>答</strong>：$V^*(A) = V^*(B) = 10$，最优策略是永远 <code>stay</code>。</p>
+<blockquote>
+<p>套路（<strong>对称 → 猜 → 代回验证另一分支</strong>）是手算贝尔曼的标准姿势。</p>
+</blockquote>
+<h3 id="doc-10-14">1.4【你来】</h3>
+<p><strong>填空 1</strong> 同样两状态，但 <code>switch</code> 改成 $+2$（<code>stay</code> 还是 $+1$），$\gamma = 0.9$。求 $V^*$ 与最优策略。</p>
+<p>（提示：先猜对称，两个分支各解一遍再比大小）</p>
+<p>🖊️ <strong>我的推导</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>我的答案</strong>：$V^*(A)=$ ____，$V^*(B)=$ ____，最优策略：________</p>
+<p><strong>填空 2</strong> 若 $|r| \le R_{\max}$ 且 $\gamma &lt; 1$，证明 $|V^\pi(s)| \le \dfrac{R_{\max}}{1-\gamma}$。</p>
+<p>🖊️ <strong>我的证明</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-15">1.5【你的代码位置】</h3>
+<p>文件：<code>source/cartpole/cartpole/tasks/direct/cartpole/cartpole_env.py</code></p>
+<p>在 <code>_get_rewards()</code> 里有这一行：</p>
+<pre><code class="language-python">rew_alive = rew_scale_alive * (1.0 - reset_terminated.float())
+</code></pre>
+<p><strong>你去确认一件事</strong>：<code>reset_terminated</code> 只包含"真终止"（出界/杆倒），<strong>不包含超时</strong>（<code>time_out</code>）。所以超时那一步，<code>alive</code> 奖励照样给。</p>
+<p>🖊️ 我的确认结果（第几行、我看到的变量名）：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ 如果我想让"超时也算终止"，我该改哪一行？我打算改成：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-16">1.6【交回给我】</h3>
+<ul>
+<li>填空 1 我算出的数：</li>
+<li>填空 2 我卡在哪一步：</li>
+<li>1.5 里我发现的那一行：</li>
+<li>我想问你的一个问题：</li>
+</ul>
+<hr />
+<h2 id="doc-10-2">第 2 章 · 策略梯度：为什么可以直接对"期望"求导</h2>
+<p><strong>这一节只干一件事</strong>：把"调高好动作的概率"变成能算的公式。</p>
+<h3 id="doc-10-21">2.1 先说人话</h3>
+<p>训练就三句：</p>
+<ol>
+<li>用现在的策略跑一批轨迹；</li>
+<li>看哪些动作后面跟着高回报；</li>
+<li>把这些动作的概率调高一点。</li>
+</ol>
+<p>第三句有麻烦：<strong>动作概率变了，采样的轨迹也跟着变</strong>。相当于"我在改考题，同时又要按新考题算平均分"。直接对期望求导会卡在这里。</p>
+<p>解决它只需一个高中技巧：$\frac{d}{dx}\log f = \frac{f'}{f}$，即 $f' = f \cdot (\log f)'$。</p>
+<h3 id="doc-10-22">2.2 推给你看</h3>
+<p>目标 $J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[R(\tau)]$。</p>
+<p>第一步，写轨迹概率（$\rho_0$ 是初始状态分布，$P$ 是环境转移）：</p>
+<p>$$
+p_\theta(\tau) = \rho_0(s_0)\prod_t \pi_\theta(a_t\mid s_t)\,P(s_{t+1}\mid s_t,a_t)
+$$</p>
+<p><strong>盯住这里</strong>：$\rho_0$ 和 $P$ 都<strong>不含</strong> $\theta$。这是整章成立的根本原因。</p>
+<p>第二步，把"对分布求导"换成"对 log 求导"：</p>
+<p>$$
+\nabla_\theta J
+= \int \nabla_\theta p_\theta(\tau) R(\tau)\,d\tau
+= \int p_\theta(\tau)\,\nabla_\theta \log p_\theta(\tau)\,R(\tau)\,d\tau
+= \mathbb{E}\left[\nabla_\theta \log p_\theta(\tau)\,R(\tau)\right]
+$$</p>
+<p>第三步，取 log 后乘积变加法，只有策略项含 $\theta$：</p>
+<p>$$
+\nabla_\theta \log p_\theta(\tau) = \sum_t \nabla_\theta \log \pi_\theta(a_t\mid s_t)
+$$</p>
+<p>第四步，<strong>因果性</strong>：$t$ 时刻的动作不可能影响 $t$ 之前的奖励，所以整条轨迹的回报 $R(\tau)$ 可以换成"从 $t$ 往后的回报" $G_t$：</p>
+<p>$$
+\boxed{\;\nabla_\theta J = \mathbb{E}\left[\sum_t \nabla_\theta \log \pi_\theta(a_t\mid s_t)\,G_t\right]\;}
+$$</p>
+<h3 id="doc-10-23">2.3 为什么可以减掉一个"基准"</h3>
+<p>设 $b(s)$ 只跟状态有关。因为</p>
+<p>$$
+\sum_a \nabla_\theta \pi_\theta(a\mid s) = \nabla_\theta \sum_a \pi_\theta(a\mid s) = \nabla_\theta 1 = 0
+$$</p>
+<p>所以</p>
+<p>$$
+\mathbb{E}_{a}\left[\nabla_\theta \log \pi_\theta(a\mid s)\, b(s)\right]
+= b(s)\sum_a \nabla_\theta \pi_\theta(a\mid s) = 0
+$$</p>
+<p><strong>结论</strong>：把 $G_t$ 换成 $G_t - b(s_t)$，期望不变，方差变小。这就是"优势函数"的由来。</p>
+<blockquote>
+<p>⚠ $b$ 只能依赖状态。依赖动作的话，上面求和不为 0，会引入偏差。</p>
+</blockquote>
+<h3 id="doc-10-24">2.4【例题】我带你走一遍</h3>
+<p>高斯策略 $\pi(a\mid s) = \mathcal{N}(\mu_\theta(s), \sigma^2)$，且 $\mu = \theta$、$\sigma$ 固定。</p>
+<p>$$
+\log \pi = -\frac{(a-\theta)^2}{2\sigma^2} - \log(\sigma\sqrt{2\pi})
+\;\Rightarrow\;
+\nabla_\theta \log \pi = \frac{a-\theta}{\sigma^2}
+$$</p>
+<p>于是</p>
+<p>$$
+\nabla_\theta J = \mathbb{E}\left[\frac{a-\theta}{\sigma^2}\,A(s,a)\right]
+$$</p>
+<p><strong>读法</strong>：$A &gt; 0$（动作比平均好）时，梯度把 $\theta$ 往 $a$ 推；$A &lt; 0$ 时反向。分母 $\sigma^2$：策略越确定，同样的偏差给越大的梯度。</p>
+<h3 id="doc-10-25">2.5【你来】</h3>
+<p><strong>填空 1</strong> 设 $\pi$ 是伯努利分布，$p_\theta = \sigma(\theta)$（sigmoid）。求 $\nabla_\theta \log \pi(a)$，$a \in \{0,1\}$。</p>
+<p>🖊️ <strong>我的推导</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>我的答案</strong>（写成关于 $a$ 和 $p$ 的简单式子）：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 为什么 $G_t$ 可以换成 $Q^\pi(s_t,a_t)$，也可以换成 $A^\pi = Q^\pi - V^\pi$？三者期望为什么相同？</p>
+<p>🖊️ <strong>我的解释</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-26">2.6【你的代码位置】</h3>
+<p>打开 PPO 的实现：<code>~/miniconda3/envs/isaac/lib/python3.10/site-packages/rsl_rl/algorithms/ppo.py</code></p>
+<p><strong>任务</strong>：找到"策略损失"（<code>surrogate</code>）那几行，确认它和本章公式的对应关系。</p>
+<p>🖊️ 我找到的行号：第 ____ 行</p>
+<p>🖊️ 我抄下来的关键两行：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ 这行代码里，哪个变量对应 $\log \pi$，哪个对应 $A$？</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-27">2.7【交回给我】</h3>
+<ul>
+<li>填空 1 的答案：</li>
+<li>填空 2 我解释清楚了吗（是/否/半懂）：</li>
+<li>2.6 找到的行号：</li>
+<li>我现在的疑问：</li>
+</ul>
+<hr />
+<h2 id="doc-10-3-gae">第 3 章 · GAE：一个"偏差 ↔ 方差"的旋钮</h2>
+<p><strong>这一节只干一件事</strong>：说清 $\lambda$ 在调什么，以及为什么 $\lambda = 1$ 必须和蒙特卡洛算出来一模一样。</p>
+<h3 id="doc-10-31">3.1 先说人话</h3>
+<p>要估"这个动作比平均好多少"（优势），有两种估法：</p>
+<ul>
+<li><strong>只看一步</strong>：$r + \gamma V(s') - V(s)$。用了估出来的 $V$ → <strong>有偏差</strong>，但只含一步随机性 → <strong>方差小</strong>。</li>
+<li><strong>看完整回合</strong>：$G_t - V(s_t)$。回报是真的（无偏），但要累加很多随机奖励 → <strong>方差大</strong>。</li>
+</ul>
+<p>GAE 用旋钮 $\lambda$ 在两者之间连续调节：</p>
+<p>$$
+A_t^{\mathrm{GAE}} = \sum_{l=0}^{\infty}(\gamma\lambda)^l\,\delta_{t+l},
+\qquad \delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)
+$$</p>
+<ul>
+<li>$\lambda = 0$：只剩 $\delta_t$（一步 TD）。</li>
+<li>$\lambda = 1$：所有 $\delta$ 都用上 → 望远镜求和后正好等于 $G_t - V(s_t)$。</li>
+</ul>
+<h3 id="doc-10-32">3.2【例题】我带你走一遍（一定要手算）</h3>
+<p>3 步轨迹：$r = [1, 0, 2]$，$V = [5, 4, 3]$，第 3 步之后终止（$V(s_3)=0$），$\gamma = 0.9$。</p>
+<p>先算每步 TD 残差：</p>
+<p>$$
+\begin{aligned}
+\delta_0 &amp;= 1 + 0.9\times 4 - 5 = -0.4\\
+\delta_1 &amp;= 0 + 0.9\times 3 - 4 = -1.3\\
+\delta_2 &amp;= 2 + 0 - 3 = -1.0
+\end{aligned}
+$$</p>
+<ul>
+<li>$\lambda = 0$：$A_0 = \delta_0 = -0.4$</li>
+<li>$\lambda = 1$：$A_0 = -0.4 + 0.9(-1.3) + 0.81(-1.0) = -2.38$</li>
+</ul>
+<p><strong>核对</strong>：蒙特卡洛 $G_0 = 1 + 0.9\times0 + 0.81\times2 = 2.62$，$A_0 = 2.62 - 5 = -2.38$ ✅</p>
+<blockquote>
+<p><strong>你自己实现的 GAE，如果 $\lambda=1$ 时对不上蒙特卡洛，一定是终止处理或折扣写错了。</strong></p>
+</blockquote>
+<h3 id="doc-10-33">3.3【你来】</h3>
+<p><strong>填空 1</strong> 上面数据，$\lambda = 0.95$ 时 $A_0 = ?$（保留 4 位小数）</p>
+<p>🖊️ <strong>我的计算过程</strong>（写出 $\gamma\lambda$ 和 $(\gamma\lambda)^2$）</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>答案</strong>：$A_0 = $ ______</p>
+<p><strong>填空 2</strong> 实现 <code>compute_gae</code>，要处理"终止"和"超时"。</p>
+<p>🖊️ <strong>我的实现</strong>（我会看你的 <code>done</code> 处理）</p>
+<pre><code class="language-python">def compute_gae(rewards, values, dones, gamma=0.99, lam=0.95, last_value=0.0):
+    # 你的代码
+</code></pre>
+<p>🖊️ 用 3.2 的数据自测，<code>adv[0]</code> 应该是多少？我算出来是 ____</p>
+<h3 id="doc-10-34">3.4【交回给我】</h3>
+<ul>
+<li>填空 1 的 $\gamma\lambda$ 和答案：</li>
+<li>我的 <code>adv[0]</code> 自测值：</li>
+<li>我的 <code>done</code> 处理方式（一句话）：</li>
+</ul>
+<hr />
+<h2 id="doc-10-4-ppo-clip">第 4 章 · PPO：为什么 clip 能"限速"</h2>
+<p><strong>这一节只干一件事</strong>：说清 clip 剪的是什么（不是动作！），以及为什么它能防止更新太猛。</p>
+<h3 id="doc-10-41">4.1 先说人话</h3>
+<p>PPO 想用"旧策略采的数据"多学几遍（省样本），但学太多会崩。</p>
+<p>它的办法很土：<strong>一次更新里，如果新策略和旧策略差太多，就不许再往那个方向走。</strong> 具体是给"概率比" $r_t(\theta) = \dfrac{\pi_\theta(a_t\mid s_t)}{\pi_{\text{old}}(a_t\mid s_t)}$ 划两条线：$1-\epsilon$ 和 $1+\epsilon$。</p>
+<h3 id="doc-10-42">4.2 推给你看</h3>
+<p>$$
+L^{\mathrm{CLIP}}(\theta) = \mathbb{E}\left[\min\left(r_t(\theta)\hat{A}_t,\ \mathrm{clip}\left(r_t(\theta), 1-\epsilon, 1+\epsilon\right)\hat{A}_t\right)\right]
+$$</p>
+<p>分两种情况（$\epsilon = 0.2$）：</p>
+<ul>
+<li>$\hat A &gt; 0$（动作好，想提高概率）：$r$ 超过 $1.2$ 后 $\mathrm{clip}$ 把它钉在 $1.2$，$\min$ 取常数 → <strong>梯度为 0</strong>。</li>
+<li>$\hat A &lt; 0$（动作差，想降低概率）：$r$ 低于 $0.8$ 后同样被钉住 → <strong>梯度为 0</strong>。</li>
+</ul>
+<p>两个方向都封顶，所以 $L^{\mathrm{CLIP}}$ 永远 $\le$ 原始目标，是它的<strong>悲观下界</strong>。优化下界，最多让真实性能差一点点——这就是便宜的"信赖域"。</p>
+<h3 id="doc-10-43">4.3【例题】</h3>
+<p>$\epsilon = 0.2$，$\hat A = 1$：</p>
+<p>$$
+L(r)=\begin{cases} r, &amp; r \le 1.2\\ 1.2, &amp; r &gt; 1.2\end{cases}
+$$</p>
+<p>（$r&lt;0.8$ 时 $\min(r,0.8)=r$，仍是 $r$。）所以 <strong>$r &gt; 1.2$ 那段梯度为 0</strong>。</p>
+<h3 id="doc-10-44">4.4【你来】</h3>
+<p><strong>填空 1</strong> $\hat A = -1$，$\epsilon = 0.2$，写出三段 $L(r)$。</p>
+<p>🖊️ <strong>我的分段</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 你训练里 <code>clip_param = 0.2</code>。改成 $0.05$ 会更稳还是更慢？给机制 + 一个能验证的实验。</p>
+<p>🖊️ <strong>机制</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>实验</strong>（改什么、几个种子、看哪个指标、判定标准）：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-45">4.5【你的代码位置】</h3>
+<p>文件：<code>source/cartpole/cartpole/tasks/direct/cartpole/agents/rsl_rl_ppo_cfg.py</code></p>
+<p>🖊️ <code>clip_param</code> 的行号：第 ____ 行</p>
+<p>🖊️ 我打算跑的种子数：____（建议 ≥3）</p>
+<h3 id="doc-10-46">4.6【交回给我】</h3>
+<ul>
+<li>填空 1 的分段：</li>
+<li>我认为变稳/变慢的原因：</li>
+<li>我 4.5 的行号：</li>
+</ul>
+<hr />
+<h2 id="doc-10-5-sac">第 5 章 · 熵与 SAC：为什么故意保留随机性</h2>
+<p><strong>这一节只干一件事</strong>：解释 <code>Loss/entropy</code> 为什么会是负数，以及 SAC 的熵在奖励什么。</p>
+<h3 id="doc-10-51">5.1 先说人话</h3>
+<p>策略太早变"死"（只做一个动作）会卡住。所以要给它一点"保留随机"的奖励。测随机性的量叫熵。</p>
+<p>高斯策略的熵有闭式解：</p>
+<p>$$
+H(\pi) = \tfrac12 \ln\left(2\pi e\,\sigma^2\right)
+$$</p>
+<p><strong>关键</strong>：$\sigma &lt; 0.242$ 之后 $\ln(\cdot)$ 变负。所以 <strong><code>Loss/entropy</code> 是负数完全正常</strong>，它只是熵的值，不是 loss 爆炸。</p>
+<blockquote>
+<p>你日志里 $\sigma \approx 0.035$ 时 $H \approx -1.92$，和 TensorBoard 的 $-1.939$ 对得上。<strong>这是你"读懂指标"的第一个实证。</strong></p>
+</blockquote>
+<h3 id="doc-10-52-sac">5.2 SAC 在干什么</h3>
+<p>SAC 把目标从"奖励最大"改成"奖励 + 熵最大"：</p>
+<p>$$
+J(\pi) = \mathbb{E}\left[\sum_t r_t + \alpha H(\pi(\cdot\mid s_t))\right]
+$$</p>
+<p>对应的"软贝尔曼方程"把 $\max$ 换成平滑版：</p>
+<p>$$
+V(s) = \alpha \ln \sum_a \exp\frac{Q(s,a)}{\alpha}
+$$</p>
+<p>当 $\alpha \to 0$ 时右边趋于 $\max_a Q$，退化成普通 RL。<strong>所以 SAC 是最优化的光滑版本</strong>——光滑了梯度才好使。</p>
+<h3 id="doc-10-53">5.3【你来】</h3>
+<p><strong>填空 1</strong> 用 $\sigma = 0.035$ 算 $H$，和日志里的 <code>Loss/entropy</code> 对照，写误差。</p>
+<p>🖊️ <strong>我的计算</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ 日志值 ____；误差 ____</p>
+<p><strong>填空 2</strong> <code>entropy_coef = 0.005</code>，$\sigma\approx0.035$ 时熵项在 actor loss 里大约贡献多少？和 surrogate（约 0.01）比是什么量级？</p>
+<p>🖊️ <strong>我的估算</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>结论</strong>（可忽略 / 同量级 / 主导）：______，理由：________</p>
+<h3 id="doc-10-54">5.4【交回给我】</h3>
+<ul>
+<li>我算的 $H$ 和误差：</li>
+<li>我对"熵项量级"的结论：</li>
+<li>我想验证的一句猜测：</li>
+</ul>
+<hr />
+<h2 id="doc-10-6-q-learning">第 6 章 · 致命三要素：为什么"Q-learning + 神经网络"会炸</h2>
+<p><strong>这一节只干一件事</strong>：解释为什么表格版 Q-learning 收敛，神经网络版可能发散。</p>
+<h3 id="doc-10-61">6.1 先说人话</h3>
+<p>同时满足这三件事，就没有收敛保证：</p>
+<ol>
+<li><strong>函数逼近</strong>（拿神经网络当 Q 表）；</li>
+<li><strong>自举</strong>（用自己估的 $Q$ 去算目标 $r + \gamma \max Q$）；</li>
+<li><strong>off-policy</strong>（数据不是当前策略采的）。</li>
+</ol>
+<p>DQN 的三个补丁（经验回放、目标网络、奖励裁剪）就是分别对付它们的。</p>
+<h3 id="doc-10-62">6.2【你来】</h3>
+<p><strong>填空 1</strong> 举三个例子，每个"去掉其中一个要素"。</p>
+<p>🖊️ <strong>例 1</strong>（去掉 ______）：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>例 2</strong>（去掉 ______）：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>例 3</strong>（去掉 ______）：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> PPO 为什么没这个问题？代价是什么？</p>
+<p>🖊️ <strong>我的回答</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-63">6.3【交回给我】</h3>
+<ul>
+<li>三个例子：</li>
+<li>我理解的 PPO 代价：</li>
+</ul>
+<hr />
+<h2 id="doc-10-7-shaping">第 7 章 · 奖励塑形：什么 shaping 不改变最优策略</h2>
+<p><strong>这一节只干一件事</strong>：给你一个"加引导奖励还不破坏任务"的数学工具。</p>
+<h3 id="doc-10-71">7.1 先说人话</h3>
+<p>你想让小车回中，于是加了 $-x^2$。结果策略为了待在中点，<strong>放弃了保持杆子竖直</strong>。这就是 shaping 改变了最优策略。</p>
+<p>1999 年 Ng 等人给了"安全"加法：只加<strong>势函数之差</strong>。</p>
+<p>$$
+F(s,a,s') = \gamma\Phi(s') - \Phi(s)
+$$</p>
+<h3 id="doc-10-72">7.2 为什么安全（望远镜求和）</h3>
+<p>$$
+\sum_t \gamma^t\left(\gamma\Phi(s_{t+1}) - \Phi(s_t)\right)
+= -\Phi(s_0) + \lim_{T\to\infty}\gamma^T\Phi(s_T)
+$$</p>
+<p>若 $\gamma &lt; 1$ 且 $\Phi$ 有界，最后一项为 0。所以<strong>每条轨迹的回报只差常数 $-\Phi(s_0)$</strong>——与策略无关，排序不变，最优策略不变。</p>
+<h3 id="doc-10-73">7.3【例题】</h3>
+<p>让小车靠近 $x=0$，取 $\Phi(s) = -\tfrac12 k x^2$：</p>
+<p>$$
+F = \gamma\left(-\tfrac12 k x'^2\right) - \left(-\tfrac12 k x^2\right)
+= \tfrac12 k\left(x^2 - \gamma x'^2\right)
+$$</p>
+<p>朝 0 走（$|x'|&lt;|x|$）时 $F&gt;0$；远离时为负。理论上不改变最优策略。</p>
+<blockquote>
+<p>⚠ 理论安全 ≠ 训练一定好。$k$ 太大会把探索引偏，可能收敛到差的局部解。</p>
+</blockquote>
+<h3 id="doc-10-74">7.4【你来】</h3>
+<p><strong>填空 1</strong> 证明加 $F$ 后 $Q'^*(s,a) = Q^*(s,a) - \Phi(s)$。</p>
+<p>🖊️ <strong>我的证明</strong>（从 $Q'^* = r + F + \gamma\mathbb{E}[V'^*]$ 出发归纳）</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 你第二轮用过 <code>rew_scale_pole_pos = -5.0</code>。它等价于某个势函数 shaping 吗？为什么？</p>
+<p>🖊️ <strong>我的判断</strong>：______，理由是：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-10-75">7.5【交回给我】</h3>
+<ul>
+<li>我的证明卡在哪一行：</li>
+<li>我对 <code>-5.0</code> 的判断：</li>
+</ul>
+<hr />
+<h2 id="doc-10-8">第 8 章 · 你的"原理自检表"</h2>
+<p>做完前面 7 章，测一下。<strong>每一项都要能"不看笔记讲 2 分钟"</strong>。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>我能……</th>
+<th>状态</th>
+<th>卡在哪（🖊️）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>写出贝尔曼期望方程并解释每一项</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>解释策略梯度里 $\rho_0$ 和 $P$ 的导数为什么消失</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>说明基线为什么只能依赖状态</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>手算 3 步 GAE 并用蒙特卡洛核对</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>画出 PPO clip 的三段图，指出哪段梯度为 0</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>解释熵为什么可以是负数</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>说出致命三要素并举三个反例</td>
+<td>⬜</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>用势函数设计 shaping 并证明最优策略不变</td>
+<td>⬜</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>全绿</strong> → 去考 <a href="#doc-13">A 卷</a>。两项以上红 → 回对应章重做。</p>
+<hr />
+<h2 id="doc-10-_1">我的总反馈（🖊️ 写给我）</h2>
+<ul>
+<li>我读得最顺的一章是：</li>
+<li>我完全没看懂的一章是：</li>
+<li>你觉得"说人话"做得不好的地方（具体到某一段）：</li>
+<li>下一版你希望多做（更多例题 / 更多代码 / 更少公式 / 更多图 / 其它）：</li>
+</ul>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+<p>你把这份文件发我，我按反馈改下一版，并把你的答案批改在文里（<code>✅</code> / <code>❌</code> + 一句为什么）。</p>
+</blockquote>
+</section>
+<section class="doc" id="doc-11">
+<h1 id="doc-11-b">练习册 B：现代控制与机器人原理（我们一起写）</h1>
+<blockquote>
+<p>🧭 返回 <a href="#doc-00">学习总纲</a> ｜ 配套：<a href="#doc-10">A 强化学习</a>、<a href="#doc-12">C VLA</a>、<a href="#doc-13">试卷</a></p>
+</blockquote>
+<p><strong>你已经会 LQR/MPC/SMC/MRAC，所以这本册子不复述教材。</strong> 它只做三件事：</p>
+<ol>
+<li>把推导补到"能白板讲"（会算 ≠ 会证）；</li>
+<li>讲清这些方法和 RL 的接口在哪（这是你面试的差异化）；</li>
+<li>每章留<strong>你填的坑</strong>（填空、代码位置、你自己的判断）。</li>
+</ol>
+<p><strong>用法同 A 册</strong>：<code>🖊️</code> 是你的地方；每章末尾【交回给我】，把这个 md 直接发我。</p>
+<hr />
+<h2 id="doc-11-1-decimation">第 1 章 · 离散化：为什么改 <code>decimation</code> 等于换了一个任务</h2>
+<p><strong>这一节只干一件事</strong>：说清"仿真步长"和"控制周期"不是一回事，以及为什么改控制周期会改变学习难度。</p>
+<h3 id="doc-11-11">1.1 先说人话</h3>
+<p>仿真器每 $1/120$ 秒算一次物理，但策略不是每步都出新动作——它每两个物理步才出一次（<code>decimation = 2</code>）。</p>
+<p>也就是说：<strong>策略说一句话，电机要执行两拍。</strong> 这两拍之间动作保持不变，这叫零阶保持（ZOH）。</p>
+<h3 id="doc-11-12">1.2 推给你看</h3>
+<p>连续系统 $\dot x = Ax + Bu$ 的解：</p>
+<p>$$
+x(t) = e^{At}x(0) + \int_0^t e^{A(t-\tau)}Bu(\tau)\,d\tau
+$$</p>
+<p><strong>为什么是这个解</strong>（积分因子技巧）：把 $e^{-At}x$ 求导，</p>
+<p>$$
+\frac{d}{dt}\left(e^{-At}x\right) = e^{-At}\dot x - Ae^{-At}x = e^{-At}(Ax+Bu) - Ae^{-At}x = e^{-At}Bu
+$$</p>
+<p>两边从 $0$ 到 $t$ 积分，左乘 $e^{At}$，就得到上面的解。</p>
+<p><strong>零阶保持</strong>（$u$ 在 $[kT,(k+1)T)$ 内不变）：</p>
+<p>$$
+A_d = e^{AT}, \qquad B_d = \int_0^T e^{A\tau}B\,d\tau
+$$</p>
+<p><strong>所以你改 <code>decimation</code>，改的是 $T$，也就改了 $A_d, B_d$。</strong> 同样的策略，在世界里"推的时长"变了，行为当然变。</p>
+<h3 id="doc-11-13">1.3【例题】</h3>
+<p>一阶系统 $\dot x = -ax + bu$。求 $T$ 下的 $A_d, B_d$，并说明 $T \to 0$ 的极限。</p>
+<p>$$
+A_d = e^{-aT},\qquad
+B_d = \int_0^T e^{-a\tau}b\,d\tau = \frac{b}{a}\left(1 - e^{-aT}\right)
+$$</p>
+<p>$T\to0$ 时 $A_d \to 1-aT$、$B_d \to bT$，就是欧拉法 $x_{k+1} = x_k + T(-ax_k + bu_k)$。</p>
+<blockquote>
+<p><strong>结论</strong>：欧拉离散化只是 ZOH 的一阶近似。控制周期大时用它会算错极点（虚假的不稳定）。</p>
+</blockquote>
+<h3 id="doc-11-14">1.4【你来】</h3>
+<p><strong>填空 1</strong> 双积分器 $\ddot x = u$，状态 $[x, \dot x]^\top$。写出 $A, B$ 以及 $T$ 下的 $A_d, B_d$。</p>
+<p>🖊️ <strong>我的推导</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>我的 $A_d$ 和 $B_d$</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 你的配置是 <code>dt=1/120, decimation=2</code>。策略的控制周期是多少？如果把 <code>decimation</code> 改成 4，而策略不重训，你预期会发生什么？给出一个可验证的预测。</p>
+<p>🖊️ <strong>控制周期</strong>：____ s</p>
+<p>🖊️ <strong>我的预测</strong>（写清看哪个指标、大概掉多少）：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-11-15">1.5【交回给我】</h3>
+<ul>
+<li>我的 $A_d, B_d$：</li>
+<li>我预测"改 decimation 会怎样"：</li>
+<li>我卡住的地方：</li>
+</ul>
+<hr />
+<h2 id="doc-11-2-lqr-rl">第 2 章 · LQR：它其实是"二次型问题里的 RL"</h2>
+<p><strong>这一节只干一件事</strong>：从"代价最小"推一遍 Riccati 方程，并说清它和 RL 的关系。</p>
+<h3 id="doc-11-21">2.1 先说人话</h3>
+<p>LQR 问的是：<strong>每一步都同时惩罚"状态偏差"和"用力大小"，怎么用力最省？</strong></p>
+<p>因为代价是二次的、系统是线性的，最优解一定是"状态乘一个矩阵"（线性反馈）。这个结论不是假设，是推出来的。</p>
+<h3 id="doc-11-22">2.2 推给你看</h3>
+<p>代价</p>
+<p>$$
+J = \int_0^\infty \left(x^\top Qx + u^\top Ru\right)dt
+$$</p>
+<p>猜值函数是二次型 $V(x) = x^\top Px$（为什么能猜？因为二次代价 + 线性系统 → 值函数仍是二次的）。代入 HJB：</p>
+<p>$$
+0 = \min_u\left[x^\top Qx + u^\top Ru + \nabla V^\top (Ax+Bu)\right]
+$$</p>
+<p>对 $u$ 求导令零（$\nabla V = 2Px$）：</p>
+<p>$$
+2Ru + 2B^\top Px = 0 \;\Rightarrow\; \boxed{\,u^* = -R^{-1}B^\top P\,x\,}
+$$</p>
+<p>代回去，得到<strong>代数 Riccati 方程</strong>：</p>
+<p>$$
+\boxed{\,A^\top P + PA - PBR^{-1}B^\top P + Q = 0\,}
+$$</p>
+<p><strong>和 RL 的关系</strong>（面试常问）：把 $-J$ 看成回报、$V=x^\top Px$ 看成 critic、$u=-Kx$ 看成 actor，那 LQR 就是"已知精确模型 + 二次型值函数 + 线性策略"的解析 RL。区别只有两条：RL 不知道 $A,B$；RL 不限定值函数形式。</p>
+<p><strong>稳定性</strong>：取 $V = x^\top Px$ 当 Lyapunov 函数，</p>
+<p>$$
+\dot V = x^\top(A^\top P + PA)x = -x^\top\left(Q + PBR^{-1}B^\top P\right)x &lt; 0
+$$</p>
+<p>所以闭环一定稳定——<strong>这不是调参调出来的，是 Riccati 方程保证的。</strong></p>
+<h3 id="doc-11-23">2.3【例题】</h3>
+<p>标量系统 $\dot x = u$，代价 $\int (qx^2 + ru^2)dt$。</p>
+<p>Riccati（此时 $A=0, B=1$）：</p>
+<p>$$
+0 = -P^2/r + q \;\Rightarrow\; P = \sqrt{qr}
+$$</p>
+<p>$$
+K = R^{-1}B^\top P = \frac{\sqrt{qr}}{r} = \sqrt{\frac{q}{r}}
+\;\Rightarrow\; u = -\sqrt{\frac{q}{r}}\,x
+$$</p>
+<p><strong>读法</strong>：$q/r$ 越大越激进。$q$ 是"多在乎偏差"，$r$ 是"多在乎耗能"。</p>
+<h3 id="doc-11-24">2.4【你来】</h3>
+<p><strong>填空 1</strong> 双积分器 $\ddot x = u$，$Q = \mathrm{diag}(q_1, q_2)$，$R = r$。写出 Riccati 方程（不用解），并解释为什么 $q_2$（惩罚速度）会影响"阻尼感"。</p>
+<p>🖊️ <strong>我的方程</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>为什么 $q_2$ 影响阻尼</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 如果把 LQR 的 $K$ 当成策略参数，用策略梯度去最小化 $J$，会得到什么？这说明什么？</p>
+<p>🖊️ <strong>我的回答</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-11-25">2.5【你的代码位置】（可选，但建议做）</h3>
+<p>你之前应该写过 LQR。<strong>把它找出来</strong>，确认两件事：</p>
+<p>🖊️ 我的 LQR 代码在：__________</p>
+<p>🖊️ 里面求 $P$ 的函数名是：__________（MATLAB 是 <code>care</code>，Python 是 <code>scipy.linalg.solve_continuous_are</code>）</p>
+<h3 id="doc-11-26">2.6【交回给我】</h3>
+<ul>
+<li>我的 Riccati 方程：</li>
+<li>我对"$K$ 用策略梯度优化"的结论：</li>
+<li>我的 LQR 代码位置：</li>
+</ul>
+<hr />
+<h2 id="doc-11-3">第 3 章 · 观测器：为什么"估计"和"控制"能分开设计</h2>
+<p><strong>这一节只干一件事</strong>：说清分离原理，以及为什么它在 RL 里仍然有用。</p>
+<h3 id="doc-11-31">3.1 先说人话</h3>
+<p>控制器要的是"现在状态是什么"，但传感器只给你一部分。于是先造一个"虚拟状态" $\hat x$，让它追着真实状态跑——这就是观测器。</p>
+<p>Luenberger 观测器：</p>
+<p>$$
+\dot{\hat x} = A\hat x + Bu + L\left(y - C\hat x\right)
+$$</p>
+<h3 id="doc-11-32">3.2 推给你看</h3>
+<p>令误差 $e = x - \hat x$，两式相减：</p>
+<p>$$
+\dot e = (A - LC)e
+$$</p>
+<p><strong>所以只要选 $L$ 让 $A-LC$ 的极点都在左半平面，$e \to 0$。</strong> 这就是全部。</p>
+<p><strong>分离原理</strong>：用 $\hat x$ 做反馈 $u = -K\hat x$，闭环极点是</p>
+<p>$$
+\mathrm{eig}(A-BK)\ \cup\ \mathrm{eig}(A-LC)
+$$</p>
+<p>也就是说：<strong>可以先设计控制器（假设状态可测），再单独设计观测器，互不影响。</strong></p>
+<blockquote>
+<p>这条只对线性系统成立。非线性系统里，估计误差会通过非线性控制律耦合回来，可能激励未建模动态。</p>
+</blockquote>
+<p><strong>在 RL 里怎么用</strong>：
+1. 观测缺项（速度、接触）→ 用观测器补；
+2. 域随机化下估计环境参数（RMA 的"环境因子"估计器本质就是观测器）；
+3. 延迟补偿（用观测器预测当前状态）。</p>
+<h3 id="doc-11-33">3.3【你来】</h3>
+<p><strong>填空 1</strong> 一阶系统 $\dot x = -ax + bu$，$y = x$。设计 $L$，把误差极点配到 $-\lambda$。</p>
+<p>🖊️ <strong>我的答案</strong>：$L = $ ______</p>
+<p>🖊️ 简单说明（一行）：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 为什么分离原理在非线性系统里一般不成立？给一个你觉得最可能的失效场景（结合你的腿式经验）。</p>
+<p>🖊️ <strong>我的解释</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-11-34">3.4【交回给我】</h3>
+<ul>
+<li>我算的 $L$：</li>
+<li>我认为的非线性失效场景：</li>
+</ul>
+<hr />
+<h2 id="doc-11-4-mpc">第 4 章 · MPC：为什么"滚动优化"能保证稳定</h2>
+<p><strong>这一节只干一件事</strong>：说清终端代价为什么是关键，以及 MPC 和 LQR 到底是什么关系。</p>
+<h3 id="doc-11-41">4.1 先说人话</h3>
+<p>MPC 是"走一步看 N 步"：每次解一个 N 步的最优控制问题，只执行第一步，下一步重新解。</p>
+<p>问题来了：<strong>每步都重新解，凭什么保证稳定？</strong> 答案藏在"终端代价"里。</p>
+<h3 id="doc-11-42">4.2 推给你看</h3>
+<p>优化问题：</p>
+<p>$$
+\min_{u_0,\dots,u_{N-1}} \sum_{k=0}^{N-1}\left(x_k^\top Qx_k + u_k^\top Ru_k\right) + x_N^\top P_f x_N
+$$</p>
+<p>设最优值为 $V_N(x)$。<strong>关键不等式</strong>（拿 $x_{k+1}$ 重新解一次，至少不比"沿用旧解"更差）：</p>
+<p>$$
+V_N(x_{k+1}) \le V_N(x_k) - \left(x_k^\top Qx_k + u_k^\top Ru_k\right) &lt; V_N(x_k)
+$$</p>
+<p>所以 $V_N$ 是一个 Lyapunov 函数 → 闭环渐近稳定。</p>
+<blockquote>
+<p><strong>注意</strong>：这个不等式依赖 $P_f$ 选得"够大"（通常取 Riccati 解 $P$），否则最后一步的价值被低估，稳定性就没了。这就是"终端代价 $P_f=0$ 可能不稳定"的原因。</p>
+</blockquote>
+<p><strong>与 LQR 的关系</strong>：$N\to\infty$ 且 $P_f = P$（Riccati 解）时，MPC 的解收敛到 LQR。所以：</p>
+<p>$$
+\text{MPC} = \text{LQR} + \text{约束} + \text{滚动}
+$$</p>
+<h3 id="doc-11-43">4.3【例题】</h3>
+<p>一维系统 $x_{k+1} = x_k + u_k$，$N=2$，$Q=1, R=1$，终端代价为 0。求最优 $u_0$。</p>
+<p>倒推：$V_2(x)=0$；$V_1(x) = \min_u (x^2+u^2) = x^2$（取 $u=0$）。</p>
+<p>$$
+V_0(x) = \min_u\left[x^2+u^2 + (x+u)^2\right]
+$$</p>
+<p>对 $u$ 求导：$2u + 2(x+u) = 0 \Rightarrow u = -x/2$。</p>
+<h3 id="doc-11-44">4.4【你来】</h3>
+<p><strong>填空 1</strong> 上例中，如果终端代价改成 $P_f = 2$（即 $+2x_2^2$），$u_0$ 变成多少？</p>
+<p>🖊️ <strong>我的计算</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>答案</strong>：$u_0 = $ ______$\,x$</p>
+<p><strong>填空 2</strong> 说明：为什么"终端代价为 0 + 无终端约束"的 MPC 可能不稳定？给一个直观例子。</p>
+<p>🖊️ <strong>我的解释</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-11-45">4.5【你的代码位置】</h3>
+<p>如果你写过 MPC（CasADi/acados/自写 QP）：</p>
+<p>🖊️ 我的 MPC 代码在：__________
+🖊️ 我用的时域 $N=$ ____，终端代价怎么设的：______</p>
+<h3 id="doc-11-46">4.6【交回给我】</h3>
+<ul>
+<li>填空 1 的答案：</li>
+<li>我对"终端代价为什么重要"的解释：</li>
+</ul>
+<hr />
+<h2 id="doc-11-5">第 5 章 · 滑模与自适应：鲁棒性的两种来源</h2>
+<p><strong>这一节只干一件事</strong>：说清 SMC 的鲁棒性从哪来、MRAC 为什么不保证参数收敛，以及它们和 RMA 的对应。</p>
+<h3 id="doc-11-51">5.1 先说人话</h3>
+<ul>
+<li><strong>滑模</strong>：不管你怎么扰动，我都用"符号函数"把你硬推回一条线上。<strong>鲁棒性来自"对扰动上界做假设"。</strong></li>
+<li><strong>自适应</strong>：我不知道参数，但我边跑边改。<strong>鲁棒性来自"在线学习"。</strong></li>
+</ul>
+<h3 id="doc-11-52">5.2 推给你看</h3>
+<p>滑模面 $s = \dot e + \lambda e$，取 Lyapunov 函数 $V = \tfrac12 s^2$，要求到达条件：</p>
+<p>$$
+s\dot s &lt; 0
+$$</p>
+<p>对 $\ddot x = u + d(t)$（$|d| \le D$），取 $u = \ddot x_d - \lambda\dot e - k\,\mathrm{sign}(s)$，则</p>
+<p>$$
+s\dot s = s\left(d - k\,\mathrm{sign}(s)\right) \le |s|(D - k)
+$$</p>
+<p>所以 <strong>$k &gt; D$ 就能有限时间到达</strong>。</p>
+<p><strong>为什么必然抖振</strong>：$\mathrm{sign}$ 在 $s=0$ 附近硬切换，而真实系统有采样、延迟、高频未建模动态 → 状态在滑模面附近反复穿越。这是结构性的，调参消不掉。</p>
+<p><strong>MRAC 的自适应律</strong>（Lyapunov 反推）：取 $V = e^\top Pe + \tfrac12 \tilde\theta^\top\Gamma^{-1}\tilde\theta$，令 $\dot V \le 0$ 中的交叉项为零，得到 $\dot\theta = -\Gamma B^\top P e\,x^\top$。</p>
+<p><strong>只保证有界，不保证收敛到真值</strong>：因为 $\dot V \le 0$ 只给出 $e \in L_2$，参数可能一直漂。要收敛得加<strong>持续激励（PE）</strong>条件。</p>
+<h3 id="doc-11-53">5.3【你来】</h3>
+<p><strong>填空 1</strong> 写出你项目里一个"鲁棒性来自假设"的例子（滑模或 MPC 都行），说明假设是什么、假设被破坏会怎样。</p>
+<p>🖊️ <strong>我的例子</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 对照 MRAC 与 RMA：各自的自适应信号从哪来？各自需要什么前提？</p>
+<p>🖊️ <strong>我的对照表</strong>（可以画表）</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-11-54">5.4【交回给我】</h3>
+<ul>
+<li>我的例子和假设：</li>
+<li>我的 MRAC/RMA 对照结论：</li>
+</ul>
+<hr />
+<h2 id="doc-11-6-pd">第 6 章 · 机械臂：雅可比、静力与"为什么工业界用位置 + PD"</h2>
+<p><strong>这一节只干一件事</strong>：把"末端速度"和"关节速度"的关系讲透，并解释 RL 里动作空间的选法。</p>
+<h3 id="doc-11-61">6.1 先说人话</h3>
+<p>关节转一点，末端动多少？这个"换算表"就是雅可比。它有两副面孔：</p>
+<ul>
+<li><strong>速度</strong>：$\dot x = J(q)\dot q$（关节速度 → 末端速度）；</li>
+<li><strong>力</strong>：$\tau = J^\top F$（末端受力 → 关节力矩，来自虚功原理 $F^\top \dot x = \tau^\top \dot q$）。</li>
+</ul>
+<h3 id="doc-11-62-2r">6.2 推给你看（平面 2R 臂）</h3>
+<p>$$
+x = l_1\cos q_1 + l_2\cos(q_1+q_2),\qquad
+y = l_1\sin q_1 + l_2\sin(q_1+q_2)
+$$</p>
+<p>$$
+J = \begin{bmatrix}
+-l_1\sin q_1 - l_2\sin(q_1+q_2) &amp; -l_2\sin(q_1+q_2)\\
+\ l_1\cos q_1 + l_2\cos(q_1+q_2) &amp; \ l_2\cos(q_1+q_2)
+\end{bmatrix}
+$$</p>
+<p>$$
+\det(J) = l_1 l_2 \sin q_2
+$$</p>
+<p><strong>奇异</strong>出现在 $q_2 = 0$ 或 $\pi$（臂伸直/折叠）：此时两列线性相关，末端只能沿一个方向动，解逆运动学会病态。</p>
+<h3 id="doc-11-63">6.3【例题】</h3>
+<p>$l_1 = l_2 = 1$，$q_1 = 30^\circ$，$q_2 = 60^\circ$。</p>
+<p>$$
+J = \begin{bmatrix} -1.5 &amp; -1.0\\ 0.866 &amp; 0 \end{bmatrix},
+\qquad \det(J) = 0.866
+$$</p>
+<p>核对：$l_1l_2\sin q_2 = \sin 60^\circ = 0.866$ ✅（非奇异）</p>
+<h3 id="doc-11-64">6.4【你来】</h3>
+<p><strong>填空 1</strong> 写出 2R 臂的逆解（解析），并说明"肘上/肘下"两个解从哪来。</p>
+<p>🖊️ <strong>我的推导</strong></p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong>（重要，面试高频）为什么腿式/机械臂 RL 普遍用"关节位置目标 + PD 内环"，而不是直接输出力矩？给三条理由（稳定性、动作空间、sim2real）。</p>
+<p>🖊️ <strong>理由 1</strong>：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>理由 2</strong>：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p>🖊️ <strong>理由 3</strong>：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<h3 id="doc-11-65">6.5【你的代码位置】</h3>
+<p>文件：<code>source/cartpole/cartpole/tasks/direct/cartpole/cartpole_env.py</code></p>
+<p>现在是"力矩"接口：</p>
+<pre><code class="language-python">self.robot.set_joint_effort_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)
+</code></pre>
+<p><strong>任务</strong>：如果你要换成"位置 + PD"，这里该怎么写？写出你的版本（不要求跑通，写对思路即可）。</p>
+<p>🖊️ <strong>我打算改成</strong>：</p>
+<pre><code class="language-python"># 你的版本
+</code></pre>
+<p>🖊️ 我还需要改哪个配置（或 <code>action_space</code>）？________</p>
+<h3 id="doc-11-66">6.6【交回给我】</h3>
+<ul>
+<li>我的逆解思路：</li>
+<li>我写的"位置 + PD"版本：</li>
+<li>我还不确定的地方：</li>
+</ul>
+<hr />
+<h2 id="doc-11-_1">交回给我（整册）</h2>
+<p>🖊️ 这本里：</p>
+<ul>
+<li>我最有把握的是哪章：</li>
+<li>我最没底的是哪章：</li>
+<li>我想让你补充的推导（写具体公式名）：</li>
+</ul>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+<p>你发我之后，我会：① 在你的答案上标 <code>✅/❌</code> 并写一句为什么；② 把没底的那章换一种讲法重写；③ 给你补 2-3 道针对性的练习。</p>
+</blockquote>
+</section>
+<section class="doc" id="doc-12">
+<h1 id="doc-12-cvla">练习册 C：VLA 与具身基础模型原理（我们一起写）</h1>
+<blockquote>
+<p>🧭 返回 <a href="#doc-00">学习总纲</a> ｜ 论文见 <a href="#doc-07">08 §C 级</a> ｜ 先做 <a href="#doc-10">A 册</a> 第 2、5 章</p>
+</blockquote>
+<p><strong>为什么单独一本</strong>：VLA 是现在最容易被"背名词"糊弄的方向。这本只讲五件事：<strong>为什么用大模型、模仿学习为什么会崩、动作怎么表示、diffusion/flow 在算什么、双系统怎么分工。</strong></p>
+<blockquote>
+<p>⏰ <strong>时间提醒</strong>：第 25 周之后再碰。没有 A 册（策略梯度/熵/分布）的底子，这里只能看懂字面。</p>
+</blockquote>
+<hr />
+<h2 id="doc-12-1-vla">第 1 章 · 为什么需要 VLA</h2>
+<p><strong>这一节只干一件事</strong>：说清"用视觉语言模型控制机器人"到底赌的是什么。</p>
+<h3 id="doc-12-11">1.1 先说人话</h3>
+<p>传统策略是"看画面 → 出动作"，换任务（把杯子放左边 → 放右边）就得重训，因为它<strong>不认识"左边"这个概念</strong>。</p>
+<p>VLA 的想法很朴素：<strong>先让模型在互联网图文上学"语言和物体的概念"，再教它"概念 → 动作"。</strong> 这样新任务可以用一句话描述，不必重训。</p>
+<p>$$
+a \sim \pi_\theta\left(a \mid o_{1:t},\ \ell\right)
+$$</p>
+<p>其中 $o$ 是图像/本体观测，$\ell$ 是语言指令。</p>
+<h3 id="doc-12-12">1.2 三个赌注</h3>
+<ol>
+<li><strong>共享表征</strong>：VLM 已经知道"杯子/红色/左边"，机器人只需要学映射；</li>
+<li><strong>语言可组合</strong>：新任务用语言拼出来；</li>
+<li><strong>数据规模换泛化</strong>：跨本体数据 + 互联网数据。</li>
+</ol>
+<blockquote>
+<p>⚠ 现实是：<strong>瓶颈通常在数据，不在模型</strong>。这也是为什么 OpenVLA/π0/GR00T 都在拼数据管线。</p>
+</blockquote>
+<h3 id="doc-12-13">1.3【你来】</h3>
+<p><strong>填空 1</strong> 用"共享表征"解释：为什么 VLA 对"没见过但语义熟悉"的任务可能成功，对"语义全新"的任务仍会失败？</p>
+<p>🖊️ <strong>我的解释</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 端到端 VLA 与传统模块化（感知 → 规划 → 控制）各有什么原理上的优劣？</p>
+<p>🖊️ <strong>我的对照</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-12-14">1.4【交回给我】</h3>
+<ul>
+<li>我的解释是否说清了"共享表征"：</li>
+<li>我举的一个"语义全新"的例子：</li>
+</ul>
+<hr />
+<h2 id="doc-12-2">第 2 章 · 模仿学习为什么会在"自己的错误"上崩</h2>
+<p><strong>这一节只干一件事</strong>：搞懂 $O(\varepsilon T^2)$ 是怎么来的，以及为什么多峰数据会把回归"平均"到沟里。</p>
+<h3 id="doc-12-21">2.1 先说人话</h3>
+<p>行为克隆（BC）就是"看着专家做，学着他做"。训练时你只见过<strong>专家走的路</strong>；一旦你自己偏了一点，就进入了"专家没去过的状态"，而那里你没有正确答案 → 越偏越远。</p>
+<h3 id="doc-12-22">2.2 推给你看</h3>
+<p>设单步犯错概率 $\varepsilon$，回合长度 $T$。</p>
+<ul>
+<li>BC 的期望代价是 $O(\varepsilon T^2)$：每一步都可能"出轨"，而出轨后没有恢复能力，误差像 $T^2$ 一样累积。</li>
+<li>DAgger（让专家在线纠正学生的错误）是 $O(\varepsilon T)$：因为学生见过的状态分布被"修正"了。</li>
+</ul>
+<p><strong>为什么 BC 会把多峰动作"平均"掉</strong>：若同一观测下有两个合理动作（绕左/绕右），高斯似然的均值恰好在<strong>正中间</strong>——而正中间可能是障碍物。</p>
+<h3 id="doc-12-23">2.3【例题】</h3>
+<p>一条走廊，左右都能绕过去。用单峰高斯做 BC，会输出什么？为什么危险？</p>
+<p><strong>答</strong>：均值 ≈ 0（正中间），等于"直冲"；同时方差被两侧数据拉大，动作会抖。<strong>这就是 diffusion/flow 存在的理由：它们能表示多个峰。</strong></p>
+<h3 id="doc-12-24">2.4【你来】</h3>
+<p><strong>填空 1</strong> 为什么 $O(\varepsilon T^2)$ 与 $O(\varepsilon T)$ 的差别在长任务上特别致命？用 $T=100$ 估一下倍数。</p>
+<p>🖊️ <strong>我的估算</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> DAgger 要"专家在线纠正"，真机上很贵。举两个便宜的替代方案，并说明各自的代价。</p>
+<p>🖊️ <strong>替代 1</strong>：______，代价：______</p>
+<p>🖊️ <strong>替代 2</strong>：______，代价：______</p>
+<h3 id="doc-12-25">2.5【你的经验区】</h3>
+<p>你做过"逻辑回归做离地检测"。它在部署时也会遇到"分布外"。请写一句你能直接搬到面试里的话。</p>
+<p>🖊️ <strong>我的话术</strong>（一句话，说清"训练分布"和"部署分布"的差别）：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-12-26">2.6【交回给我】</h3>
+<ul>
+<li>我的倍数估算：</li>
+<li>我的两个替代方案：</li>
+<li>我写的面试话术：</li>
+</ul>
+<hr />
+<h2 id="doc-12-3">第 3 章 · 动作怎么表示：四种方案</h2>
+<p><strong>这一节只干一件事</strong>：知道四种动作表示的取舍，并能说出"为什么连续控制里常用后两种"。</p>
+<h3 id="doc-12-31">3.1 先说人话 + 表格</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>表示</th>
+<th>一句话</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>离散 token</td>
+<td>把动作切成 256 档当"词"</td>
+<td>复用语言模型输出头</td>
+<td>精度受限、维度高时 token 爆炸</td>
+</tr>
+<tr>
+<td>连续回归</td>
+<td>直接回归动作，MSE</td>
+<td>简单快</td>
+<td>只会"平均"，多峰就废</td>
+</tr>
+<tr>
+<td>Diffusion</td>
+<td>学着从噪声里"去噪"出动作</td>
+<td>多峰、稳</td>
+<td>推理要很多步，慢</td>
+</tr>
+<tr>
+<td>Flow matching</td>
+<td>学"速度场"，几步积分出动作</td>
+<td>多峰 + 少步</td>
+<td>实现复杂</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>量化误差</strong>：动作范围 $[-1,1]$ 切成 256 档，最大误差是半个 bin：</p>
+<p>$$
+\frac{2}{256}\times\frac12 = \frac{1}{256} \approx 0.0039
+$$</p>
+<h3 id="doc-12-32">3.2【你来】</h3>
+<p><strong>填空 1</strong> 7 维动作，每维 256 档。若每个动作维都变成一个 token，序列有多长？这对推理速度意味着什么？</p>
+<p>🖊️ <strong>我的估算</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 为什么"连续回归 + 高斯似然"在多峰数据上会失败，而 diffusion 不会？</p>
+<p>🖊️ <strong>我的解释</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-12-33">3.3【交回给我】</h3>
+<ul>
+<li>我对 token 长度的估算：</li>
+<li>我用一句话讲清"为什么 diffusion 能多峰"：</li>
+</ul>
+<hr />
+<h2 id="doc-12-4-diffusion-policy">第 4 章 · Diffusion Policy：它到底在学什么</h2>
+<p><strong>这一节只干一件事</strong>：写出训练目标和采样过程，并算清"推理有多慢"。</p>
+<h3 id="doc-12-41">4.1 推给你看</h3>
+<p>前向加噪（$\bar\alpha_k$ 是累积系数）：</p>
+<p>$$
+a_k = \sqrt{\bar\alpha_k}\,a_0 + \sqrt{1-\bar\alpha_k}\,\varepsilon,
+\qquad \varepsilon \sim \mathcal{N}(0, I)
+$$</p>
+<p>网络学"预测噪声"：</p>
+<p>$$
+\mathcal{L} = \mathbb{E}_{k,\,a_0,\,\varepsilon}\left[\left\|\varepsilon - \varepsilon_\theta\left(a_k, k, o\right)\right\|^2\right]
+$$</p>
+<p>采样：从纯噪声 $a_K$ 开始，迭代去噪 $K$ 次。</p>
+<p><strong>为什么能多峰</strong>：它建模的是整个分布 $p(a\mid o)$，采样落在哪个峰由噪声决定；而回归只给均值。</p>
+<p><strong>代价</strong>：$K$ 次前向。$K=100$、每次 10 ms → 1 秒一次，真机根本不够用。所以实际用"少步 + 动作 chunk"。</p>
+<h3 id="doc-12-42">4.2【例题】</h3>
+<p>$K = 100$，网络 10 ms/次，单次动作推理耗时？若动作 chunk 一次算 16 步、执行 8 步，控制频率 50 Hz，多久重算一次？</p>
+<p><strong>答</strong>：$100\times10\,\text{ms} = 1\,\text{s}$；$T_a=8$ 步 @ 50 Hz = 160 ms 重算一次。所以必须靠 chunk 摊薄成本。</p>
+<h3 id="doc-12-43">4.3【你来】</h3>
+<p><strong>填空 1</strong> 如果只能把 $K$ 从 100 降到 10，你能接受吗？精度会怎么变、怎么补偿？</p>
+<p>🖊️ <strong>我的判断</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 说明：为什么"预测噪声 $\varepsilon$"和"预测干净动作 $a_0$"在数学上等价？写出换算关系。</p>
+<p>🖊️ <strong>我的换算</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-12-44">4.4【交回给我】</h3>
+<ul>
+<li>我的耗时估算：</li>
+<li>我的换算关系：</li>
+</ul>
+<hr />
+<h2 id="doc-12-5-flow-matching">第 5 章 · Flow Matching：为什么能"少步"</h2>
+<p><strong>这一节只干一件事</strong>：说出 flow matching 与 diffusion 的本质差别，并解释"路径直 → 步数少"。</p>
+<h3 id="doc-12-51">5.1 推给你看</h3>
+<p>不学去噪，学<strong>速度场</strong>，把噪声"流"到动作：</p>
+<p>$$
+\frac{dx}{dt} = v_\theta(x, t, o),\qquad x(0)\sim\mathcal{N}(0,I),\quad x(1)=a
+$$</p>
+<p>训练时用直线路径插值：</p>
+<p>$$
+x_t = (1-t)\,\varepsilon + t\,a
+\;\Rightarrow\;
+\text{目标速度} = a - \varepsilon
+$$</p>
+<p>$$
+\mathcal{L} = \mathbb{E}\left[\left\|v_\theta(x_t, t, o) - (a-\varepsilon)\right\|^2\right]
+$$</p>
+<p>采样用欧拉积分 $x \leftarrow x + v_\theta(x,t)\Delta t$，10 步就够。</p>
+<p><strong>为什么少步</strong>：数值积分的一步误差正比于路径曲率乘 $\Delta t^2$。路径接近直线（曲率≈0）时，大步也准。</p>
+<h3 id="doc-12-52">5.2【你来】</h3>
+<p><strong>填空 1</strong> 用一句话说清 "diffusion 慢在哪、flow 快在哪"，要求提到"曲率"。</p>
+<p>🖊️ <strong>我的一句话</strong>：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 如果目标分布本身很复杂（多峰、窄峰），直线路径假设还成立吗？会出现什么问题？</p>
+<p>🖊️ <strong>我的判断</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-12-53">5.3【交回给我】</h3>
+<ul>
+<li>我的一句话：</li>
+<li>我对"多峰时路径不直"的判断：</li>
+</ul>
+<hr />
+<h2 id="doc-12-6">第 6 章 · 双系统、数据与你的路线</h2>
+<p><strong>这一节只干一件事</strong>：说清快慢系统怎么分工，并定下你怎么上手。</p>
+<h3 id="doc-12-61">6.1 先说人话</h3>
+<p>人脑有"慢想"（规划）和"快反射"。GR00T N1 就这么分：</p>
+<ul>
+<li><strong>System 2（慢，~1-10 Hz）</strong>：VLM 看语言+图像，输出任务意图；</li>
+<li><strong>System 1（快，~50-100 Hz）</strong>：diffusion/flow 动作头，把意图变成动作。</li>
+</ul>
+<p><strong>为什么这么分</strong>：VLM 太贵，不能每 10 ms 跑；语言理解也不需要高频。而且换本体时只需重训 System 1。</p>
+<blockquote>
+<p>这和分层 RL（高层选子目标、低层跟踪）是同一思想。</p>
+</blockquote>
+<h3 id="doc-12-62">6.2【你来】</h3>
+<p><strong>填空 1</strong> 如果 System 2 只有 1 Hz，抓取任务会出什么问题？举一个具体场景。</p>
+<p>🖊️ <strong>我的例子</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+</blockquote>
+<p><strong>填空 2</strong> 你的上手路径（第 25 周后）：用 LeRobot 采数据 → 跑 BC → 换 Diffusion → 对比。写出你要用的指标和"怎样算成功"。</p>
+<p>🖊️ <strong>我的计划</strong>：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;
+&nbsp;</p>
+</blockquote>
+<h3 id="doc-12-63">6.3【交回给我】</h3>
+<ul>
+<li>我的例子是否具体到场景：</li>
+<li>我的上手计划（哪一周做什么）：</li>
+</ul>
+<hr />
+<h2 id="doc-12-_1">交回给我（整册）</h2>
+<p>🖊️ 我最想先搞懂的一个问题是：</p>
+<blockquote>
+<p>&nbsp;</p>
+</blockquote>
+<p>🖊️ 我是否同意"VLA 是加分项、不是入场券"这个判断？为什么：</p>
+<blockquote>
+<p>&nbsp;
+&nbsp;</p>
+<p>你发我后，我会：① 标 <code>✅/❌</code> 并写理由；② 挑一个你举的例子展开讲；③ 给你一份"用你的串联腿做 VLA 实验"的最小方案。</p>
+</blockquote>
+</section>
+<section class="doc" id="doc-13">
+<h1 id="doc-13-a-b">试卷：A 卷（原理）与 B 卷（综合）</h1>
+<blockquote>
+<p>🧭 返回 <a href="#doc-00">学习总纲</a> ｜ 答案与评分标准：<a href="#doc-14">14-试卷答案与评分标准</a></p>
+</blockquote>
+<p><strong>考试规则（自己遵守）</strong></p>
+<ul>
+<li>闭卷。允许带<strong>一张 A4 手写公式纸</strong>（自己整理的，不许打印）。</li>
+<li>A 卷 90 分钟 / B 卷 120 分钟。用计时器，超时停笔。</li>
+<li>先做完再对答案。<strong>对答案时按"给分点"给自己打分</strong>，不要按"感觉差不多"。</li>
+<li>低于 70 分：回到对应练习册重做；70-85：合格；85 以上：可以往下走。</li>
+</ul>
+<hr />
+<h1 id="doc-13-a-90-100">A 卷 · 原理（90 分钟，100 分）</h1>
+<h2 id="doc-13-2-20">一、填空（每空 2 分，共 20 分）</h2>
+<ol>
+<li>
+<p>贝尔曼最优方程里使问题变成非线性的算子是 <code>______</code>；它满足 <code>______</code> 性质，由 <code>______</code> 定理保证唯一不动点。</p>
+</li>
+<li>
+<p>GAE 中 <code>λ = 0</code> 等价于 <code>______</code>，<code>λ = 1</code> 等价于 <code>______</code>。</p>
+</li>
+<li>
+<p>PPO 的 clip 作用在 <code>______</code> 上，而不是作用在动作上；它的两个边界是 <code>______</code> 和 <code>______</code>。</p>
+</li>
+<li>
+<p>致命三要素是：<code>______</code>、<code>______</code>、<code>______</code>。</p>
+</li>
+<li>
+<p>若 shaping 项写成 <code>F(s,a,s') = ______</code>，则最优策略不变。</p>
+</li>
+</ol>
+<h2 id="doc-13-3-15">二、判断并说明理由（每题 3 分，共 15 分）</h2>
+<ol>
+<li>策略梯度里减基线 <code>b(s)</code> 的目的是把奖励数值变小，从而训练更稳。</li>
+<li><code>Loss/entropy</code> 出现负值，说明策略已经完全没有探索能力。</li>
+<li>PPO 的 <code>clip_param</code> 越小，训练一定越稳定。</li>
+<li>LQR 的最优反馈增益 <code>K</code> 依赖于初始状态 <code>x_0</code>。</li>
+<li>观测器极点配置得越快（越靠左），闭环系统一定越好。</li>
+</ol>
+<h2 id="doc-13-8-32">三、推导（每题 8 分，共 32 分）</h2>
+<p><strong>1.</strong> 从 $J(\theta) = \mathbb{E}_{\tau\sim\pi_\theta}[R(\tau)]$ 出发，推导策略梯度定理。要求：</p>
+<ul>
+<li>写出 <code>p_θ(τ)</code> 的分解；</li>
+<li>说明为什么 <code>ρ_0(s_0)</code> 和 <code>P(s'|s,a)</code> 的梯度为 0；</li>
+<li>用因果性去掉未来奖励；</li>
+<li>说明基线为什么可以减。</li>
+</ul>
+<p><strong>2.</strong> 证明 GAE 在 $\lambda = 1$ 时等于蒙特卡洛优势估计（写出 $\delta$ 求和与望远镜求和的过程）。</p>
+<p><strong>3.</strong> 标量系统 $\dot x = ax + bu$，代价 $J = \int_0^\infty (qx^2 + ru^2)\,dt$（$q&gt;0, r&gt;0$）。从 HJB 方程推导 Riccati 方程，并给出最优控制律。</p>
+<p><strong>4.</strong> 设 $\hat A &gt; 0$、$\epsilon = 0.2$。证明 PPO 的 clip 目标 $L^{\mathrm{CLIP}} = \min\left(r\hat A,\ \mathrm{clip}(r,1-\epsilon,1+\epsilon)\hat A\right)$ 在 $r &gt; 1+\epsilon$ 时对 $r$ 的导数为 0，并说明这对应"限制步长"的哪一侧。</p>
+<h2 id="doc-13-6-18">四、计算（每题 6 分，共 18 分）</h2>
+<p><strong>1.</strong> 两状态 MDP（<code>A</code>、<code>B</code>），<code>stay</code> 得 $+1$ 留在原地，<code>switch</code> 得 $+2$ 切到另一状态，$\gamma = 0.9$。求 $V^*(A)$、$V^*(B)$ 与最优策略（要检验另一分支）。</p>
+<p><strong>2.</strong> 3 步轨迹：$r = [1, 0, 2]$，$V = [5, 4, 3]$（$V(s_0)=5$），$s_2$ 之后终止（$V(s_3)=0$），$\gamma = 0.9$，$\lambda = 0.95$。求 $A_0$ 在 $\lambda = 0$、$\lambda = 1$、$\lambda = 0.95$ 三个值。</p>
+<p><strong>3.</strong> 平面 2R 臂，$l_1 = l_2 = 1$，$q_1 = 30^\circ$，$q_2 = 60^\circ$。求雅可比 $J$ 与 $\det(J)$，并用 $l_1l_2\sin q_2$ 核对。</p>
+<h2 id="doc-13-5-15">五、简答（每题 5 分，共 15 分）</h2>
+<ol>
+<li>
+<p>有人把 <code>rew_scale_alive</code> 从 1 改到 5，说"奖励信号强了 5 倍，应该学得更快"。用 advantage 的定义与归一化解释：为什么这个推理不成立？</p>
+</li>
+<li>
+<p>为什么机器人 RL 普遍用"关节位置目标 + PD 内环"而不是直接输出力矩？给三条理由（分别从稳定性、动作空间、sim2real 角度）。</p>
+</li>
+<li>
+<p>写出分离原理的内容，并说明它在什么条件下成立、为什么非线性系统一般不成立。</p>
+</li>
+</ol>
+<hr />
+<h1 id="doc-13-b-120-100">B 卷 · 综合（120 分钟，100 分）</h1>
+<h2 id="doc-13-20">一、系统设计（20 分）</h2>
+<p>把 cartpole 从"保持竖直"改成 <strong>tracking 任务</strong>：每回合随机目标 <code>x* ∈ [-2, 2]</code>，要求 5 s 内把小车开到 <code>|x - x*| &lt; 0.1</code> 且杆子不倒下。</p>
+<p>请给出：</p>
+<ol>
+<li>观测向量（写出每一维、单位、量纲）；</li>
+<li>奖励函数（写出每一项的公式、量纲、典型每步量级，并说明为什么）；</li>
+<li>终止条件（哪些算 terminated，哪些算 truncated，为什么）；</li>
+<li>一个评估协议（初始状态网格、每格 env 数、指标、成功判据）；</li>
+<li>至少指出一个"会打架"的奖励项，并写出你的解决办法（提示：势函数）。</li>
+</ol>
+<h2 id="doc-13-20_1">二、编程（20 分）</h2>
+<p>用 numpy 实现 GAE：</p>
+<pre><code class="language-python">def compute_gae(rewards, values, dones, gamma=0.99, lam=0.95, last_value=0.0):
+    &quot;&quot;&quot;
+    rewards: (T,)      每步奖励
+    values:  (T,)      每步 V(s_t)
+    dones:   (T,)      1.0 表示该步后 episode 结束（终止或超时）
+    last_value: float  最后一个状态之后的 bootstrap 值
+    返回: advantages (T,), returns (T,)
+    &quot;&quot;&quot;
+</code></pre>
+<p>要求：</p>
+<ol>
+<li>正确处理终止（<code>next_is_not_terminal = 0</code>）与超时（是否需要 bootstrap？说明你的选择）；</li>
+<li>说明为什么必须<strong>从后往前</strong>递推；</li>
+<li>给出一个自测例子（自己构造 3 步数据，手算期望值）。</li>
+</ol>
+<h2 id="doc-13-20_2">三、曲线诊断（20 分）</h2>
+<p>下面是三个训练记录（来自真实日志）。<strong>分别指出最可能的原因 + 一个能验证它的实验</strong>。</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>run</th>
+<th>len95</th>
+<th>std.2</th>
+<th>reward</th>
+<th>util</th>
+<th>vf loss</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>63</td>
+<td>330</td>
+<td>1492.9</td>
+<td>0.999</td>
+<td>0.0165</td>
+<td>eval 在 ±0.3π 初始下成功率只有 40%</td>
+</tr>
+<tr>
+<td>B</td>
+<td>不出现</td>
+<td>135</td>
+<td>124.6</td>
+<td>0.417</td>
+<td>12.21</td>
+<td>平均回合长度卡在 132</td>
+</tr>
+<tr>
+<td>C</td>
+<td>80</td>
+<td>从未 &lt; 1.0</td>
+<td>稳定在理论上限</td>
+<td>1.000</td>
+<td>0.002</td>
+<td>动作噪声方差一直是 1.0</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="doc-13-20_3">四、原理（20 分）</h2>
+<ol>
+<li>（5 分）什么情况下你会选 MPC 而不是 RL？什么情况下反过来？给出<strong>判据</strong>而不是口号。</li>
+<li>（5 分）写出控制障碍函数（CBF）的安全约束，并说明它为什么能保证前向不变性。</li>
+<li>（5 分）RMA 的三步分别是什么？每一步用到什么信息？与 MRAC 的自适应思想有什么对应关系？</li>
+<li>（5 分）为什么 PPO 里对 advantage 做归一化不改变最优策略？它改变了什么、没改变什么？</li>
+</ol>
+<h2 id="doc-13-20_4">五、论文速读（20 分）</h2>
+<blockquote>
+<p><strong>背景材料（改写自 RMA 论文摘要）</strong>：四足机器人在野外会遇到不同地面（草地、沙地、冰面）和负载变化，这些因素无法直接测量。方法分两阶段：第一阶段在仿真中用<strong>特权信息</strong>（真实的地面摩擦、质量、电机强度）训练一个"教师"策略；第二阶段训练一个"学生"策略，它只看最近一段<strong>观测与动作的历史</strong>，去回归教师给出的<strong>环境因子向量</strong>，然后用这个向量条件化策略。</p>
+</blockquote>
+<p>回答：</p>
+<ol>
+<li>（6 分）"特权信息"具体可能包括哪些量？为什么部署时拿不到？</li>
+<li>（7 分）学生网络的输入/输出分别是什么？它本质上在学一个什么"东西"（用控制术语回答）？</li>
+<li>（7 分）如果学生估计的 <code>z</code> 有误差，策略会怎样？你会怎么让系统对 <code>z</code> 的误差更鲁棒？（给两条具体手段）</li>
+</ol>
+<hr />
+<h2 id="doc-13-_1">交卷前自检</h2>
+<ul>
+<li>[ ] A 卷五道简答，每题都写了"原理"而不只是结论</li>
+<li>[ ] 所有计算题写出了中间步骤（评分看步骤）</li>
+<li>[ ] B 卷一里每个奖励项都写了量纲</li>
+<li>[ ] B 卷二代码处理了 <code>done</code> 的 bootstrap</li>
+<li>[ ] 没有一题是"背下来的"，都能现场重推</li>
+</ul>
+</section>
+<section class="doc" id="doc-14">
+<h1 id="doc-14-_1">试卷答案与评分标准</h1>
+<blockquote>
+<p>🧭 返回 <a href="#doc-00">学习总纲</a> ｜ 试卷在 <a href="#doc-13">13-试卷-A卷B卷</a></p>
+</blockquote>
+<p><strong>给自己打分的方法</strong>：按"给分点"逐条打，不按整体印象。<strong>推导题只看结果不看过程 = 0 分</strong>（面试也一样）。</p>
+<hr />
+<h1 id="doc-14-a">A 卷答案</h1>
+<h2 id="doc-14-2">一、填空（每空 2 分）</h2>
+<ol>
+<li>贝尔曼最优算子（<code>max</code> 算子）；<strong>γ-压缩</strong>（<code>||TV - TU||∞ ≤ γ||V - U||∞</code>）；<strong>Banach 不动点</strong>。</li>
+<li><strong>一步 TD</strong>（<code>δ_t = r + γV(s') - V(s)</code>）；<strong>蒙特卡洛</strong>（<code>G_t - V(s_t)</code>）。</li>
+<li><strong>概率比</strong> <code>r_t(θ) = π_θ/π_old</code>；<code>1-ε</code>；<code>1+ε</code>。</li>
+<li><strong>函数逼近</strong>、<strong>自举（bootstrapping）</strong>、<strong>off-policy 数据</strong>。</li>
+<li><code>γΦ(s') - Φ(s)</code>（势函数之差）。</li>
+</ol>
+<p><strong>给分点</strong>：每空 2 分，术语对但表述模糊给 1 分。</p>
+<hr />
+<h2 id="doc-14-3-1-2">二、判断并说明理由（每题 3 分：判断 1 分 + 理由 2 分）</h2>
+<p><strong>1. 错。</strong> 减基线的原理不是"数值变小"，而是 <code>E_{a~π}[∇_θ log π_θ(a|s)] = ∇_θ Σ_a π_θ = ∇_θ 1 = 0</code>，所以任意只依赖状态的基线都不改变期望，但能降低方差。</p>
+<p><strong>2. 错。</strong> 高斯策略的微分熵 <code>H = 0.5 ln(2πeσ²)</code>，<code>σ &lt; 0.242</code> 后必然为负（微分熵可以为负）。判断探索强弱要看 <code>mean_noise_std</code> 本身。</p>
+<p><strong>3. 错（不一定）。</strong> <code>ε</code> 小 → 每步允许的更新更小 → 更稳，但<strong>样本效率下降</strong>，可能长时间卡在局部最优；<code>ε</code> 太小还会让 clip 频繁触发、梯度大量为 0。稳定性与效率是权衡，不是单调关系。</p>
+<p><strong>4. 错。</strong> <code>K = R⁻¹BᵀP</code>，<code>P</code> 只由 <code>(A,B,Q,R)</code> 决定，与 <code>x_0</code> 无关。LQR 是<strong>状态反馈</strong>，<code>x_0</code> 只影响轨迹，不影响增益。</p>
+<p><strong>5. 错。</strong> 观测器极点过快会放大测量噪声（<code>L</code> 大 → 噪声直接进估计），且可能激励未建模高频动态；实际要权衡"收敛速度 vs 噪声敏感度"，还要考虑采样频率（离散化后过快极点会失稳）。</p>
+<hr />
+<h2 id="doc-14-8">三、推导（每题 8 分）</h2>
+<h3 id="doc-14-1-2222">1. 策略梯度定理（给分点 2+2+2+2）</h3>
+<p><code>p_θ(τ) = ρ_0(s_0) Π_t π_θ(a_t|s_t) P(s_{t+1}|s_t,a_t)</code> —— <strong>2 分</strong></p>
+<p><code>∇_θ J = ∫ ∇_θ p_θ R dτ = ∫ p_θ ∇_θ log p_θ · R dτ = E[∇_θ log p_θ · R]</code> —— <strong>2 分</strong>
+（log-derivative trick：<code>∇p = p∇log p</code>）</p>
+<p>取对数后 <code>log p_θ = log ρ_0 + Σ_t log π_θ + Σ_t log P</code>，其中 <code>ρ_0</code> 与 <code>P</code> <strong>不含 θ</strong>，梯度为 0，故 <code>∇_θ log p_θ = Σ_t ∇_θ log π_θ(a_t|s_t)</code> —— <strong>2 分</strong></p>
+<p>因果性：<code>a_t</code> 不影响 <code>t</code> 之前的奖励，所以 <code>E[∇log π(a_t|s_t)·r_{t'}] = 0 (t' &lt; t)</code>，可把 <code>R(τ)</code> 换成 <code>G_t = Σ_{t'≥t} γ^{t'-t} r_{t'}</code> —— <strong>2 分</strong></p>
+<p>减基线：<code>E_{a}[∇log π(a|s)b(s)] = b(s)Σ_a ∇π(a|s) = b(s)∇1 = 0</code>，故可用 <code>G_t - b(s_t)</code>，期望不变、方差下降。</p>
+<blockquote>
+<p><strong>总式</strong>：<code>∇_θ J = E[Σ_t ∇_θ log π_θ(a_t|s_t)(G_t - b(s_t))]</code></p>
+</blockquote>
+<h3 id="doc-14-2-gae-1-mc-44">2. GAE λ=1 = MC（给分点 4+4）</h3>
+<p>$A_t^{\mathrm{GAE}} = \sum_{l\ge0}(\gamma\lambda)^l\,\delta_{t+l}$，其中 $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ —— 4 分</p>
+<p>$\lambda=1$ 时展开：</p>
+<p>$$
+\sum_{l\ge0}\gamma^l\left[r_{t+l} + \gamma V(s_{t+l+1}) - V(s_{t+l})\right]
+= \sum_{l\ge0}\gamma^l r_{t+l} + \sum_{l\ge0}\gamma^{l+1}V(s_{t+l+1}) - \sum_{l\ge0}\gamma^l V(s_{t+l})
+$$</p>
+<p>后两项逐项相消（望远镜求和），只剩 $-V(s_t)$（终止时 $V(s_T)=0$）：</p>
+<p>$$
+= G_t - V(s_t) \qquad\text{—— 4 分}
+$$</p>
+<h3 id="doc-14-3-lqr-riccati-323">3. 标量 LQR 的 Riccati（给分点 3+2+3）</h3>
+<p>HJB：$0 = \min_u\left[qx^2 + ru^2 + V_x(ax+bu)\right]$，猜 $V = px^2$，$V_x = 2px$ —— 3 分</p>
+<p>对 $u$ 求导：$2ru + 2pxb = 0 \Rightarrow u^* = -\dfrac{pb}{r}x$ —— 2 分</p>
+<p>代回：</p>
+<p>$$
+qx^2 + \frac{p^2b^2}{r}x^2 + 2apx^2 - 2\frac{p^2b^2}{r}x^2 = 0
+\;\Longrightarrow\;
+2ap - \frac{b^2}{r}p^2 + q = 0 \qquad\text{—— 3 分}
+$$</p>
+<p>即 $u = -Kx$，$K = \dfrac{pb}{r}$。与矩阵形式 $A^\top P + PA - PBR^{-1}B^\top P + Q = 0$ 一致。</p>
+<h3 id="doc-14-4-ppo-clip-44">4. PPO clip 的梯度（给分点 4+4）</h3>
+<p><code>r &gt; 1+ε</code> 时 <code>clip(r,1-ε,1+ε) = 1+ε</code>，<code>A&gt;0</code> 时 <code>(1+ε)A</code> 是常数，<code>min(rA, (1+ε)A) = (1+ε)A</code>（因为 <code>rA &gt; (1+ε)A</code>） —— 4 分</p>
+<p>所以 <code>L^CLIP</code> 在该区间是<strong>常数</strong>，<code>∂L/∂r = 0</code>。这限制的是"<strong>让好动作概率继续增大</strong>"这一侧（reward-increasing side），防止一次更新把某个动作概率推得过高。</p>
+<hr />
+<h2 id="doc-14-6-3-3">四、计算（每题 6 分：式子 3 分 + 结果 3 分）</h2>
+<h3 id="doc-14-1-mdp">1. 两状态 MDP</h3>
+<p><code>V(A) = max{1 + 0.9V(A), 2 + 0.9V(B)}</code>，<code>V(B)</code> 对称。</p>
+<ul>
+<li>若 <code>stay</code> 最优：<code>V = 1/(1-0.9) = 10</code>；</li>
+<li>若 <code>switch</code> 最优：<code>V = 2 + 0.9V → V = 20</code>。</li>
+</ul>
+<p>比较：<code>switch</code> 给 20 &gt; <code>stay</code> 给 10 → <strong><code>V*(A)=V*(B)=20</code>，最优策略是永远 switch</strong>。
+检验：<code>2 + 0.9×20 = 20</code> ✅，且 <code>1 + 0.9×20 = 19 &lt; 20</code> ✅。</p>
+<h3 id="doc-14-2-gae">2. 三步 GAE</h3>
+<p><code>δ_0 = 1 + 0.9×4 - 5 = -0.4</code>
+<code>δ_1 = 0 + 0.9×3 - 4 = -1.3</code>
+<code>δ_2 = 2 + 0 - 3 = -1</code></p>
+<ul>
+<li><code>λ=0</code>：<code>A_0 = -0.4</code></li>
+<li><code>λ=1</code>：<code>A_0 = -0.4 + 0.9(-1.3) + 0.81(-1) = -2.38</code>（核对 MC：<code>G_0 = 1 + 0.81×2 = 2.62</code>，<code>2.62-5 = -2.38</code> ✅）</li>
+<li><code>λ=0.95</code>：<code>γλ = 0.855</code>，<code>(γλ)² = 0.731025</code>
+  <code>A_0 = -0.4 + 0.855(-1.3) + 0.731025(-1) = -2.2425</code></li>
+</ul>
+<h3 id="doc-14-3-2r">3. 2R 雅可比</h3>
+<p>$$
+J = \begin{bmatrix}
+-l_1s_1 - l_2s_{12} &amp; -l_2s_{12}\\
+l_1c_1 + l_2c_{12} &amp; l_2c_{12}
+\end{bmatrix}
+$$</p>
+<p>$s_1 = 0.5,\ c_1 = 0.8660,\ s_{12} = \sin 90^\circ = 1,\ c_{12} = 0$，所以</p>
+<p>$$
+J = \begin{bmatrix} -1.5 &amp; -1.0\\ 0.866 &amp; 0\end{bmatrix},
+\qquad \det(J) = (-1.5)(0) - (-1)(0.866) = 0.866
+$$</p>
+<p>核对：<code>l₁l₂ sin q₂ = 1×1×sin60° = 0.866</code> ✅（非奇异）</p>
+<hr />
+<h2 id="doc-14-5">五、简答（每题 5 分）</h2>
+<h3 id="doc-14-1-alive-5-5-32">1. alive 放大 5 倍为什么不会"快 5 倍"（给分点 3+2）</h3>
+<p>advantage 是<strong>相对量</strong>：<code>A(s,a) = Q(s,a) - V(s)</code>。<code>alive</code> 是每步常数，它在 <code>Q</code> 和 <code>V</code> 里同时出现，相减时<strong>被抵消</strong>（更严格地说，PPO 还做两次归一化 <code>(A-mean)/std</code>，常数项在减均值时直接消失）。</p>
+<p>所以放大 <code>alive</code> 不改变"哪个动作更好"的排序，只改变数值尺度（进而影响 critic 目标、KL、lr 刹车）。<strong>真正决定学得快慢的是"惩罚项/终止项提供的相对信号"</strong>，不是常数奖励的绝对值。</p>
+<p>→ 3 分：指出 advantage 相减抵消；2 分：指出归一化也消除尺度。</p>
+<h3 id="doc-14-2-pd-rl-17">2. 内环 PD + 外环 RL（每条 1.7 分）</h3>
+<ol>
+<li><strong>稳定性</strong>：PD 提供阻尼，抑制高频振荡；策略只需负责低频决策，误差不会直接变成大幅力矩。</li>
+<li><strong>动作空间</strong>：位置目标幅值有界、物理意义明确，探索更安全；力矩输出容易饱和/发散。</li>
+<li><strong>sim2real</strong>：PD 是"模型无关"的快速反馈，能吃掉一部分模型误差与延迟；学习策略的推理延迟不进入内环。</li>
+</ol>
+<h3 id="doc-14-3-32">3. 分离原理（给分点 3+2）</h3>
+<p><strong>内容</strong>：线性系统 <code>ẋ = Ax + Bu, y = Cx</code> 下，<code>u = -Kx̂</code>（<code>x̂</code> 由 Luenberger 观测器给出）的闭环极点 = <code>eig(A-BK) ∪ eig(A-LC)</code>。所以控制器和观测器可以<strong>独立设计</strong>。</p>
+<p><strong>成立条件</strong>：系统线性、观测器线性、无噪声/或噪声统计已知。</p>
+<p><strong>非线性下不成立</strong>：估计误差 <code>e = x - x̂</code> 会进入非线性控制律，与状态耦合（不是简单的极点叠加），可能激励未建模动态而失稳。</p>
+<hr />
+<h1 id="doc-14-b">B 卷答案</h1>
+<h2 id="doc-14-20-4-8-3-3-2">一、系统设计（20 分：观测 4 + 奖励 8 + 终止 3 + 评估 3 + 冲突 2）</h2>
+<p><strong>观测（4 分）</strong>：<code>o = [θ (rad), ω (rad/s), x (m), v (m/s), (x* - x) (m)]</code>，5 维。用差值而不是 <code>x*</code> 绝对值：数学等价，但省掉网络一次减法，收敛更快。</p>
+<p><strong>奖励（8 分）</strong>：每项都要有公式 + 量纲 + 典型量级。</p>
+<p>$$
+\begin{aligned}
+r_{\text{alive}}  &amp;= 1.0\,(1-\text{terminated}), &amp; \text{无量纲} &amp;\sim 1\\
+r_{\text{pole}}   &amp;= -1.0\,\theta^2, &amp; \mathrm{rad}^2 &amp;\sim 0.001\text{-}0.05\\
+r_{\text{target}} &amp;= -1.0\,\min\left(1, (x-x^*)^2\right), &amp; \mathrm{m}^2 &amp;\sim 0\text{-}1\\
+r_{\text{cart\_}v} &amp;= -0.01\,|v|, &amp; \mathrm{m/s} &amp;\sim 0.001\text{-}0.01\\
+r_{\text{pole\_}v} &amp;= -0.005\,|\omega|, &amp; \mathrm{rad/s} &amp;\sim 0.001\text{-}0.01
+\end{aligned}
+$$</p>
+<p><strong>为什么</strong>：<code>r_target</code> 用 <code>min(1, ·)</code> 裁剪，避免远离目标时惩罚过大（否则策略会"不敢动"）；量级统一到 O(1)，便于跨配置比较。</p>
+<p><strong>终止（3 分）</strong>：<code>|θ| &gt; π/2</code>、<code>|x| &gt; 3</code> → <strong>terminated</strong>（真正失败，要给 <code>-10</code>）；时间到 5 s → <strong>truncated</strong>（超时，不算失败，要 bootstrap <code>V(s_T)</code>）。二者混为一谈会导致"越接近上限价值越被低估"。</p>
+<p><strong>评估（3 分）</strong>：<code>x* ∈ {-2,-1,0,1,2}</code> × <code>θ0 ∈ {-0.3π,-0.2π,0,0.2π,0.3π}</code>，每格 32 env，动作取<strong>均值</strong>（确定性），指标：到位率（<code>|x-x*|&lt;0.1</code> 且未终止）、平均残差角、力矩 RMS。</p>
+<p><strong>冲突（2 分）</strong>：<code>r_target</code> 和 <code>r_pole</code> 打架——为了到目标必须移动，移动会让杆子倒。<strong>用势函数解决</strong>：<code>F = γΦ(s') - Φ(s)</code>，<code>Φ = -0.5k(x-x*)²</code>，理论上不改变"保持竖直"的最优策略，只加速"靠近目标"的学习。</p>
+<hr />
+<h2 id="doc-14-20-10-6-4">二、编程（20 分：代码 10 + 说明 6 + 自测 4）</h2>
+<pre><code class="language-python">import numpy as np
+
+def compute_gae(rewards, values, dones, gamma=0.99, lam=0.95, last_value=0.0):
+    T = len(rewards)
+    adv = np.zeros(T, dtype=np.float64)
+    ret = np.zeros(T, dtype=np.float64)
+    next_value = float(last_value)
+    gae = 0.0
+    for t in reversed(range(T)):
+        not_done = 1.0 - float(dones[t])
+        delta = rewards[t] + gamma * not_done * next_value - values[t]
+        gae = delta + gamma * lam * not_done * gae
+        adv[t] = gae
+        ret[t] = gae + values[t]
+        next_value = values[t]
+    return adv, ret
+</code></pre>
+<p><strong>为什么从后往前</strong>（6 分）：GAE 的定义是"未来 TD 残差的折扣和"，是<strong>后向递推</strong> <code>A_t = δ_t + γλA_{t+1}</code>；正向无法写（需要未来信息）。同时 <code>next_value</code> 要从最后一步往前更新。</p>
+<p><strong>终止 vs 超时</strong>：<code>dones=1</code> 时 <code>not_done=0</code> → <code>delta = r - V</code>、<code>gae = delta</code>，不 bootstrap。<strong>但严格说，超时（truncated）应该 bootstrap</strong>：此时 episode 只是被截断，真实价值不为 0。若 <code>dones</code> 里混了超时，需要单独传 <code>truncated</code> 并令 <code>last_value = V(s_T)</code>。这是最常见的实现 bug。</p>
+<p><strong>自测</strong>（4 分）：用 A 卷四.2 的数据 <code>r=[1,0,2], V=[5,4,3], dones=[0,0,1], γ=0.9, λ=0.95</code>，应得 <code>adv[0] = -2.2425</code>，<code>ret[0] = 2.7575</code>。</p>
+<hr />
+<h2 id="doc-14-6-7-4-2-3">三、曲线诊断（每题 6-7 分：原因 4 + 验证 2-3）</h2>
+<h3 id="doc-14-aeval-40">A：训练指标很好，eval 只有 40%</h3>
+<p><strong>最可能原因</strong>：训练指标是"训练分布上的随机策略滑动平均"，而 eval 是"确定性动作 + 指定初始角"。训练时策略带噪声（<code>std</code> 到 330 轮才降到 0.2），噪声掩盖了"边缘初始角下的失败"；一旦去掉噪声，边缘条件就暴露。</p>
+<p><strong>验证</strong>：① 用同一组初始角做 eval，对比"确定性 vs 随机采样"成功率；② 扫初始角网格（0 → ±0.3π）看成功率曲线；③ 检查训练初始分布是否真的覆盖 ±0.3π。</p>
+<h3 id="doc-14-b-132">B：回合长度卡在 132</h3>
+<p><strong>最可能原因</strong>：<code>initial_pole_angle_range = [-1.0, 1.0]</code>，单位是 <strong>π 的倍数</strong> → ±180°，而终止条件是 <code>|θ| &gt; π/2</code>。约一半环境<strong>第一步就终止</strong>，理论上限 <code>0.5×299 + 0.5×1 ≈ 150</code>，实测 132 就在这个天花板下。</p>
+<p><strong>验证</strong>：把 range 改到 <code>[-0.49, 0.49]</code> 重训；若 <code>len95</code> 立刻出现，证明是终止条件而非策略能力。</p>
+<h3 id="doc-14-cstd">C：std 从不下降</h3>
+<p><strong>最可能原因</strong>：奖励没有区分度（<code>util=1.0</code>，说明"活下来"就满分），advantage 几乎为常数 → 策略项梯度 ≈ 0，只有熵项在缓慢压低 std 且被归一化后微弱；也可能 <code>entropy_coef</code> 太小。</p>
+<p><strong>验证</strong>：① 把初始分布加难（±0.4π）或加动作惩罚，让"做得好"有区分度，观察 std 是否下降；② 把 <code>entropy_coef</code> 从 0.005 提到 0.05 看 std 下降是否变快（若变快，说明是熵项主导）。</p>
+<hr />
+<h2 id="doc-14-5_1">四、原理（每题 5 分）</h2>
+<p><strong>1. MPC vs RL 的判据</strong></p>
+<p>选 MPC：模型可得且较准、有硬约束（力矩/位置/安全）、需要可解释/可验证、实时性可通过 QP 满足。
+选 RL：模型难建（接触、摩擦、变形）、需要从数据学复杂行为、任务用奖励描述比用模型描述容易、可接受仿真训练成本。
+<strong>判据不是"哪个先进"，而是"模型误差 vs 数据量"</strong>：模型准 → MPC；数据多且模型不准 → RL；两者都有 → 残差学习/学习型 MPC。</p>
+<p><strong>2. CBF</strong></p>
+<p><code>s.t. Ḣ(x) + αH(x) ≥ 0</code>，其中 <code>H(x) ≥ 0</code> 定义安全集，<code>α &gt; 0</code>。由比较引理，<code>H(x(0)) ≥ 0 → H(x(t)) ≥ 0 ∀t</code>（前向不变），即系统永不离开安全集。</p>
+<p><strong>3. RMA 三步</strong></p>
+<p>① 教师：在仿真里用特权信息（摩擦、质量、电机强度、地形）训练策略；
+② 学生：只用可观测的 <code>(o, a)</code> 历史，回归教师提供的环境因子 <code>z</code>（本质是一个<strong>隐式系统辨识器/观测器</strong>）；
+③ 部署：<code>π(a|o, ẑ)</code>，<code>ẑ</code> 由历史在线更新。</p>
+<p>与 MRAC 的对应：MRAC 用跟踪误差在线调参数（有模型结构假设）；RMA 用历史回归隐参数（无显式模型），但都是"<strong>在线估计 → 条件化控制</strong>"。</p>
+<p><strong>4. advantage 归一化</strong></p>
+<p><code>A ← (A - mean(A)) / std(A)</code>。它是一个<strong>逐批次的仿射变换</strong>，对所有动作施加同一变换 → 不改变 <code>argmax_a A</code>（最优动作顺序不变），也不改变策略梯度的方向（只改变步长）。它改变的是<strong>数值尺度</strong>（防止梯度爆炸/消失），没改变的是<strong>最优策略</strong>。</p>
+<hr />
+<h2 id="doc-14-20">五、论文速读（20 分）</h2>
+<p><strong>1. 特权信息（6 分）</strong>：地面摩擦系数、地形高度/法向、机身质量与负载、电机强度/延迟、接触状态、外部扰动。部署时<strong>传感器测不到或噪声极大</strong>（无法直接测摩擦系数与负载），只能从响应反推。</p>
+<p><strong>2. 学生输入/输出（7 分）</strong>：输入是最近 <code>k</code> 步的 <code>(o_t, a_t)</code> 历史；输出是环境因子向量 <code>z ∈ R^d</code>（教师训练时用真值）。<strong>本质</strong>：它在学一个<strong>非线性观测器/系统辨识器</strong>——从可观测的输入输出序列反推不可测的系统参数。</p>
+<p><strong>3. z 有误差会怎样（7 分）</strong>：策略条件在错误的 <code>z</code> 上 → 行为退化为"用错参数的控制器"，可能过度保守（不敢走）或过度激进（打滑摔倒）。两条鲁棒手段：
+- 训练时给 <code>z</code> 加噪（把估计误差建模进训练分布，等价于"鲁棒化"）；
+- 让 <code>z</code> 只保留低维/慢变分量（限制估计器的敏感度），或对 <code>z</code> 做时间平滑（低通），避免抖动。</p>
+<hr />
+<h1 id="doc-14-_2">评分汇总表</h1>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>部分</th>
+<th>A 卷</th>
+<th>B 卷</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一</td>
+<td>20</td>
+<td>20</td>
+</tr>
+<tr>
+<td>二</td>
+<td>15</td>
+<td>20</td>
+</tr>
+<tr>
+<td>三</td>
+<td>32</td>
+<td>20</td>
+</tr>
+<tr>
+<td>四</td>
+<td>18</td>
+<td>20</td>
+</tr>
+<tr>
+<td>五</td>
+<td>15</td>
+<td>20</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>100</strong></td>
+<td><strong>100</strong></td>
+</tr>
+</tbody>
+</table></div>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>分数</th>
+<th>判定</th>
+<th>下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt; 70</td>
+<td>不合格</td>
+<td>重做对应练习册，2 周后重考</td>
+</tr>
+<tr>
+<td>70-85</td>
+<td>合格</td>
+<td>进入下一阶段，错题写进笔记</td>
+</tr>
+<tr>
+<td>&gt; 85</td>
+<td>优秀</td>
+<td>可以把这份卷子当"面试模拟题"再讲一遍</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h1 id="doc-14-8_1">最常见的 8 个错误（改卷时重点看）</h1>
+<ol>
+<li>把 PPO 的 clip 说成"裁剪动作"。</li>
+<li>以为熵为负 = 探索死掉。</li>
+<li>GAE λ=1 时算不出 MC 的数值（终止处理写错）。</li>
+<li>LQR 说成"增益依赖 x0"。</li>
+<li>把 terminated 和 truncated 混为一谈（B 卷二必查）。</li>
+<li>GAE 代码里对超时也 <code>not_done=0</code>（少 bootstrapping）。</li>
+<li>奖励设计不写量纲（B 卷一直接扣分）。</li>
+<li>诊断题只给"可能是 A/B/C"，不给"怎么验证"。</li>
+</ol>
+</section>
+</main>
+<button id="top" title="回到顶部">↑</button>
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/auto-render.min.js"></script>
+<script>
+renderMathInElement(document.querySelector('main'), {
+  delimiters: [
+    {left: '$$', right: '$$', display: true},
+    {left: '\[', right: '\]', display: true},
+    {left: '$', right: '$', display: false},
+    {left: '\(', right: '\)', display: false}
+  ],
+  throwOnError: false
+});
+</script>
+<script>
+const docs = [...document.querySelectorAll('section.doc')];
+const details = [...document.querySelectorAll('nav#toc details')];
+function openFor(id){
+  details.forEach(d=>{
+    const on = d.dataset.doc === id;
+    d.classList.toggle('active', on);
+    if(on) d.open = true;
+  });
+}
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) openFor(e.target.id); });
+},{rootMargin:'-10% 0px -80% 0px', threshold:0});
+docs.forEach(s=>io.observe(s));
+
+const q = document.getElementById('q');
+q.addEventListener('input', ()=>{
+  const v = q.value.trim().toLowerCase();
+  details.forEach(d=>{
+    const hit = !v || d.dataset.text.includes(v);
+    d.style.display = hit ? '' : 'none';
+    if(v) d.open = hit && v.length>0;
+  });
+});
+document.getElementById('top').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+addEventListener('scroll', ()=>{ document.getElementById('top').style.display = scrollY>600?'block':'none'; });
+</script>
+</body></html>

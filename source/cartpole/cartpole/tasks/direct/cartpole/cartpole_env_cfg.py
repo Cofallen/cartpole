@@ -36,13 +36,13 @@ class CartpoleEnvCfg(DirectRLEnvCfg):
     cart_dof_name = "slider_to_cart"
     pole_dof_name = "cart_to_pole"
     # - action scale
-    action_scale = 100.0  # [N]
+    action_scale = 200.0  # [N]
     # - reward scales
     rew_scale_alive = 1.0
-    rew_scale_terminated = -2.0
+    rew_scale_terminated = -1.0
     rew_scale_pole_pos = -1.0
-    rew_scale_cart_vel = -0.01
+    rew_scale_cart_vel = -0.001
     rew_scale_pole_vel = -0.005
     # - reset states/conditions
-    initial_pole_angle_range = [-0.25, 0.25]  # pole angle sample range on reset [rad]
+    initial_pole_angle_range = [-0.3, 0.3]  # pole angle sample range on reset [rad]
     max_cart_pos = 3.0  # reset if cart exceeds this position [m]

@@ -27,3 +27,12 @@ gym.register(
         "sb3_cfg_entry_point": f"{agents.__name__}:sb3_ppo_cfg.yaml",
     },
 )
+
+gym.register(
+    id="v0",
+    entry_point=f"{__name__}.cartpole_env:CartpoleEnv",
+    disable_env_checker=True,
+    kwargs={
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:PPORunnerCfg",
+    }
+)
