@@ -83,7 +83,7 @@ class CartpoleEnv(DirectRLEnv):
     # def _get_rewards(self) -> torch.Tensor:
     #     pole_pos = self.joint_pos[:, self._pole_dof_idx[0]]
     #     pole_vel = self.joint_vel[:, self._pole_dof_idx[0]]
-    #     # cart_pos = self.joint_pos[:, self._cart_dof_idx[0]]
+    #     cart_pos = self.joint_pos[:, self._cart_dof_idx[0]]
     #     cart_vel = self.joint_vel[:, self._cart_dof_idx[0]]
 
     #     rew_alive = self.cfg.rew_scale_alive * (1.0 - self.reset_terminated.float())
@@ -96,6 +96,7 @@ class CartpoleEnv(DirectRLEnv):
     #         "Reward/alive": rew_alive.mean().item(),
     #         "Reward/terminated": rew_term.mean().item(),
     #         "Reward/pole_pos": rew_pole.mean().item(),
+    #         "Reward/cart_pos": cart_pos.mean().item(),
     #         "Reward/cart_vel": rew_cv.mean().item(),
     #         "Reward/pole_vel": rew_pv.mean().item(),
     #     }

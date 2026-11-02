@@ -44,5 +44,5 @@ class CartpoleEnvCfg(DirectRLEnvCfg):
     rew_scale_cart_vel = -0.001
     rew_scale_pole_vel = -0.005
     # - reset states/conditions
-    initial_pole_angle_range = [-0.3, 0.3]  # pole angle sample range on reset [rad]
+    initial_pole_angle_range = [-1.0, 1.0]  # pole angle sample range on reset [rad]
     max_cart_pos = 3.0  # reset if cart exceeds this position [m]
