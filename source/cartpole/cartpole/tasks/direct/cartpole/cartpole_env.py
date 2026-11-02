@@ -79,6 +79,28 @@ class CartpoleEnv(DirectRLEnv):
         )
         return total_reward
 
+    # by user
+    # def _get_rewards(self) -> torch.Tensor:
+    #     pole_pos = self.joint_pos[:, self._pole_dof_idx[0]]
+    #     pole_vel = self.joint_vel[:, self._pole_dof_idx[0]]
+    #     # cart_pos = self.joint_pos[:, self._cart_dof_idx[0]]
+    #     cart_vel = self.joint_vel[:, self._cart_dof_idx[0]]
+
+    #     rew_alive = self.cfg.rew_scale_alive * (1.0 - self.reset_terminated.float())
+    #     rew_term = self.cfg.rew_scale_terminated * self.reset_terminated.float()
+    #     rew_pole = self.cfg.rew_scale_pole_pos * pole_pos.square()
+    #     rew_cv = self.cfg.rew_scale_cart_vel * cart_vel.abs()
+    #     rew_pv = self.cfg.rew_scale_pole_vel * pole_vel.abs()
+
+    #     self.extras["log"] = {
+    #         "Reward/alive": rew_alive.mean().item(),
+    #         "Reward/terminated": rew_term.mean().item(),
+    #         "Reward/pole_pos": rew_pole.mean().item(),
+    #         "Reward/cart_vel": rew_cv.mean().item(),
+    #         "Reward/pole_vel": rew_pv.mean().item(),
+    #     }
+    #     return rew_alive + rew_term + rew_pole + rew_cv + rew_pv
+
     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
         self.joint_pos = self.robot.data.joint_pos
         self.joint_vel = self.robot.data.joint_vel
