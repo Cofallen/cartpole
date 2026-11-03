@@ -21,12 +21,12 @@ class CartpoleEnvCfg(DirectRLEnvCfg):
     episode_length_s = 5.0
     # - spaces definition
     action_space = 1
-    observation_space = 5
+    observation_space = 4
     state_space = 0
 
     # by user
     target_range = [-2.0, 2.0]  # 目标采样区间
-    rew_scale_target = -2.0     # 追踪惩罚
+    rew_scale_target = 0.0     # 追踪惩罚
 
     # simulation
     sim: SimulationCfg = SimulationCfg(dt=1 / 120, render_interval=decimation)

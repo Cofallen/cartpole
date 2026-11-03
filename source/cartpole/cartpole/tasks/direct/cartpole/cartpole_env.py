@@ -64,7 +64,7 @@ class CartpoleEnv(DirectRLEnv):
                 self.joint_pos[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
                 self.joint_vel[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
                 # self.last_actions,  # by user
-                (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]]).unsqueeze(1),   # target - x
+                # (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]]).unsqueeze(1),   # target - x
             ),
             dim=-1,
         )
