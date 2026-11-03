@@ -30,6 +30,9 @@ class CartpoleEnv(DirectRLEnv):
         self.joint_pos = self.robot.data.joint_pos
         self.joint_vel = self.robot.data.joint_vel
 
+        self.last_actions = torch.zeros(self.num_envs, 1, device=self.device)  # by user
+        self.target_pos = torch.zeros(self.num_envs, device=self.device)  # by user
+
     def _setup_scene(self):
         self.robot = Articulation(self.cfg.robot_cfg)
         # add ground plane
@@ -50,6 +53,8 @@ class CartpoleEnv(DirectRLEnv):
 
     def _apply_action(self) -> None:
         self.robot.set_joint_effort_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)
+        # self.robot.set_joint_position_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx) # by user
+        self.last_actions = self.actions[:, :1].clamp(-1, 1) # 归一化
 
     def _get_observations(self) -> dict:
         obs = torch.cat(
@@ -58,49 +63,58 @@ class CartpoleEnv(DirectRLEnv):
                 self.joint_vel[:, self._pole_dof_idx[0]].unsqueeze(dim=1),
                 self.joint_pos[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
                 self.joint_vel[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
+                # self.last_actions,  # by user
+                (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]]).unsqueeze(1),   # target - x
             ),
             dim=-1,
         )
         observations = {"policy": obs}
         return observations
 
-    def _get_rewards(self) -> torch.Tensor:
-        total_reward = compute_rewards(
-            self.cfg.rew_scale_alive,
-            self.cfg.rew_scale_terminated,
-            self.cfg.rew_scale_pole_pos,
-            self.cfg.rew_scale_cart_vel,
-            self.cfg.rew_scale_pole_vel,
-            self.joint_pos[:, self._pole_dof_idx[0]],
-            self.joint_vel[:, self._pole_dof_idx[0]],
-            self.joint_pos[:, self._cart_dof_idx[0]],
-            self.joint_vel[:, self._cart_dof_idx[0]],
-            self.reset_terminated,
-        )
-        return total_reward
+    # def _get_rewards(self) -> torch.Tensor:
+    #     total_reward = compute_rewards(
+    #         self.cfg.rew_scale_alive,
+    #         self.cfg.rew_scale_terminated,
+    #         self.cfg.rew_scale_pole_pos,
+    #         self.cfg.rew_scale_cart_vel,
+    #         self.cfg.rew_scale_pole_vel,
+    #         self.joint_pos[:, self._pole_dof_idx[0]],
+    #         self.joint_vel[:, self._pole_dof_idx[0]],
+    #         self.joint_pos[:, self._cart_dof_idx[0]],
+    #         self.joint_vel[:, self._cart_dof_idx[0]],
+    #         self.reset_terminated,
+    #     )
+    #     return total_reward
 
     # by user
-    # def _get_rewards(self) -> torch.Tensor:
-    #     pole_pos = self.joint_pos[:, self._pole_dof_idx[0]]
-    #     pole_vel = self.joint_vel[:, self._pole_dof_idx[0]]
-    #     cart_pos = self.joint_pos[:, self._cart_dof_idx[0]]
-    #     cart_vel = self.joint_vel[:, self._cart_dof_idx[0]]
+    def _get_rewards(self) -> torch.Tensor:
+        pole_pos = self.joint_pos[:, self._pole_dof_idx[0]]
+        pole_vel = self.joint_vel[:, self._pole_dof_idx[0]]
+        cart_pos = self.joint_pos[:, self._cart_dof_idx[0]]
+        cart_vel = self.joint_vel[:, self._cart_dof_idx[0]]
 
-    #     rew_alive = self.cfg.rew_scale_alive * (1.0 - self.reset_terminated.float())
-    #     rew_term = self.cfg.rew_scale_terminated * self.reset_terminated.float()
-    #     rew_pole = self.cfg.rew_scale_pole_pos * pole_pos.square()
-    #     rew_cv = self.cfg.rew_scale_cart_vel * cart_vel.abs()
-    #     rew_pv = self.cfg.rew_scale_pole_vel * pole_vel.abs()
+        rew_alive = self.cfg.rew_scale_alive * (1.0 - self.reset_terminated.float())
+        rew_term = self.cfg.rew_scale_terminated * self.reset_terminated.float()
+        rew_pole = self.cfg.rew_scale_pole_pos * pole_pos.square()
+        rew_cv = self.cfg.rew_scale_cart_vel * cart_vel.abs()
+        rew_pv = self.cfg.rew_scale_pole_vel * pole_vel.abs()
 
-    #     self.extras["log"] = {
-    #         "Reward/alive": rew_alive.mean().item(),
-    #         "Reward/terminated": rew_term.mean().item(),
-    #         "Reward/pole_pos": rew_pole.mean().item(),
-    #         "Reward/cart_pos": cart_pos.mean().item(),
-    #         "Reward/cart_vel": rew_cv.mean().item(),
-    #         "Reward/pole_vel": rew_pv.mean().item(),
-    #     }
-    #     return rew_alive + rew_term + rew_pole + rew_cv + rew_pv
+        err = (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]])
+        rew_target = self.cfg.rew_scale_target * torch.clamp(err.square(), max=1.0)
+
+        self.extras["log"] = {
+            "Reward/alive": rew_alive.mean().item(),
+            "Reward/terminated": rew_term.mean().item(),
+            "Reward/pole_pos": rew_pole.mean().item(),
+            "Reward/cart_pos": cart_pos.mean().item(),
+            "Reward/cart_vel": rew_cv.mean().item(),
+            "Reward/pole_vel": rew_pv.mean().item(),
+            "Reward/action": self.actions.mean().item(),
+        }
+        self.extras["log"]["Reward/target"] = rew_target.mean().item()
+        rew = rew_alive + rew_term + rew_pole + rew_cv + rew_pv + rew_target
+        assert rew.shape == (self.num_envs,), f"reward shape {rew.shape} != ({self.num_envs},)"
+        return rew
 
     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
         self.joint_pos = self.robot.data.joint_pos
@@ -130,6 +144,12 @@ class CartpoleEnv(DirectRLEnv):
 
         self.joint_pos[env_ids] = joint_pos
         self.joint_vel[env_ids] = joint_vel
+
+        # by user
+        n = len(env_ids)
+        self.target_pos[env_ids] = sample_uniform(
+            self.cfg.target_range[0], self.cfg.target_range[1], (n,), self.device
+        )
 
         self.robot.write_root_pose_to_sim(default_root_state[:, :7], env_ids)
         self.robot.write_root_velocity_to_sim(default_root_state[:, 7:], env_ids)
