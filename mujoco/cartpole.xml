@@ -1,0 +1,155 @@
+<mujoco model="cartpole_isaac_like">
+  <!--
+    ============================================================================
+    Isaac Lab 倒立摆的 MuJoCo 复刻版（用于 sim2sim 验证）
+
+    物理参数对齐 source/cartpole/.../cartpole_env_cfg.py + isaaclab_assets/robots/cartpole.py:
+      关节名      slider_to_cart / cart_to_pole   （与 Isaac 里同名，方便对照）
+      车          mass 1.0 kg, 0.40 x 0.20 x 0.15 m, slide 阻尼 10 N·s/m
+      杆          mass 0.1 kg, 长 1.0 m, 半径 0.03 m, hinge 阻尼 0
+      执行器      作用在 slider_to_cart 上的纯力矩, ±400 N
+                  （= effort_limit_sim 400, stiffness 0 → 没有 PD 位置环）
+      物理步长    0.002 s（控制 60 Hz = 1/120 × decimation 2，一个控制周期 8 个物理步）
+
+    所有"更漂亮"的几何体都放在 class="visual" 里：
+    contype=conaffinity=0 且 mass=0，只影响外观，不影响动力学。
+    ============================================================================
+  -->
+  <compiler angle="radian" autolimits="true" inertiafromgeom="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic" impratio="10"/>
+
+  <visual>
+    <global offwidth="1280" offheight="720" fovy="45"/>
+    <headlight ambient="0.38 0.40 0.44" diffuse="0.45 0.46 0.50" specular="0.08 0.08 0.08"/>
+    <quality shadowsize="4096" offsamples="8"/>
+    <map znear="0.01" zfar="60" fogstart="10" fogend="30"/>
+    <rgba haze="0.10 0.12 0.16 1"/>
+  </visual>
+
+  <asset>
+    <texture name="sky" type="skybox" builtin="gradient"
+             rgb1="0.13 0.16 0.23" rgb2="0.02 0.03 0.05" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker"
+             rgb1="0.27 0.28 0.30" rgb2="0.235 0.245 0.265"
+             mark="edge" markrgb="0.30 0.31 0.34" width="1024" height="1024"/>
+    <material name="grid"        texture="grid" texrepeat="26 26" texuniform="true" reflectance="0.0"/>
+    <material name="cart"        rgba="0.24 0.50 0.80 1"    specular="0.55" reflectance="0.12" shininess="0.7"/>
+    <material name="metal"       rgba="0.44 0.47 0.51 1"    specular="0.35" reflectance="0.10" shininess="0.6"/>
+    <material name="dark"        rgba="0.10 0.11 0.13 1"    specular="0.25" reflectance="0.05"/>
+    <material name="pole"        rgba="0.96 0.55 0.18 1"    specular="0.45" reflectance="0.10"/>
+    <material name="pole_tip"    rgba="0.92 0.22 0.20 1"    specular="0.60" reflectance="0.15"/>
+    <material name="target"      rgba="0.15 0.95 0.45 0.30" specular="0.30" reflectance="0.0"/>
+    <material name="target_core" rgba="0.25 1.00 0.55 0.95"/>
+    <material name="tick"        rgba="0.85 0.88 0.92 1"    specular="0.20" reflectance="0.0"/>
+  </asset>
+
+  <default>
+    <!-- 纯装饰几何体：不碰撞、不计算质量、单独分组（viewer 里可按 Geom group 隐藏） -->
+    <default class="visual">
+      <geom contype="0" conaffinity="0" group="2" density="0" mass="0"/>
+    </default>
+    <default class="wheel">
+      <geom type="cylinder" contype="0" conaffinity="0" group="2" density="0" mass="0"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <!--
+      灯光：主光 + 补光。这里刻意不开 castshadow：
+      车是"挂在滑轨上"的，地面只是背景板，投在地上的影子既没信息量，
+      又会因为巨大的 plane 出现 shadow acne（地面上的条纹脏影）。
+    -->
+    <light name="key"  pos="2.5 -3.5 4.5" dir="-0.45 0.62 -1" directional="true" castshadow="false"
+           diffuse="0.85 0.85 0.87" specular="0.20 0.20 0.20"/>
+    <light name="fill" pos="-3.0 2.5 3.0" dir="0.60 -0.50 -1" directional="true" castshadow="false"
+           diffuse="0.30 0.33 0.40" specular="0.05 0.05 0.05"/>
+
+    <!-- 地面：Isaac 里车挂在滑轨上、不接触地面，所以这里只做视觉（不参与碰撞） -->
+    <geom name="floor" type="plane" size="0 0 0.05" pos="0 0 -0.001"
+          material="grid" class="visual"/>
+
+    <!-- 滑轨 + 两端限位块（视觉；真正的限位来自 slide joint 的 range） -->
+    <geom name="rail"   type="box" size="3.35 0.028 0.010" pos="0 0 0.425"
+          material="metal" class="visual"/>
+    <geom name="stop_l" type="box" size="0.018 0.075 0.075" pos="-3.07 0 0.50"
+          material="metal" class="visual"/>
+    <geom name="stop_r" type="box" size="0.018 0.075 0.075" pos=" 3.07 0 0.50"
+          material="metal" class="visual"/>
+
+    <!-- 轨道刻度：每 1 m 一道浅色刻线，方便肉眼读 x -->
+    <geom name="tick_m2" type="box" size="0.005 0.032 0.0012" pos="-2 0 0.436" material="tick" class="visual"/>
+    <geom name="tick_m1" type="box" size="0.005 0.032 0.0012" pos="-1 0 0.436" material="tick" class="visual"/>
+    <geom name="tick_p1" type="box" size="0.005 0.032 0.0012" pos=" 1 0 0.436" material="tick" class="visual"/>
+    <geom name="tick_p2" type="box" size="0.005 0.032 0.0012" pos=" 2 0 0.436" material="tick" class="visual"/>
+
+    <!-- ================= 小车（唯一的滑动自由度） ================= -->
+    <body name="cart" pos="0 0 0.50">
+      <joint name="slider_to_cart" type="slide" axis="1 0 0"
+             range="-3 3" limited="true" damping="10"/>
+
+      <!-- 车体：唯一有质量的几何体（1.0 kg） -->
+      <geom name="cart_box" type="box" size="0.20 0.10 0.075" mass="1.0"
+            material="cart" group="1"/>
+
+      <!-- 装饰：底盘 / 顶盖 / 四轮 / 轮毂 -->
+      <geom name="chassis" type="box" size="0.205 0.105 0.022" pos="0 0 -0.062"
+            material="dark" class="visual"/>
+      <geom name="cap"     type="box" size="0.185 0.090 0.010" pos="0 0 0.080"
+            material="metal" class="visual"/>
+
+      <geom name="wheel_fl" type="cylinder" size="0.052 0.014" pos=" 0.11  0.108 -0.062"
+            euler="90 0 0" material="dark" class="wheel"/>
+      <geom name="wheel_fr" type="cylinder" size="0.052 0.014" pos=" 0.11 -0.108 -0.062"
+            euler="90 0 0" material="dark" class="wheel"/>
+      <geom name="wheel_bl" type="cylinder" size="0.052 0.014" pos="-0.11  0.108 -0.062"
+            euler="90 0 0" material="dark" class="wheel"/>
+      <geom name="wheel_br" type="cylinder" size="0.052 0.014" pos="-0.11 -0.108 -0.062"
+            euler="90 0 0" material="dark" class="wheel"/>
+      <geom name="hub_l" type="box" size="0.045 0.005 0.004" pos="0  0.124 -0.062"
+            material="metal" class="visual"/>
+      <geom name="hub_r" type="box" size="0.045 0.005 0.004" pos="0 -0.124 -0.062"
+            material="metal" class="visual"/>
+
+      <!-- ================= 摆杆（被动转动） =================
+           注意 axis="0 -1 0" 而不是 "0 1 0"：
+           Isaac 的 cart_to_pole 正向是"杆向 -x 侧倾"（θ_isaac = -θ_默认MuJoCo），
+           这里把铰链轴取反，state 里的 theta/omega 就与训练时同号，
+           脚本里就不用再偷偷乘 -1。（写死错方向 = 杆子第一次抖就飞出去）
+      -->
+      <body name="pole" pos="0 0 0.075">
+        <joint name="cart_to_pole" type="hinge" axis="0 -1 0" damping="0"/>
+        <!-- 杆本体：0.1 kg，长 1.0 m（质心在 0.5 m 处） -->
+        <geom name="pole_rod" type="capsule" fromto="0 0 0 0 0 1.0" size="0.03" mass="0.1"
+              material="pole" group="1"/>
+        <!-- 装饰：铰链 / 杆顶小球 -->
+        <geom name="pole_hinge" type="cylinder" size="0.045 0.032" euler="90 0 0"
+              material="metal" class="visual"/>
+        <geom name="pole_tip" type="sphere" size="0.05" pos="0 0 1.0"
+              material="pole_tip" class="visual"/>
+      </body>
+    </body>
+
+    <!-- ================= 目标点（mocap body：脚本里直接改 mocap_pos 即可移动） ================= -->
+    <body name="target_marker" mocap="true" pos="1 0 0.50">
+      <geom name="target_ball" type="sphere" size="0.058" material="target" class="visual"/>
+      <geom name="target_glow" type="sphere" size="0.022" material="target_core" class="visual"/>
+      <geom name="target_post" type="capsule" fromto="0 0 -0.03 0 0 -0.49" size="0.006"
+            material="target_core" class="visual"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- 纯力矩执行器：force = action * 200 N，饱和 ±400 N
+         （对应 Isaac 的 action_scale=200 与 effort_limit_sim=400） -->
+    <motor name="cart_force" joint="slider_to_cart" gear="1"
+           ctrlrange="-400 400" ctrllimited="true"/>
+  </actuator>
+
+  <sensor>
+    <jointpos    name="cart_x"      joint="slider_to_cart"/>
+    <jointvel    name="cart_v"      joint="slider_to_cart"/>
+    <jointpos    name="pole_theta"  joint="cart_to_pole"/>
+    <jointvel    name="pole_omega"  joint="cart_to_pole"/>
+    <actuatorfrc name="applied_force" actuator="cart_force"/>
+  </sensor>
+</mujoco>

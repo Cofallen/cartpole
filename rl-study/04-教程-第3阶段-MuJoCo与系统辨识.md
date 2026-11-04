@@ -5,68 +5,307 @@
 
 ---
 
-## T3.1 写 cartpole 的 MJCF
+## T3.1 Isaac 风格的 cartpole MJCF + 键盘遥控脚本
 
-**目的**：搞清"一个机器人模型最少需要哪些东西"：质量、惯量、关节、限位、执行器。
+**目的**：在 MuJoCo 里复刻出**和 Isaac 里同一个机器人**——几何、质量、关节名、执行器、单位，
+甚至连"θ 的正方向"都要对齐；然后再写一个能开窗口、能用键盘改目标位置的遥控脚本。
 
-**前置**：T2.1（知道 PD 参数）。
+**前置**：T2.1（知道 PD 参数），以及一个 tracking 任务导出的 `policy.pt`（5 维观测、力矩接口）。
 
-**操作**：新建 `~/Code/IsaacTest/cartpole/mujoco/cartpole.xml`：
+> 一句话：sim2sim 不是"再画一个小车"，而是"把训练时的物理契约抄一遍"。
+> 抄错任何一行，策略都会在 0.1 秒内把力矩打到 ±400 N 然后翻车。
+
+---
+
+### 第一步：先把 Isaac 那边的事实抄成一张表
+
+这些数字都不用猜，全在仓库里：
+
+| 对齐项        | Isaac 里的值                              | 从哪看                                | MJCF 里怎么写                                            |
+| ---------- | -------------------------------------- | ---------------------------------- | ---------------------------------------------------- |
+| 关节名        | `slider_to_cart` / `cart_to_pole`      | `isaaclab_assets/robots/cartpole.py` | **同名** `<joint name=...>`                              |
+| 车质量/尺寸     | 1.0 kg，约 0.40 × 0.20 × 0.15 m          | `cartpole.usd`                       | `<geom type="box" size="0.20 0.10 0.075" mass="1.0">` |
+| 杆质量/长度     | 0.1 kg，1.0 m，半径 ≈0.03 m                | 同上                                 | `capsule fromto="0 0 0 0 0 1" size="0.03" mass="0.1"` |
+| 滑动关节       | 阻尼 10 N·s/m，行程 ±3 m                    | `cart_actuator.damping` / `max_cart_pos` | `slide` + `range="-3 3"` + `damping="10"`             |
+| 摆动关节       | 阻尼 0                                   | `pole_actuator.damping=0`           | `hinge damping="0"`                                   |
+| 执行器        | 纯力矩，±400 N，`action_scale=200`          | `effort_limit_sim` / `action_scale` | `<motor ctrlrange="-400 400">`                        |
+| 物理步长       | 1/120 s，decimation 2 → 控制 60 Hz        | `SimulationCfg(dt=1/120)`           | `timestep="0.002"`（一个控制周期 8 个物理步）                       |
+| **θ 的正方向** | 杆往 **−x** 侧倾时 `cart_to_pole` **为正**    | `cart_to_pole` 的关节轴                 | `hinge axis="0 -1 0"`（**不是** `0 1 0`，见坑 2）              |
+
+最后一行是这一节最贵的知识点：**几何长得一样、符号不一样，策略照样翻车。**
+
+---
+
+### 第二步：先写"最小可用的物理骨架"
+
+只保留决定动力学的东西，先确认能跑，再往上加外观。新建 `mujoco/cartpole.xml`：
 
 ```xml
 <mujoco model="cartpole">
-  <option timestep="0.002" gravity="0 0 -9.81"/>
+  <compiler angle="radian" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
 
   <worldbody>
-    <body name="cart" pos="0 0 0">
-      <joint name="slider" type="slide" axis="1 0 0" range="-3 3" limited="true" damping="10"/>
-      <geom name="cart" type="box" size="0.1 0.05 0.05" mass="1.0"/>
-      <body name="pole" pos="0 0 0">
-        <joint name="hinge" type="hinge" axis="0 1 0" damping="0"/>
-        <geom name="pole" type="capsule" fromto="0 0 0 0 0 1" size="0.02" mass="0.1"/>
+    <body name="cart" pos="0 0 0.5">
+      <!-- 滑动自由度：车只能沿 ±x 走，阻尼 10 对齐 Isaac 的 actuator damping -->
+      <joint name="slider_to_cart" type="slide" axis="1 0 0"
+             range="-3 3" limited="true" damping="10"/>
+      <geom name="cart_box" type="box" size="0.20 0.10 0.075" mass="1.0"/>
+
+      <body name="pole" pos="0 0 0.075">
+        <!-- 摆动自由度：轴取 −y，让 θ>0 表示"杆往 −x 倒"，与 Isaac 同号 -->
+        <joint name="cart_to_pole" type="hinge" axis="0 -1 0" damping="0"/>
+        <geom name="pole_rod" type="capsule" fromto="0 0 0 0 0 1.0"
+              size="0.03" mass="0.1"/>
       </body>
     </body>
   </worldbody>
 
   <actuator>
-    <motor name="force" joint="slider" gear="1" ctrlrange="-400 400"/>
+    <!-- 纯力矩：force = action × 200 N，饱和 ±400 N。注意：这里没有 PD！ -->
+    <motor name="cart_force" joint="slider_to_cart" gear="1"
+           ctrlrange="-400 400" ctrllimited="true"/>
   </actuator>
 </mujoco>
 ```
 
-**每个字段为什么存在**：
+**每个字段存在的理由（少一个会怎样）**
 
-| 字段                    | 作用       | 不对会怎样                               |
-| --------------------- | -------- | ----------------------------------- |
-| `timestep="0.002"`    | 物理步长     | 太大不稳定，太小慢                           |
-| `slide` 关节 + `range`  | 小车只能左右走  | 没有 range 就没有限位，会飞出场景                |
-| `hinge` 关节            | 杆子绕 y 轴转 | 轴写错 → 杆子绕错方向                        |
-| `mass`                | 质量       | 影响动力学，**T3.4 要辨识它**                 |
-| `damping`             | 阻尼       | 影响"松手后多久停"，也是辨识对象                   |
-| `motor` + `ctrlrange` | 执行器与饱和   | 与 Isaac 的 `effort_limit_sim=400` 对应 |
+| 字段                            | 作用            | 写错/漏掉会怎样                                      |
+| ----------------------------- | ------------- | --------------------------------------------- |
+| `timestep="0.002"`            | 物理步长          | 太大：数值发散；太小：一个控制周期跑很多步，慢                      |
+| `slide` + `range` + `limited` | 车沿 x 走且有行程限位  | 没 `range`：车飞出场景（`\|x\|>3` 的终止条件形同虚设）          |
+| `hinge axis="0 -1 0"`         | 杆绕 −y 轴转       | 写成 `0 1 0`：θ/ω 全都反号 → 策略往反方向推 → 立刻倒（坑 2）      |
+| `mass`                        | 质量            | 车质量变了，同样力矩下加速度就变了；**T3.4 要辨识它**               |
+| `damping=10`（车关节）             | 被动阻尼          | 漏了 → 车像在冰面上，Isaac 里学到的"推一下会停下"失效               |
+| `motor` + `ctrlrange`         | 执行器与饱和        | 换成 `position` 执行器或漏 `ctrlrange`：力矩尺度差 200 倍，杆子被打飞 |
+| `integrator="implicitfast"`   | 数值积分器         | 默认 Euler 在 0.002 s + 阻尼 10 下也能跑，但 implicitfast 更稳 |
 
 **验证**
 
 ```bash
+# 1) 能不能加载：自由度数 / 执行器数 / 总质量
+python -c "import mujoco; m=mujoco.MjModel.from_xml_path('mujoco/cartpole.xml'); \
+           print(m.nq, m.nv, m.nu, m.body_subtreemass[1])"
+# 期望：2 2 1 1.1      ← 2 个自由度、1 个执行器、总质量 1.1 kg
+
+# 2) 直接看模型（这时还没有策略，杆会自己倒下是正常的）
 python -m mujoco.viewer --mjcf=mujoco/cartpole.xml
 ```
 
-（没装 viewer 就用 `python -c "import mujoco; m=mujoco.MjModel.from_xml_path('mujoco/cartpole.xml'); print(m.nq, m.nv, m.nu)"`，应输出 `2 2 1`。）
+| 输出不对             | 说明                                    |
+| ---------------- | ------------------------------------- |
+| `nq=3`           | 用了 `freejoint` / quaternion 关节，写成了浮动基座 |
+| `nu=0`           | 忘了 `<actuator>`，或 actuator 里的关节名拼错     |
+| 总质量 `1.05` 之类    | 有"装饰件"偷偷带了质量（见第三步）                    |
 
-**可能报错**
+**其他常见报错**
 
-| 报错                               | 原因                                        |
-| -------------------------------- | ----------------------------------------- |
-| `XML Error: ... unknown element` | 标签拼错，比如 `worldbody` 写成 `worldBody`        |
-| `nq=3`                           | 用了 `freejoint` 或 quaternion 关节，说明你写成了浮动基座 |
+| 报错                               | 原因                                  |
+| -------------------------------- | ----------------------------------- |
+| `XML Error: ... unknown element` | 标签拼错，比如 `worldbody` 写成 `worldBody`  |
+| `bad range specification`        | `range` 少了上界，或 `limited` 拼错          |
 
-**验收**：模型能加载，`nq=2, nv=2, nu=1`；能说出每个 `mass` / `damping` 是干什么的。
+---
+
+### 第三步：再把它打扮成 Isaac 的样子（但不能碰动力学）
+
+好看和"物理正确"在 MuJoCo 里可以同时满足，关键是用 **`class` + 零质量零碰撞** 把装饰件隔离：
+
+```xml
+<default>
+  <!-- 装饰件模板：不接触、不碰撞、不参与质量统计 -->
+  <default class="visual">
+    <geom contype="0" conaffinity="0" group="2" density="0" mass="0"/>
+  </default>
+</default>
+
+<!-- 用的时候一行就够 -->
+<geom name="wheel_fl" type="cylinder" size="0.052 0.014" pos="0.11 0.108 -0.062"
+      euler="90 0 0" material="dark" class="visual"/>
+```
+
+仓库里的 `mujoco/cartpole.xml` 就是按这个套路长出来的：
+
+| 加了什么                        | 为什么加                  | 会改动力学吗           |
+| --------------------------- | --------------------- | ---------------- |
+| 地面 + 棋盘格纹理                  | 给一个空间参考系（Isaac 里也是深色网格地） | 不会（`class="visual"`） |
+| 滑轨 + 两端限位块                  | 车是"挂在轨上"的，不贴地滑        | 不会               |
+| 每 1 m 一道浅色刻线                | 键盘遥控时肉眼读 x            | 不会               |
+| 底盘 / 顶盖 / 四轮 / 铰链 / 杆顶小球    | 让人一眼看出"这是个车 + 这是个摆"   | 不会               |
+| 目标点用 `mocap` body          | **不受物理影响**，脚本随时能挪     | 不会（mocap 不参与动力学） |
+| 深色天光 + 雾               | 远处不出现生硬的边界            | 不会               |
+
+> ⚠️ **最常见的隐形 bug**：装饰底盘写成 `mass="0.05"`，车总质量就从 1.0 变成 1.05 kg。
+> 策略是按 1.0 kg 学的，同样的力矩下去加速度少 5%，单看不明显；
+> 等你去 T3.3 对数时会误判成"观测没对齐"，白查两小时。
+> 一行自查：`print(m.body_subtreemass[1])` 必须正好是 `1.1`。
+
+顺便记两个"画面脏"的坑（都很像物理坏了，其实只是渲染）：
+
+| 现象                | 原因                                                        | 处理                                          |
+| ----------------- | --------------------------------------------------------- | ------------------------------------------- |
+| 地面一大片脏条纹影         | `<light>` 的 `castshadow` 默认是 **True**，巨大 plane 上会出 shadow acne | 两盏灯都写 `castshadow="false"`（车挂在轨上，地上本来也不该有影子） |
+| 地面像镜子、有鬼影         | 给 plane 设了 `reflectance`                                  | `reflectance="0"`                           |
+
+---
+
+### 第四步：写遥控脚本（这才是能"玩"起来的关键）
+
+`mujoco/sim2sim.py` 已经写好了：
+
+```bash
+# 开窗口 + 键盘遥控：←/→ 改目标位置，车自己追过去
+python mujoco/sim2sim.py
+
+# 指定策略 / 初始目标
+python mujoco/sim2sim.py --policy logs/rsl_rl/cartpole_direct/<run>/exported/policy.pt --target 1.5
+
+# 不开窗口跑 5 秒（= Isaac 一个 episode），打印指标并落 CSV
+python mujoco/sim2sim.py --headless --duration 5 --csv /tmp/run.csv
+```
+
+**键盘**
+
+| 按键              | 作用                    |
+| --------------- | --------------------- |
+| `←`/`A`、`→`/`D` | 目标左 / 右移 0.10 m      |
+| `,` / `.`       | 目标左 / 右移 0.02 m（微调）  |
+| `↓` / `↑`       | 目标左 / 右移 0.50 m（大跳）  |
+| `Space`         | 暂停 / 继续               |
+| `R`             | 重置 episode（车回 0、杆角随机） |
+| `Backspace`     | 目标归零                  |
+| `Q` / `Esc`     | 退出                    |
+
+窗口里实时显示 `target / x / err / theta / force`；鼠标左键拖=旋转，右键拖=平移，滚轮=缩放。
+
+**三段核心代码**（其余都是外壳）
+
+1）观测拼装——顺序和符号就是契约本身：
+
+```python
+def observation(self, target: float) -> np.ndarray:
+    # [theta, omega, x, v, target - x]：第 5 维必须是 target - x，不能反
+    return np.array([self.theta, self.omega, self.x, self.v, target - self.x],
+                    dtype=np.float32)
+```
+
+2）动作 → 力矩（没有 PD，一步都不能多）：
+
+```python
+force = float(np.clip(action * ACTION_SCALE, -EFFORT_LIMIT, EFFORT_LIMIT))  # 200 / 400
+self.data.ctrl[0] = force
+```
+
+3）目标点用 mocap；键盘改的是"目标标量"，不是刚体：
+
+```python
+def on_key(self, key: int) -> None:
+    if key in (263, ord("A"), ord("a")):      # ← 或 A
+        self.nudge(-0.10)
+    elif key in (262, ord("D"), ord("d")):    # → 或 D
+        self.nudge(+0.10)
+
+# 主循环里：mocap 只影响渲染，不参与动力学
+self.data.mocap_pos[self.mocap_id] = (target, 0.0, self.marker_z)
+```
+
+> 💡 旧版本里写 `data.xpos[target_marker] = ...` 是**错的**：`xpos` 是 `mj_forward`
+> 每帧算出来的派生量，写进去下一帧就被覆盖，标记点看起来"纹丝不动"。
+> 要挪一个纯装饰的物体，用 **mocap body**，别去改 `xpos`。
+
+**实测（本仓库 `2026-11-04_17-52-24` 的 5 维策略，每个目标跑 5 s）**
+
+| 目标 x* | 最终 x   | 最终 \|err\| | 平均 \|err\| | 到位率(\|err\|<0.1) |
+| ----- | ------ | ---------- | ---------- | ---------------- |
+| −2.0  | −2.008 | 0.008      | 0.179      | 72.0%            |
+| 0.0   | −0.020 | 0.020      | 0.030      | 100.0%           |
+| +1.0  | +0.963 | 0.037      | 0.181      | 76.7%            |
+| +2.0  | +1.910 | 0.090      | 0.268      | 59.3%            |
+
+读法：末态误差都很小（策略确实学会了跟踪），**平均**误差大是因为前 1 秒在赶路；
+目标越远，赶路时间占比越大，"到位率"自然越低——这是指标口径问题，不是策略崩了。
+
+---
+
+### 第五步：两个一定会踩的坑
+
+#### 坑 1：`ImportError: Error importing numpy ... _multiarray_umath`
+
+```text
+Python 版本：3.13（来自 /home/cofallen/miniconda3/bin/python）
+NumPy  版本：1.26.4（来自 .../envs/isaac/lib/python3.10/site-packages）
+```
+
+不是 numpy 坏了，而是 **`PYTHONPATH` 把 isaac 环境（py3.10）的 site-packages
+塞给了 base 环境（py3.13）**，C 扩展的 ABI 对不上，谁都救不了：
+
+```bash
+echo $PYTHONPATH
+# /home/cofallen/IsaacLab/source:.../envs/isaac/lib/python3.10/site-packages   ← 就是它
+```
+
+| 解法                                     | 命令                                                             |
+| -------------------------------------- | -------------------------------------------------------------- |
+| **① 用带 mujoco 的解释器**（本仓库约定，推荐）         | `/home/cofallen/miniconda3/envs/isaac/bin/python mujoco/sim2sim.py` |
+| ② 在当前 shell 临时清掉污染（只跑 mujoco 时够用）      | `env -u PYTHONPATH python mujoco/sim2sim.py`                    |
+| ③ 永久修（会影响 Isaac Lab 的 IDE 联动，谨慎）       | 把 `.bashrc` 里那句 `export PYTHONPATH=...` 改成只在 `conda activate isaac` 后生效 |
+
+#### 坑 2：策略"刚跑 0.1 秒就把力矩打到 ±400 N，杆子乱飞"
+
+现象（当初的报错现场就是这样）：
+
+```text
+t=0.10  x=-1.304  v=-22.644  theta=1.903  omega=22.980  F=-400.0
+```
+
+**不是质量错，也不是 `action_scale` 错**，而是观测的**符号约定**错了。
+排查方法很土但很有效——把可能反号的 4 个量（θ、ω、x、v）做 16 组扫描：
+
+```python
+import itertools
+for s_th, s_om, s_x, s_v in itertools.product((1, -1), repeat=4):
+    # obs = [s_th*theta, s_om*omega, s_x*x, s_v*v, s_x*(target - x)]
+    ...  # 每组跑 5 s，记录存活时长和平均 |err|
+```
+
+实测只有一组活下来：
+
+| $s_\theta$ | $s_\omega$ | $s_x$  | $s_v$  | 存活       | 平均 \|err\| |
+| ---------- | ---------- | ------ | ------ | -------- | ---------- |
+| +1         | +1         | +1     | +1     | 0.08 s   | 1.407      |
+| +1         | +1         | −1     | +1     | 0.10 s   | 0.564      |
+| −1         | −1         | **+1** | **+1** | **4.98 s** | **0.165**  |
+| −1         | −1         | −1     | −1     | 1.60 s   | 1.312      |
+
+结论：**Isaac 的 `cart_to_pole` 正方向是"杆往 −x 侧倾"**，与 MuJoCo 默认的
+`axis="0 1 0"` 相反。两种修法，选一种，别两边都改：
+
+| 修法                                     | 优点                       | 缺点                          |
+| -------------------------------------- | ------------------------ | --------------------------- |
+| **改模型**：`axis="0 -1 0"`（本仓库采用）         | 脚本保持教科书式的 obs，不藏魔法      | 模型里必须写注释，否则下一个人一脸问号          |
+| 改脚本：`obs = [-theta, -omega, x, v, target-x]` | 模型文件干净                   | 反号散在代码里，换任务时容易忘              |
+
+> 🧠 通用版经验：**"符号错"和"参数错"的表现完全不同。**
+> 参数错 → 慢慢漂、精度差、偶尔倒；符号错 → 第一帧就饱和、0.1 秒结束。
+> 看到力长期贴在 `±ctrlrange` 上，先查符号，再查参数。
+
+---
+
+**验收**：
+
+1. 模型能加载，`nq=2, nv=2, nu=1`，总质量 `1.1 kg`；
+2. 开窗口后能用键盘把目标移到 ±2 m，并看着车追过去（不是原地不动、也不是翻车）；
+3. 能解释 `hinge axis="0 -1 0"` 为什么不是 `0 1 0`；
+4. 能说出坑 1 里 `PYTHONPATH` 为什么会把 py3.10 的 numpy 喂给 py3.13。
 
 > 🖊️ **记录**
 > 
-> 我的 MJCF 参数（质量/长度/阻尼）：
-> &nbsp;
-> `nq, nv, nu` 输出：\_\_\_\_ / \_\_\_\_ / \_\_\_\_
+> `nq, nv, nu, 总质量` 输出：\_\_2\_\_ / \_\_2\_\_ / \_\_1\_\_ / \_\_1.1\_\_
+> 我的车 / 杆 质量与长度：\_\_\_\_ / \_\_\_\_
+> 我用的是 `axis="0 ___0"`，理由是：\_\_\_\_
+> 键盘把目标设到 ___ m，最终 x = ___ m，|err| = ___ m
+> 我的 `PYTHONPATH` 里有没有混进别的环境的 site-packages：\_\_\_\_
 
 ---
 
@@ -141,71 +380,85 @@ $$
 
 ---
 
-**操作**：新建 `mujoco/sim2sim.py`：
+**操作**：先写一个**最小闭环**（40 行，只回答"契约对不对"）。
+仓库里的 `mujoco/sim2sim.py` 是这个版本的"加壳版"：把常量、观测、推理、步进
+拆成 `CartpoleSim` 的方法，再套上键盘遥控 / HUD / headless / CSV 输出。
+先跑最小版确认策略没训歪，再去看完整脚本。
 
 ```python
-"""把 Isaac 训出来的 tracking 策略放进 MuJoCo 跑闭环。
+"""最小 sim2sim：只验证契约对不对。
 
-契约（必须和 cartpole_env.py 完全一致）：
-    obs    = [theta, omega, x, v, target - x]     5 维
-    action = 1 维力矩，force = action * 200 N
-    执行器 = 纯力矩 + damping=10，没有 PD
+    obs    = [theta, omega, x, v, target - x]       5 维，float32
+    action = 1 维力矩，force = action * action_scale(200 N)，饱和 ±400 N
+    频率   = 60 Hz（一个控制周期 = 8 个 0.002 s 物理步）
 """
 import numpy as np
 import mujoco
 import torch
 
+ACTION_SCALE = 200.0        # 训练时的 action_scale [N]
+CTRL_DT = 1.0 / 60.0        # = sim.dt(1/120) × decimation(2)
+TARGET = 1.0                # 部署时由你给的实参 x*
 MJCF = "mujoco/cartpole.xml"
 POLICY = "logs/rsl_rl/cartpole_direct/<run>/exported/policy.pt"
 
-ACTION_SCALE = 200.0      # 训练时的 action_scale [N]
-CTRL_DT = 1.0 / 60.0      # 控制周期 = sim.dt(1/120) * decimation(2)
-EPISODE_STEPS = 300       # 5 秒
-TARGET = 1.0              # ← 想让车停在哪：这是"部署时由你给的实参"
+m = mujoco.MjModel.from_xml_path(MJCF)
+d = mujoco.MjData(m)
+n_sub = max(1, int(round(CTRL_DT / m.opt.timestep)))     # 8
 
-model = mujoco.MjModel.from_xml_path(MJCF)
-data = mujoco.MjData(model)
-n_sub = max(1, int(round(CTRL_DT / model.opt.timestep)))
+def addr(name):                                          # 用名字取地址，别硬编码 0/1
+    jid = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, name)
+    return int(m.jnt_qposadr[jid]), int(m.jnt_dofadr[jid])
+
+qc, vc = addr("slider_to_cart")     # 车位 / 车速
+qp, vp = addr("cart_to_pole")       # 杆角 / 杆角速度
 
 policy = torch.jit.load(POLICY).eval()
 
-# 初始条件对齐 Isaac 的 _reset_idx：x=0，杆角在 ±0.1π 内随机
+# 初始条件对齐 Isaac 的 _reset_idx：x = 0，杆角在 ±0.1π 内均匀采样
 rng = np.random.default_rng(0)
-data.qpos[0] = 0.0
-data.qpos[1] = rng.uniform(-0.1, 0.1) * np.pi
-mujoco.mj_forward(model, data)
+d.qpos[qc] = 0.0
+d.qpos[qp] = rng.uniform(-0.1, 0.1) * np.pi
+mujoco.mj_forward(m, d)
 
-errors = []
-for step in range(EPISODE_STEPS):
-    x, v = data.qpos[0], data.qvel[0]
-    theta, omega = data.qpos[1], data.qvel[1]
-
-    # ---- 观测：顺序一致 + 第 5 维必须是 (target - x)，符号别写反 ----
-    obs = np.array([theta, omega, x, v, TARGET - x], dtype=np.float32)
+errs = []
+for step in range(300):                                  # 300 × 1/60 s = 5 s
+    # ---- 观测：顺序一致，第 5 维必须是 (target - x) ----
+    obs = np.array([d.qpos[qp], d.qvel[vp], d.qpos[qc], d.qvel[vc],
+                    TARGET - d.qpos[qc]], dtype=np.float32)
 
     with torch.no_grad():
-        a = float(policy(torch.from_numpy(obs).reshape(1, -1)).item())
+        a = float(policy(torch.from_numpy(obs)[None]).item())
 
-    # ---- 动作就是力矩，直接乘 action_scale，没有 PD ----
-    force = a * ACTION_SCALE
-    data.ctrl[0] = np.clip(force, -400.0, 400.0)   # 对应 effort_limit_sim=400
+    # ---- 动作就是力矩，直接乘 action_scale；这里没有 PD ----
+    d.ctrl[0] = float(np.clip(a * ACTION_SCALE, -400.0, 400.0))
 
-    # MuJoCo 物理步长比控制周期小，一个控制周期要跑 n_sub 次物理步
     for _ in range(n_sub):
-        mujoco.mj_step(model, data)
+        mujoco.mj_step(m, d)
 
-    errors.append(abs(x - TARGET))
-    if step % 30 == 0:
-        print(f"t={step*CTRL_DT:4.1f}s  x={x:+.3f}  err={abs(x-TARGET):.3f}  "
-              f"theta={theta:+.3f}  F={force:+7.1f}")
+    errs.append(abs(d.qpos[qc] - TARGET))
 
     # 终止条件与 Isaac 的 _get_dones 一致
-    if abs(theta) > np.pi / 2 or abs(x) > 3.0:
-        print(f"terminated at step {step}: |theta|={abs(theta):.2f}, |x|={abs(x):.2f}")
+    if abs(d.qpos[qp]) > np.pi / 2 or abs(d.qpos[qc]) > 3.0:
+        print(f"terminated at step {step}")
         break
 
-print(f"到位率(|err| < 0.1) = {np.mean(np.array(errors) < 0.1):.1%}")
+print(f"final x = {d.qpos[qc]:+.3f} m | mean|err| = {np.mean(errs):.3f} m | "
+      f"到位率(|err|<0.1) = {np.mean(np.array(errs) < 0.1):.1%}")
 ```
+
+跑通了再切到仓库版（接口一样，功能更全）：
+
+| 完整版多的东西                | 为什么需要                              |
+| ---------------------- | ---------------------------------- |
+| `--headless --duration 5` | 不开窗口批量跑，用来看"到位率"这类指标             |
+| `--csv`                | 把 `t,x,v,theta,omega,force,target` 落盘，T3.4 辨识直接用 |
+| 键盘改目标（`TargetControl`） | 现场把 $x^*$ 挪来挪去，肉眼看跟踪质量         |
+| `R` / `Space`          | 重置、暂停；终止时自动重开，方便连续试                |
+| HUD + 实时节拍             | 屏幕上直接读 `err / theta / force`，不用盯终端  |
+
+> 💡 建议：**先用最小版跑一次 `TARGET = 0`**。如果连"稳在 0"都做不到，
+> 说明策略本身没学好（或观测/力矩接口还有问题），这时加多少交互都没意义。
 
 **预期**
 
@@ -213,7 +466,7 @@ print(f"到位率(|err| < 0.1) = {np.mean(np.array(errors) < 0.1):.1%}")
 | ------------------------------------------- | ------------------------------------------------------- |
 | `x` 收敛到 `TARGET` ±0.1 并稳住，`theta` 在 ±0.05 内 | 契约对齐了，且策略确实学会了跟踪                                        |
 | `x` 停在 `TARGET` 的某个比例（比如 0.7·TARGET）        | 策略只学到"往目标走"，精度不够 → 回 T2.4 改 reward 或加训练轮数               |
-| `theta` 立刻发散                                | 观测顺序 / 第 5 维构造 / **力矩 vs PD 接口**抄错                      |
+| `theta` 立刻发散                                | 观测顺序 / 第 5 维构造 / **力矩 vs PD 接口**抄错 / **关节轴符号反了**（见 T3.1 坑 2） |
 | `x` 往反方向跑                                   | 第 5 维符号写反了（应是 `target - x`，不是 `x - target`）             |
 | `x` 一直贴着 0 不动                               | 策略根本没学过 tracking（回到 T2.3 检查 `rew_target` 是否进了 `return`） |
 
@@ -346,6 +599,7 @@ $$
 | 控制频率  | Isaac 是 60 Hz；MuJoCo 用 `n_sub` 子步凑          | 直接 1 kHz 调策略（等于让策略"高频抖"）                         |
 | 执行器饱和 | `ctrlrange` 与 `effort_limit_sim` 一致（±400）   | MuJoCo 用 ±1（没设 ctrlrange）                        |
 | 阻尼/摩擦 | 两边 `damping` 一致                             | Isaac 的 USD 有阻尼而 MJCF 忘了写                        |
+| **关节正方向** | 同一姿态下打印 Isaac 与 MuJoCo 的 $(q,\dot q)$，符号必须相同 | 轴写成 `0 1 0`，θ/ω 反号 → 力立刻打满 ±400（T3.1 坑 2）     |
 
 **做法**：每对齐一项，记录一次偏差。
 
