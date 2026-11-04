@@ -26,9 +26,14 @@ class CartpoleEnvCfg(DirectRLEnvCfg):
 
     # by user
     target_range = [-2.0, 2.0]  # 目标采样区间
-    rew_scale_target = -2.0     # 追踪惩罚
+    rew_scale_target = -1.0     # 追踪惩罚
     k = 1
     gamma = 0.99
+
+    # randomization
+    obs_noise_std = 0.01
+    action_delay_range = (0, 3)  # action delay range
+    max_action_delay = 3  # max action delay
 
     # simulation
     sim: SimulationCfg = SimulationCfg(dt=1 / 120, render_interval=decimation)

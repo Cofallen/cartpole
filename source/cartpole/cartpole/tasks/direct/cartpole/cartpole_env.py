@@ -32,7 +32,11 @@ class CartpoleEnv(DirectRLEnv):
 
         self.last_actions = torch.zeros(self.num_envs, 1, device=self.device)  # by user
         self.target_pos = torch.zeros(self.num_envs, device=self.device)  # by user
-        self.prev_phi = torch.zeros(self.num_envs, device=self.device)  # by user
+        self.prev_phi = torch.zeros(self.num_envs, device=self.device)  # by 
+        self.delayed_actions = torch.zeros(self.num_envs, 1, device=self.device)  # by user
+        self.max_action_delay = self.cfg.max_action_delay
+        self.action_delay_steps = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)  # by user
+        self.action_queue = torch.zeros(self.num_envs, self.max_action_delay + 1, 1, device=self.device)  # by user
 
     def _setup_scene(self):
         self.robot = Articulation(self.cfg.robot_cfg)
@@ -52,8 +56,19 @@ class CartpoleEnv(DirectRLEnv):
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
         self.actions = actions.clone()
 
+        # 动作域随机化
+        # 把动作右移，最新动作放在最后
+        self.action_queue[:, :-1] = self.action_queue[:, 1:]
+        self.action_queue[:, -1] = self.actions
+
+        # delay=0 -> 直接使用最新动作
+        # delay=1 -> 使用上一个动作
+        # delay=2 -> 使用上上个动作
+        idx = (self.max_action_delay - self.action_delay_steps).clamp(min=0).unsqueeze(-1).unsqueeze(-1)
+        self.delayed_actions = self.action_queue.gather(1, idx.expand(-1, 1, 1)).squeeze(1)
+
     def _apply_action(self) -> None:
-        self.robot.set_joint_effort_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)
+        self.robot.set_joint_effort_target(self.delayed_actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)  # 改成delayed_actions
         # self.robot.set_joint_position_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx) # by user
         self.last_actions = self.actions[:, :1].clamp(-1, 1) # 归一化
 
@@ -69,6 +84,8 @@ class CartpoleEnv(DirectRLEnv):
             ),
             dim=-1,
         )
+        obs += self.cfg.obs_noise_std * torch.randn_like(obs)   # random noise
+
         observations = {"policy": obs}
         return observations
 
@@ -117,7 +134,7 @@ class CartpoleEnv(DirectRLEnv):
             "Reward/action": self.actions.mean().item(),
         }
         self.extras["log"]["Reward/target"] = rew_target.mean().item()
-        rew = rew_alive + rew_term + rew_pole + rew_cv + rew_pv + rew_target_phi + rew_target
+        rew = rew_alive + rew_term + rew_pole + rew_cv + rew_pv + 0 + rew_target
         assert rew.shape == (self.num_envs,), f"reward shape {rew.shape} != ({self.num_envs},)"
         return rew
 
@@ -159,6 +176,16 @@ class CartpoleEnv(DirectRLEnv):
         cart_pos = joint_pos[:, self._cart_dof_idx[0]]
         err = self.target_pos[env_ids] - cart_pos
         self.prev_phi[env_ids] = -0.5 * self.cfg.k * err.square()
+
+        # 域随机化初始
+        self.action_delay_steps[env_ids] = torch.randint(
+            low=self.cfg.action_delay_range[0],
+            high=self.cfg.action_delay_range[1] + 1,
+            size=(n,),
+            device=self.device,
+        )
+        self.action_queue[env_ids] = 0.0
+        self.delayed_actions[env_ids] = 0.0
 
         self.robot.write_root_pose_to_sim(default_root_state[:, :7], env_ids)
         self.robot.write_root_velocity_to_sim(default_root_state[:, 7:], env_ids)
