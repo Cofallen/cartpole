@@ -32,6 +32,7 @@ class CartpoleEnv(DirectRLEnv):
 
         self.last_actions = torch.zeros(self.num_envs, 1, device=self.device)  # by user
         self.target_pos = torch.zeros(self.num_envs, device=self.device)  # by user
+        self.prev_phi = torch.zeros(self.num_envs, device=self.device)  # by user
 
     def _setup_scene(self):
         self.robot = Articulation(self.cfg.robot_cfg)
@@ -64,7 +65,7 @@ class CartpoleEnv(DirectRLEnv):
                 self.joint_pos[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
                 self.joint_vel[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
                 # self.last_actions,  # by user
-                # (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]]).unsqueeze(1),   # target - x
+                (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]]).unsqueeze(1),   # target - x
             ),
             dim=-1,
         )
@@ -100,7 +101,11 @@ class CartpoleEnv(DirectRLEnv):
         rew_pv = self.cfg.rew_scale_pole_vel * pole_vel.abs()
 
         err = (self.target_pos - self.joint_pos[:, self._cart_dof_idx[0]])
-        rew_target = self.cfg.rew_scale_target * torch.clamp(err.square(), max=1.0)
+        rew_target = self.cfg.rew_scale_target * torch.clamp(err.square(), max=4.0)
+        phi_next = -0.5 * self.cfg.k * err.square()
+        phi_next = torch.where(self.reset_terminated, torch.zeros_like(phi_next), phi_next)
+        rew_target_phi = self.cfg.gamma * phi_next - self.prev_phi
+        self.prev_phi = phi_next.detach()
 
         self.extras["log"] = {
             "Reward/alive": rew_alive.mean().item(),
@@ -112,7 +117,7 @@ class CartpoleEnv(DirectRLEnv):
             "Reward/action": self.actions.mean().item(),
         }
         self.extras["log"]["Reward/target"] = rew_target.mean().item()
-        rew = rew_alive + rew_term + rew_pole + rew_cv + rew_pv + rew_target
+        rew = rew_alive + rew_term + rew_pole + rew_cv + rew_pv + rew_target_phi + rew_target
         assert rew.shape == (self.num_envs,), f"reward shape {rew.shape} != ({self.num_envs},)"
         return rew
 
@@ -150,6 +155,10 @@ class CartpoleEnv(DirectRLEnv):
         self.target_pos[env_ids] = sample_uniform(
             self.cfg.target_range[0], self.cfg.target_range[1], (n,), self.device
         )
+        # 初始化 上一状态 势函数
+        cart_pos = joint_pos[:, self._cart_dof_idx[0]]
+        err = self.target_pos[env_ids] - cart_pos
+        self.prev_phi[env_ids] = -0.5 * self.cfg.k * err.square()
 
         self.robot.write_root_pose_to_sim(default_root_state[:, :7], env_ids)
         self.robot.write_root_velocity_to_sim(default_root_state[:, 7:], env_ids)
