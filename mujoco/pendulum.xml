@@ -1,0 +1,40 @@
+<mujoco>
+    <compiler angle="radian" autolimits="true"/>
+    <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" density="1.225" viscosity="1.8e-5"/>
+    <visual>
+        <global realtime="1"/>
+        <quality shadowsize="16384" numslices="28" offsamples="4"/>
+        <headlight diffuse="3 3 3" specular=".5 .5 .5" active="1"/>
+        <rgba fog="0 1 0 1" haze="1 1 1 1"/>
+    </visual>
+    <asset>
+        <texture name="skybox" type="skybox" builtin="gradient" rgb1=".1 .1 .1" rgb2=".9 .9 .9" width="512" height="512"/>
+        <texture name="plane" type="2d" builtin="checker" rgb1=".1 .1 .1" rgb2=".9 .9 .9" width="512" height="512"/>
+        <material name="plane" texture="plane" reflectance="0.3"/>
+    </asset>
+
+    <worldbody>
+        <geom name="floor" type="plane" material="plane" size="0 0 0.25" pos="0 0 0" contype="3" conaffinity="3"/>
+
+        <body name="line" pos="0 0 2">
+            <!-- <freejoint/> -->
+            <geom type="box" size="10 0.01 0.01" rgba="1 0 0 1" mass="2.0" contype="4" conaffinity="4"/>
+            
+            <body name="cart" pos="0 0 0">
+                <joint name="slider_to_cart" type="slide" axis="1 0 0" damping="10"/>
+                <geom type="box" size="0.1 0.1 0.1" rgba="0 0 0 .5" mass="1.0" contype="2" conaffinity="2"/>
+
+                <body name="pole" pos="0 0 0.5">
+                    <joint name="pendulum_joint" type="hinge" axis="0 -1 0" damping="0" pos="0 0 -0.5"/>
+                    <geom type="box" size="0.025 0.025 0.5" rgba="0 0 1 1" mass="0.1" contype="1" conaffinity="1"/>
+                </body>
+            </body>
+            
+        </body>        
+    </worldbody>
+
+    
+    <actuator>
+        <motor name="cart_force" joint="slider_to_cart" ctrlrange="-400 400"/>
+    </actuator>
+</mujoco>
